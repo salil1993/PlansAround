@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "689164288056",
+    "project_id": "plansaround-a4ffd",
+    "storage_bucket": "plansaround-a4ffd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689164288056:android:9a999bdaa1fefca50166cd",
+        "android_client_info": {
+          "package_name": "com.plansaround"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9NKgV2yOCyA351bWY_TIrGUnBTLmlC0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

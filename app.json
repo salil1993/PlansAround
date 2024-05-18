@@ -1,0 +1,10 @@
+{
+  "name": "plansaround",
+  "displayName": "plansaround",
+  "expo": {
+    "slug": "plansaround",
+    "name": "plansaround",
+    "sdkVersion": "49.0.0",
+    "entryPoint": ".vscode\\exponentIndex.js"
+  }
+}

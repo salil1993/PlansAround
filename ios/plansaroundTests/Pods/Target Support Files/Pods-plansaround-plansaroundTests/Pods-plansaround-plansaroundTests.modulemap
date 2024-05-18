@@ -1,0 +1,6 @@
+module Pods_plansaround_plansaroundTests {
+  umbrella header "Pods-plansaround-plansaroundTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
