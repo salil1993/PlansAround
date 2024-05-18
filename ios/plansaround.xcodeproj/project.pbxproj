@@ -26,7 +26,7 @@
 		7FDFACD22A174F56AD1377BA /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 70776B7FEC3346C7A2BC9B19 /* Poppins-ExtraBold.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		81CD0C6477D54051BCC1F6AB /* Poppins-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5FE68DEF95B43F89EBB89C8 /* Poppins-SemiBoldItalic.ttf */; };
-		8A6F8DEF2BF3D0FE00B8CD3E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A6F8DEE2BF3D0FE00B8CD3E /* GoogleService-Info.plist */; };
+		8A0322A02BF8CBE400C6B1A6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A03229F2BF8CBE400C6B1A6 /* GoogleService-Info.plist */; };
 		8A71B4602BF89F27004E3522 /* AIRDummyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A71B42A2BF89F27004E3522 /* AIRDummyView.m */; };
 		8A71B4612BF89F27004E3522 /* AIRGMSMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A71B42C2BF89F27004E3522 /* AIRGMSMarker.m */; };
 		8A71B4622BF89F27004E3522 /* AIRGMSPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A71B42E2BF89F27004E3522 /* AIRGMSPolygon.m */; };
@@ -106,7 +106,7 @@
 		745CC3612C014FD0A646F6DC /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
 		7A5D60BF7E624EDBB6659F85 /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = plansaround/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8A6F8DEE2BF3D0FE00B8CD3E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8A03229F2BF8CBE400C6B1A6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8A71B4292BF89F27004E3522 /* AIRDummyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIRDummyView.h; sourceTree = "<group>"; };
 		8A71B42A2BF89F27004E3522 /* AIRDummyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIRDummyView.m; sourceTree = "<group>"; };
 		8A71B42B2BF89F27004E3522 /* AIRGMSMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIRGMSMarker.h; sourceTree = "<group>"; };
@@ -233,7 +233,7 @@
 		13B07FAE1A68108700A75B9A /* plansaround */ = {
 			isa = PBXGroup;
 			children = (
-				8A6F8DEE2BF3D0FE00B8CD3E /* GoogleService-Info.plist */,
+				8A03229F2BF8CBE400C6B1A6 /* GoogleService-Info.plist */,
 				911084C72BE62B32002DE1EB /* main.jsbundle */,
 				911084A82BE6157D002DE1EB /* plansaround.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -530,7 +530,7 @@
 				040F7DED051F4FF3A39FA1E0 /* Poppins-Regular.ttf in Resources */,
 				911084C82BE62B32002DE1EB /* main.jsbundle in Resources */,
 				6FEE9B023ED94D46AE779A5E /* Poppins-SemiBold.ttf in Resources */,
-				8A6F8DEF2BF3D0FE00B8CD3E /* GoogleService-Info.plist in Resources */,
+				8A0322A02BF8CBE400C6B1A6 /* GoogleService-Info.plist in Resources */,
 				81CD0C6477D54051BCC1F6AB /* Poppins-SemiBoldItalic.ttf in Resources */,
 				55DA71563F3540E1876D7989 /* Poppins-Thin.ttf in Resources */,
 				161EE7E7AC1B4A88866E0083 /* Poppins-ThinItalic.ttf in Resources */,
@@ -991,7 +991,8 @@
 					"-ld_classic",
 					"-Wl",
 					"-ld_classic",
-					"-Wl -ld_classic ",
+					"-Wl",
+					"-ld_classic",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -1098,7 +1099,8 @@
 					"-ld_classic",
 					"-Wl",
 					"-ld_classic",
-					"-Wl -ld_classic ",
+					"-Wl",
+					"-ld_classic",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;

@@ -1,0 +1,13 @@
+current directory: /Users/munish/Desktop/ReactNativeApps/plansaround/vendor/bundle/ruby/2.7.0/gems/json-2.7.2/ext/json
+/Users/munish/.rvm/rubies/ruby-2.7.4/bin/ruby -I /Users/munish/.rvm/rubies/ruby-2.7.4/lib/ruby/2.7.0 -r ./siteconf20240501-2820-1hzltwu.rb extconf.rb
+creating Makefile
+
+current directory: /Users/munish/Desktop/ReactNativeApps/plansaround/vendor/bundle/ruby/2.7.0/gems/json-2.7.2/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/munish/Desktop/ReactNativeApps/plansaround/vendor/bundle/ruby/2.7.0/gems/json-2.7.2/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/munish/Desktop/ReactNativeApps/plansaround/vendor/bundle/ruby/2.7.0/gems/json-2.7.2/ext/json
+make "DESTDIR=" install
