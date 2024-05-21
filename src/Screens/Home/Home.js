@@ -163,6 +163,7 @@ const Home = () => {
         setIsLoading(true);
         try {
             let usertoken = await getData('UserToken');
+            console.log('userToken', usertoken)
             const headers = {
                 'Authorization': `Bearer ${usertoken}`,
                 'Content-Type': "application/json",
@@ -171,7 +172,7 @@ const Home = () => {
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events?page=${pageNumber}`, { headers });
             const responseData = response.data;
             console.log(responseData, 'totalevents')
-            const newEvents = responseData.events;
+            const newEvents = responseData?.events;
             setEventsList((prevEvents) => {
                 if (pageNumber === 1) {
                     // If it's the first page, replace existing events
@@ -181,11 +182,10 @@ const Home = () => {
                     return [...prevEvents, ...newEvents];
                 }
             });
-
             setPage(pageNumber); // Update the current page number
             setIsLoading(false);
             setRefreshing(false);
-            setHasMore(newEvents.length > 0); // Update hasMore based on whether new events were fetched
+            setHasMore(newEvents?.length > 0); // Update hasMore based on whether new events were fetched
         } catch (error) {
             setIsLoading(false);
             setRefreshing(false);
@@ -451,7 +451,7 @@ const Home = () => {
                     backdropTransitionOutTiming={600}
                 >
                     <SafeAreaView style={styles.locationmodalStyle}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(20) }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                             <TouchableOpacity onPress={() => setLocationModal(false)}>
                                 <IconsLike name='down' size={26} color='#333' style={{ marginLeft: moderateScale(5) }} />
                             </TouchableOpacity>

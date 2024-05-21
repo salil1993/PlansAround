@@ -39,7 +39,7 @@ const HostEvent = ({ navigation, route }) => {
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const routedata = route?.params;
-    console.log(routedata, 'routedata')
+   // console.log(routedata, 'routedata')
 
     const [openoptionModal, setoptionopenModal] = useState(isFocused);
     const [value, setvalue] = useState('');
@@ -105,7 +105,7 @@ const HostEvent = ({ navigation, route }) => {
         };
         axios.get('https://plansaround-backend.vercel.app/api/mobile/category/', { headers })
             .then((res) => {
-                console.log(res, 'cataaya in tabroute m')
+                console.log(JSON.stringify(res.data), 'cataaya in tabroute m')
                 setCategoryList(res.data.categories);
                 // setCategoryList(res.data)
             })

@@ -309,7 +309,7 @@ const UserProfile = ({ navigation }) => {
                 <Modal
                     coverScreen={true}
                     isVisible={openoptionModal3}
-                    backdropColor="#000"
+                    backdropColor="rgba(255,255, 255, 0.8)"
                     backdropOpacity={UserKYCstatus ? 0.9 : 1}
                     onBackdropPress={() => setoptionopenModal3(false)}
                     animationIn="slideInUp"
