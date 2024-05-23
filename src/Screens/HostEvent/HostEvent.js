@@ -118,8 +118,6 @@ const HostEvent = ({ navigation, route }) => {
             'Authorization': `Bearer ${usertoken}`,
             'Content-Type': "application/json",
         };
-
-        console.log(res, 'subCategory aaya idehr')
         axios.get(`https://plansaround-backend.vercel.app/api/mobile/category/${CategoryId}/subcategory`, { headers })
             .then((res) => {
                 console.log(res, 'subCategory aaya idehr')

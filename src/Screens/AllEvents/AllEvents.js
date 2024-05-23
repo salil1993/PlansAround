@@ -14,10 +14,6 @@ import Iconpaid from 'react-native-vector-icons/MaterialIcons'
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
-
-
-
-
 // create a component
 const WriteBio = ({ navigation }) => {
     const [scrollRef, setScrollRef] = useState(null);
@@ -49,7 +45,6 @@ const WriteBio = ({ navigation }) => {
                         <Image source={imagePath.Allevent} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
                         <TouchableOpacity onPress={() => {
                             navigation.navigate(navigationStrings.EVENTREQUESTED)
-
                         }} style={{
                             marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
                             alignItems: 'center',
@@ -71,12 +66,10 @@ const WriteBio = ({ navigation }) => {
                                 {/* <IconsComment name='comment' size={20} color='#333' style={{ marginHorizontal: moderateScale(10) }} /> */}
                                 <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
                             </View>
-
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => {
                             navigation.navigate(navigationStrings.EVENTREJECTED)
-
                         }} style={{
                             marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
                             alignItems: 'center',
@@ -88,9 +81,7 @@ const WriteBio = ({ navigation }) => {
                             borderBottomLeftRadius: moderateScale(15),
                             borderBottomRightRadius: moderateScale(15),
                             elevation: 1,
-                            backgroundColor: '#fff',
-
-
+                            backgroundColor: '#fff'
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Text style={styles.head1}>1</Text>
@@ -104,7 +95,6 @@ const WriteBio = ({ navigation }) => {
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             navigation.navigate(navigationStrings.EVENTCANCELED)
-
                         }} style={{
                             marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
                             alignItems: 'center',

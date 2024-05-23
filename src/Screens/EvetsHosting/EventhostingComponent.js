@@ -73,8 +73,10 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance }) =>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => {
-                            openGoogleMaps(UserLocation, Eventlocation);
-                        }} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.location, Ulocation: UserLocation, type:'EventHosting' })
+                           // openGoogleMaps(UserLocation, Eventlocation);
+                        }}
+                       style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Image source={imagePath.Gmap} style={{ height: moderateScaleVertical(30), width: moderateScale(30) }} />
                         </TouchableOpacity>
                     </View>
