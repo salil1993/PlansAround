@@ -80,7 +80,7 @@ const EventRequested = ({ navigation }) => {
                                     return (
                                         <>
                                             <View style={styles.container2}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+                                                <TouchableOpacity onPress={() =>navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.event?.user?._id })} style={{ flexDirection: 'row', alignItems: 'center' }} >
                                                     {
                                                         item?.event?.user?.profilePicture ?
                                                             <Image source={{ uri: item?.event?.user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
@@ -88,7 +88,7 @@ const EventRequested = ({ navigation }) => {
                                                             <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                                                     }
                                                     <Text style={styles.charlie}>{item?.event?.user?.fullName ? item?.event?.user?.fullName : 'NA'}</Text>
-                                                </View>
+                                                </TouchableOpacity>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                     <View style={{ flexDirection: 'row' }}>
                                                         <Text style={styles.eventtxt}>Requested to Participate in event for <Text style={[styles.eventtxt, { color: '#333', fontWeight: '900' }]}>{item.event.name ? item.event.name : 'NA'}</Text>

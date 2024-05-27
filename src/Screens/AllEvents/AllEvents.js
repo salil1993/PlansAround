@@ -5,7 +5,6 @@ import WrapperContainer from '../../Components/WrapperContainer';
 import imagePath from '../../constants/imagePath';
 import { moderateScale, moderateScaleVertical, scale, height } from '../../styles/responsiveSize';
 import ButtonComp from '../../Components/ButtonComp';
-
 import navigationStrings from '../../Navigation/navigationStrings';
 import HeaderBack from '../../Components/HeaderBack';
 import IconsComment from 'react-native-vector-icons/Fontisto'
@@ -13,28 +12,76 @@ import Modal from 'react-native-modal'
 import Iconpaid from 'react-native-vector-icons/MaterialIcons'
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
+import { getData } from '../../utils/helperFunctions';
+import axios from 'axios';
 
 // create a component
 const WriteBio = ({ navigation }) => {
     const [scrollRef, setScrollRef] = useState(null);
     const UserKYCstatus = useSelector((state) => state.persistedReducer.authSlice.userData);
-
-    // const UserKYCstatus = useSelector((state) => state.persistedReducer.authSlice.userData.);
-    // const UserKYCstatus = false;
+    const [Loading, setLoading] = useState(false)
+    const [statusCounts, setStatusCounts] = useState(null);
     const [openoptionModal2, setoptionopenModal2] = useState(false);
+
     useFocusEffect(
         React.useCallback(() => {
+            getAllEventList()
           if (scrollRef) {
             scrollRef.scrollTo({ y: 0, animated: true });
           }
         }, [scrollRef])
       );
 
+ const getAllEventList = async () => {
+        // if (isLoading) {
+        //     return;
+        // }
+        // setIsLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userToken', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/my-event/`, { headers });
+            const responseData = response.data;
+            console.log('responseData--->>>', responseData)
+            const bookingStatus = responseData?.bookingStatus;
+            const initialStatusCounts = {
+                APPROVED: 0,
+                PENDING: 0,
+                hostings: bookingStatus.hostings || 0,
+                hosted: bookingStatus.hosted || 0,
+                cancelled: bookingStatus.cancelled || 0,
+              };
+      
+              const statusCounts = bookingStatus.reduce((acc, status) => {
+                if (status._id === 'APPROVED') {
+                  acc.APPROVED = status.count;
+                } else if (status._id === 'PENDING') {
+                  acc.PENDING = status.count;
+                }
+                return acc;
+              }, initialStatusCounts);
+              setStatusCounts(statusCounts);
+        } catch (error) {
+           // setIsLoading(false);
+            // setRefreshing(false);
+             console.log("error", error);
+        }
+    };
+
 
     const handleSumbit = () => {
         setoptionopenModal2(!openoptionModal2)
         // navigation.navigate(navigationStrings.HOST_EVENT, { isLeftImage: true })
     }
+
+  
+
+    console.log('statusCounts-->>', statusCounts)
     return (
         <WrapperContainer>
             <StatusBar backgroundColor={'#fff'} />
@@ -59,7 +106,7 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff',
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
+                                <Text style={styles.head1}>{statusCounts?.PENDING}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Requested (Self)</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -84,7 +131,7 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff'
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
+                                <Text style={styles.head1}>{0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Request Rejected </Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -109,7 +156,7 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff',
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
+                                <Text style={styles.head1}>{statusCounts?.cancelled || 0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Canceled</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -132,7 +179,7 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff',
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>4</Text>
+                                <Text style={styles.head1}>{statusCounts?.APPROVED || 0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Approved</Text>
                             </View>
                             <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
@@ -156,7 +203,7 @@ const WriteBio = ({ navigation }) => {
                                 backgroundColor: '#fff'
                             }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
+                                <Text style={styles.head1}>{statusCounts?.hostings || 0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Hosting (Self)</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -178,7 +225,7 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff'
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>2</Text>
+                                <Text style={styles.head1}>{statusCounts?.hosted || 0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Hosted (Self)</Text>
                             </View>
                             <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
@@ -251,7 +298,8 @@ const WriteBio = ({ navigation }) => {
             </View>
         </WrapperContainer>
     );
-};
+   }
+
 
 // define your styles
 const styles = StyleSheet.create({

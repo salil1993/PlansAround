@@ -47,8 +47,6 @@ const CamScanner = ({ route }) => {
             textColor: "#fff",
           })
           navigation.goBack();
-
-
         })
         .catch((err) => {
           setLoadEvent(false)
@@ -81,8 +79,9 @@ const CamScanner = ({ route }) => {
       <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
       <HeaderBack style={{ paddingHorizontal: moderateScale(10), backgroundColor: '#fff', }} mainText='Back' />
       <View style={styles.container}>
-        {LoadEvent ? <Loader /> : <QRCodeScanner
-          // onRead={({ data }) => console.log(data, 'data')}
+        {LoadEvent ? <Loader /> : 
+        <QRCodeScanner
+         //  onRead={({ data }) => console.log(data, 'data')}
           // flashMode={RNCamera.Constants.FlashMode.torch}
           onRead={({ data }) => handleQRCodeScan(data)}
           reactivate={true}
