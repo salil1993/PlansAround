@@ -755,8 +755,7 @@ const EditEvent = ({ navigation, route }) => {
                         </View>
                         <View style={{ marginVertical: moderateScaleVertical(5) }}>
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Participant Type</Text>
-
-                            <RadioForm
+                            {/* <RadioForm
                                 labelStyle={{ marginRight: moderateScale(30), color: '#828282' }}
                                 formHorizontal={true}
                                 labelHorizontal={true}
@@ -769,7 +768,22 @@ const EditEvent = ({ navigation, route }) => {
                                 }}
                                 labelcolor='#828282'
                                 buttonSize={15}
-                            />
+                            /> */}
+                            <View style={{flexDirection:'row', alignItems:'center'}}>
+                                    {radioButtons.map((item, index)=>{
+                                        return(
+                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
+                                            <TouchableOpacity style={{marginRight:5}} onPress={()=>{
+                                                handleSelect(label)
+                                            }}>
+                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
+                                         </TouchableOpacity>
+                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                         </View>
+                                        )  
+                                    })
+                                    }
+                                </View>
                         </View>
 
                         {/* <View style={{ marginVertical: moderateScaleVertical(5) }}>

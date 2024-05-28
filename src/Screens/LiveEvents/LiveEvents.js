@@ -69,7 +69,6 @@ const LiveEvents = ({ navigation }) => {
 
     return (
         <>
-
             <WrapperContainer>
                 <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
                 <HeaderBack mainText='Live Events' isLeftImage={false} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(16) }} />

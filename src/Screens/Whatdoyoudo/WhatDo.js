@@ -50,7 +50,6 @@ const WhatDo = ({ navigation }) => {
     const [value, setvalue] = useState('');
     const radioButtons = useMemo(() => ([
         {
-            // acts as primary key, should be unique and non-empty string
             value: 'Student',
             label: 'Student'
         },
@@ -226,19 +225,32 @@ const WhatDo = ({ navigation }) => {
                         <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
                         <View style={{ marginVertical: moderateScaleVertical(10) }}>
                             <View style={styles.slidercontainer}>
-                                <RadioForm
+                            <View style={{flexDirection:'row', alignItems:'center'}}>
+                                    {radioButtons.map((item, index)=>{
+                                        return(
+                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
+                                            <TouchableOpacity style={{marginRight:5}} onPress={()=>{
+                                             handleSelect(label)
+                                            }}>
+                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
+                                         </TouchableOpacity>
+                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                         </View>
+                                        )  
+                                    })
+                                    }
+                                </View>
+                                {/* <RadioForm
                                     radio_props={radioButtons}
                                     initial={value}
                                     buttonColor={'#828282'}
                                     animation={true}
                                     onPress={(label) => {
-
                                         handleSelect(label)
-
                                     }}
                                     labelcolor='#828282'
                                     buttonSize={15}
-                                />
+                                /> */}
 
                                 {/* <View style={{ marginVertical: moderateScaleVertical(5) }}>
                                     <BouncyCheckbox

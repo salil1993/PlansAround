@@ -106,7 +106,7 @@ const HostEvent = ({ navigation, route }) => {
         axios.get('https://plansaround-backend.vercel.app/api/mobile/category/', { headers })
             .then((res) => {
                 console.log(JSON.stringify(res.data), 'cataaya in tabroute m')
-                setCategoryList(res.data.categories);
+                setCategoryList(res?.data?.categories);
                 // setCategoryList(res.data)
             })
             .catch((err) => console.log(err, 'cat m err'))
@@ -121,7 +121,7 @@ const HostEvent = ({ navigation, route }) => {
         axios.get(`https://plansaround-backend.vercel.app/api/mobile/category/${CategoryId}/subcategory`, { headers })
             .then((res) => {
                 console.log(res, 'subCategory aaya idehr')
-                setSubCategoryList(res.data.subCategories)
+                setSubCategoryList(res?.data?.subCategories)
                 // setCategoryList(res.data.categories);
                 // setCategoryList(res.data)
             })
@@ -647,15 +647,16 @@ const HostEvent = ({ navigation, route }) => {
         // setSubCategory(item);
         setSelectedsubCategory(item.label);
     }
-    // console.log(category)
+     console.log('CategoryList', CategoryList)
+
 
     return (
         <>
             <WrapperContainer>
-                <StatusBar backgroundColor={'#fff'} />
+                <StatusBar backgproundColor={'#fff'} />
                 <View style={styles.container}>
                     <HeaderBack mainText='Host an Event' isLeftImage={routedata ? routedata.isLeftImage : false} />
-                    <KeyboardAwareScrollView keyboardShouldPersistTaps={'handled'} style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                    <KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         <View style={{ paddingHorizontal: moderateScale(0.5) }}>
                             <Image source={imagePath.hevent} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
                             <Text style={styles.phoneHeading}>Host an Event</Text>
@@ -828,10 +829,23 @@ const HostEvent = ({ navigation, route }) => {
 
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
                                 <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Participant Type</Text>
-                                <RadioForm
-                                    labelStyle={{ marginRight: moderateScale(30), color: '#828282' }}
-                                    formHorizontal={true}
-                                    labelHorizontal={true}
+                                <View style={{flexDirection:'row', alignItems:'center'}}>
+                                    {radioButtons.map((item, index)=>{
+                                        return(
+                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
+                                            <TouchableOpacity style={{marginRight:5}} onPress={()=> handleSelect(item.label)}>
+                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
+                                         </TouchableOpacity>
+                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                         </View>
+                                        )  
+                                    })
+                                    }
+                                </View>
+                                {/* <RadioForm
+                                   labelStyle={{ marginRight: moderateScale(30), color: '#828282' }}
+                                     formHorizontal={true}
+                                     labelHorizontal={true}
                                     radio_props={radioButtons}
                                     initial={value}
                                     buttonColor={'#828282'}
@@ -841,7 +855,7 @@ const HostEvent = ({ navigation, route }) => {
                                     }}
                                     labelcolor='#828282'
                                     buttonSize={15}
-                                />
+                                /> */}
                             </View>
                             <View style={{ marginTop: moderateScaleVertical(20), justifyContent: 'flex-end' }}>
                                 <ButtonComp onPress={userType === 'FREE' ? handleSubmit : handlePaidSubmit} text='Submit' style={{ backgroundColor: EventName ? '#005BD4' : '#828282' }} />

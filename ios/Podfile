@@ -50,7 +50,6 @@ pod 'GoogleMaps'#, '~> 3.9.0'
  pod 'Google-Maps-iOS-Utils'
 pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
-
   target 'plansaroundTests' do
     inherit! :complete
     # Pods for testing

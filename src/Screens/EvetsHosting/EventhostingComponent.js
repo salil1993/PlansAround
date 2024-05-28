@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, StatusBar, FlatList, Image, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, FlatList, Image, TouchableOpacity, ScrollView, Linking, Alert, PermissionsAndroid } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import HeaderBack from '../../Components/HeaderBack';
 import { moderateScale, moderateScaleVertical, scale, textScale, height, width } from '../../styles/responsiveSize';
@@ -16,20 +16,27 @@ import Modal from 'react-native-modal'
 import ButtonComp from '../../Components/ButtonComp';
 import IconsComment from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
+
+
 // create a component
-const EventhostingComponent = ({ item, index, UserLocation, date, Distance }) => {
+const EventhostingComponent = ({ item, index, UserLocation, date, Distance, onShowQR, setDelete }) => {
     const navigation = useNavigation();
     const [eventData, setEventData] = useState([])
     const [Loading, setLoading] = useState(false);
-    const [showDelete, setDelete] = useState(false);
     const [scan, setScan] = useState(false);
     const [LoadEvent, setLoadEvent] = useState(false)
     const [showOptions, setShowOptions] = useState(false);
+
 
     const toggleOptions = () => {
         setShowOptions(!showOptions);
     };
 
+  
+
+
+
+    // console.log('item---->>>>', item)
     return (
         <>
             <View style={styles.container2}>
@@ -73,10 +80,10 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance }) =>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => {
-                            navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.location, Ulocation: UserLocation, type:'EventHosting' })
-                           // openGoogleMaps(UserLocation, Eventlocation);
+                            navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.location, Ulocation: UserLocation, type: 'EventHosting' })
+                            // openGoogleMaps(UserLocation, Eventlocation);
                         }}
-                       style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Image source={imagePath.Gmap} style={{ height: moderateScaleVertical(30), width: moderateScale(30) }} />
                         </TouchableOpacity>
                     </View>
@@ -153,40 +160,6 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance }) =>
             </View>
             <View>
                 <Modal
-                    isVisible={showDelete}
-                    backdropColor="#000"
-                    backdropOpacity={0.5}
-                    animationIn="zoomInDown"
-                    animationOut="zoomOutUp"
-                    animationInTiming={600}
-                    animationOutTiming={600}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600}
-                >
-                    <View style={styles.modalStyle}>
-                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Text style={styles.qrCode}>Delete Event</Text>
-                            <TouchableOpacity onPress={() => setDelete(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
-                        </View>
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Image source={imagePath.deleteevent} style={{ height: moderateScale(100), width: moderateScale(100) }} />
-                        </View>
-                        <View>
-                            <Text style={[styles.qrCode, { color: '#4F4F4F', fontSize: scale(15), fontWeight: '600', lineHeight: scale(20), textAlign: 'center' }]}>Are you sure you want to delete this event made for <Text style={{ fontWeight: 'bold' }}>{item.name}</Text> on <Text style={{ fontWeight: 'bold' }}>{date[0]}</Text> at <Text style={{ fontWeight: 'bold' }}>{item.time.start}</Text>?</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 3 }}>
-                                <ButtonComp text='Cancel' onPress={() => setDelete(false)} style={{ height: moderateScale(45), borderColor: '#005BD4', borderWidth: 1 }} textStyle={{ color: '#005BD4' }} />
-                            </View>
-                            <View style={{ flex: 3, marginLeft: moderateScale(5) }}>
-                                <ButtonComp isLoading={Loading} onPress={() => handleEventDelete(item._id)} text='Continue' style={{ height: moderateScale(45), backgroundColor: '#005BD4' }} />
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
-            </View>
-            <View>
-                <Modal
                     isVisible={showOptions}
                     hasBackdrop={true}
                     backdropColor="#000"
@@ -200,6 +173,7 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance }) =>
                         <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => {
                             // setShowOptions(false);
                             // setDelete(!showDelete)
+                            setDelete(), setShowOptions(false)
                         }}>
 
                             <IconsComment name='delete-outline' size={35} color='#333' style={{ width: '30%', textAlign: 'center' }} />
@@ -213,7 +187,10 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance }) =>
                             <IconsComment style={{ width: '30%', textAlign: 'center' }} name='square-edit-outline' size={30} color='#333' />
                             <Text style={[styles.eventtxt, { width: '80%', textAlign: 'center' }]}>Edit Event</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
+                        <TouchableOpacity
+                            style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}
+                            onPress={()=>{onShowQR(), setShowOptions(false)}}
+                        >
                             <IconsComment style={{ width: '30%', textAlign: 'center' }} name='qrcode-scan' size={25} color='#333' />
                             <Text style={[styles.eventtxt, { width: '80%', textAlign: 'center' }]}>Scan Event</Text>
 
@@ -230,6 +207,7 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance }) =>
                     </View>
                 </Modal>
             </View>
+         
         </>
     );
 };

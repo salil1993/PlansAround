@@ -222,7 +222,7 @@ const Home = () => {
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
             <View style={{ padding: moderateScale(12), backgroundColor: '#fff' }}>
-                <View style={{ flexDirection: 'row', }}>
+                <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 0.1, }}>
                         <TouchableOpacity onPress={() => setLocationModal(true)}>
                             <Icon name='location-pin' size={28} color={'#005BD4'} />
@@ -338,7 +338,7 @@ const Home = () => {
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginBottom: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Event Type :</Text>
-                                    <RadioForm
+                                    {/* <RadioForm
                                         labelStyle={{ marginRight: moderateScale(38), color: '#828282' }}
                                         formHorizontal={true}
                                         labelHorizontal={true}
@@ -355,10 +355,27 @@ const Home = () => {
                                         }}
                                         labelcolor='#828282'
                                         buttonSize={12}
-                                    />
+                                    /> */}
 
-
-
+<View style={{flexDirection:'row', alignItems:'center'}}>
+                                    {radioButtons.map((item, index)=>{
+                                        return(
+                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
+                                            <TouchableOpacity style={{marginRight:5}} onPress={()=>{
+                                                 if (label === 'Other') {
+                                                    handleSelect(label)
+                                                } else {
+                                                    handleSelect(label)
+                                                }
+                                            }}>
+                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
+                                         </TouchableOpacity>
+                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                         </View>
+                                        )  
+                                    })
+                                    }
+                                </View>
                                 </View>
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginBottom: moderateScaleVertical(10) }}>
