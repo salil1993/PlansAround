@@ -53,7 +53,7 @@ const LogIN = ({ navigation }) => {
                     Snackbar.dismiss();
                     // navigation.navigate(navigationStrings.TABROUTES)
                     // navigation.navigate(navigationStrings.EMAIL_VERIFY)
-                }, 2000)
+                }, 1000)
 
 
             })
@@ -76,6 +76,7 @@ const LogIN = ({ navigation }) => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
+            console.error('userInfo sign-in RES:', userInfo);
             // handleLoginApi(
             //     userInfo.user.name,
             //     userInfo.user.email,
