@@ -10,11 +10,12 @@ import MapViewDirections from 'react-native-maps-directions';
 const ShowonMap = ({ route, navigation }) => {
     const EData = route.params.Elocation;
     const UData = route.params.Ulocation;
+    const type = route.params.type;
     return (
         <WrapperContainer>
             <HeaderBack mainText='Event location' style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(10) }} />
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
-            <View style={styles.container}>
+           { type == 'EventHosting'?<View style={styles.container}>
 
                 {EData && UData ?
                     <MapView
@@ -32,7 +33,7 @@ const ShowonMap = ({ route, navigation }) => {
                     // showsUserLocation={true}
                     // showsMyLocationButton={true}
                     >
-                        <Circle
+                        {/* <Circle
                             // key={event.id}
                             center={{
                                 latitude: EData.latitude,
@@ -43,19 +44,19 @@ const ShowonMap = ({ route, navigation }) => {
                             strokeColor="rgba(255,0,0,0.5)"
                             fillColor="rgba(255,0,0,0.2)"
                             zIndex={2}
-                        />
-                        {/* <Marker coordinate={UData} title="Your Location" />
+                        /> */}
+                        <Marker pinColor = {"purple"}  coordinate={UData} title="Your Location" />
                         <Marker coordinate={EData} title="Event Location" />
                         <MapViewDirections
                             origin={UData}
                             destination={EData}
-                            apikey={'AIzaSyBWnqaUowVdjnPVHJAdLf0MMBgQRm6NMpc'}
+                            apikey={'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk'}
                             strokeWidth={3}
                             strokeColor="#005BD4"
                         />
 
 
-                        <Polyline
+                        {/* <Polyline
                             coordinates={[UData, EData]}
                             strokeWidth={4}
                             strokeColor="blue"
@@ -64,7 +65,57 @@ const ShowonMap = ({ route, navigation }) => {
                     :
                     <Text style={styles.eventtxt}>No Location exists</Text>
                 }
-            </View>
+            </View>: <View style={styles.container}>
+
+{EData && UData ?
+    <MapView
+        style={styles.map}
+        initialRegion={{
+            latitude: EData.latitude,
+            longitude: EData.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+
+        }}
+        loadingEnabled={true}
+        loadingIndicatorColor='#005BD4'
+    // moveOnMarkerPress={true}
+    // showsUserLocation={true}
+    // showsMyLocationButton={true}
+    >
+        <Circle
+            // key={event.id}
+            center={{
+                latitude: EData.latitude,
+                longitude: EData.longitude,
+            }}
+            radius={500} // Adjust radius as needed (in meters)
+            strokeWidth={2}
+            strokeColor="rgba(255,0,0,0.5)"
+            fillColor="rgba(255,0,0,0.2)"
+            zIndex={2}
+        />
+        {/* <Marker pinColor = {"purple"}  coordinate={UData} title="Your Location" />
+        <Marker coordinate={EData} title="Event Location" />
+        <MapViewDirections
+            origin={UData}
+            destination={EData}
+            apikey={'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk'}
+            strokeWidth={3}
+            strokeColor="#005BD4"
+        /> */}
+
+
+        {/* <Polyline
+            coordinates={[UData, EData]}
+            strokeWidth={4}
+            strokeColor="blue"
+        /> */}
+    </MapView>
+    :
+    <Text style={styles.eventtxt}>No Location exists</Text>
+}
+</View>}
 
         </WrapperContainer>
     );

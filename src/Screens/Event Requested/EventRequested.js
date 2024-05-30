@@ -33,7 +33,7 @@ const EventRequested = ({ navigation }) => {
             .then((res) => {
                 console.log(res, 'eventDetail on home on requested screen')
                 const pendingEvents = res.data.eventRequest.filter(event => event.requestStatus === 'PENDING');
-            
+
                 setEvent(pendingEvents);
                 // setEvent(res.data.eventRequest)
                 setLoadEvents(false)
@@ -44,6 +44,11 @@ const EventRequested = ({ navigation }) => {
             })
     }
     function calculateDistance(lat1, lon1, lat2, lon2) {
+
+        console.log("------", lat1, lon1, lat2, lon2);
+        console.log("------", lon1, lat2, lon2);
+        console.log("------", lat2);
+        console.log("------", lon2);
         const R = 6371; // Radius of the Earth in km
         const dLat = (lat2 - lat1) * Math.PI / 180;  // Convert degrees to radians
         const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -80,7 +85,7 @@ const EventRequested = ({ navigation }) => {
                                     return (
                                         <>
                                             <View style={styles.container2}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+                                                <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.event?.user?._id })} style={{ flexDirection: 'row', alignItems: 'center' }} >
                                                     {
                                                         item?.event?.user?.profilePicture ?
                                                             <Image source={{ uri: item?.event?.user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
@@ -88,7 +93,7 @@ const EventRequested = ({ navigation }) => {
                                                             <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                                                     }
                                                     <Text style={styles.charlie}>{item?.event?.user?.fullName ? item?.event?.user?.fullName : 'NA'}</Text>
-                                                </View>
+                                                </TouchableOpacity>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                     <View style={{ flexDirection: 'row' }}>
                                                         <Text style={styles.eventtxt}>Requested to Participate in event for <Text style={[styles.eventtxt, { color: '#333', fontWeight: '900' }]}>{item.event.name ? item.event.name : 'NA'}</Text>
@@ -116,7 +121,7 @@ const EventRequested = ({ navigation }) => {
                                                     <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event.eventType ? item.event.eventType : 'NA'}</Text>
                                                 </View>
                                                 {
-                                                    item.event.amount !==0 &&
+                                                    item.event.amount !== 0 &&
                                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                         <Text style={styles.eventtxt}>Amount</Text>
                                                         <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event.amount ? item.event.amount : 'NA'} $</Text>

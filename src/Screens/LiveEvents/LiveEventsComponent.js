@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import IconUser from 'react-native-vector-icons/FontAwesome'
 import navigationStrings from '../../Navigation/navigationStrings';
 // create a component
-const LiveEventsComponent = ({ item, index, date, Distance }) => {
+const LiveEventsComponent = ({ item, index, date, Distance, onMarkComplete }) => {
     const navigation = useNavigation();
 
 
@@ -21,16 +21,16 @@ const LiveEventsComponent = ({ item, index, date, Distance }) => {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }} >
                         {
-                            item?.user?.profilePicture ?
+                            item?.userId?.profilePicture ?
                                 <>
-                                    <Image source={{ uri: item?.user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
+                                    <Image source={{ uri: item?.userId?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                                 </>
                                 :
                                 <>
                                     <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                                 </>
                         }
-                        <Text style={styles.charlie}>{item?.user?.fullName ? item?.user?.fullName : 'NA'}</Text>
+                        <Text style={styles.charlie}>{item?.userId?.fullName || 'NA'}</Text>
                     </View>
 
                     {/* <TouchableOpacity> */}
@@ -39,12 +39,12 @@ const LiveEventsComponent = ({ item, index, date, Distance }) => {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.eventtxt}> <Text style={[styles.eventtxt, { color: '#333', fontWeight: '900' }]}>{item.name ? item.name : 'NA'}</Text>
+                        <Text style={styles.eventtxt}> <Text style={[styles.eventtxt, { color: '#333', fontWeight: '900' }]}>{item?.name ? item?.name : 'NA'}</Text>
                         </Text>
                     </View>
                 </View>
                 <View style={{ marginBottom: moderateScaleVertical(5) }}>
-                    <Text style={[styles.eventtxt, { fontWeight: '500' }]}>{item.description ? item.description.substring(0, 50) + '...' : 'NA'}</Text>
+                    <Text style={[styles.eventtxt, { fontWeight: '500' }]}>{item?.description ? item?.description?.substring(0, 50) + '...' : 'NA'}</Text>
                 </View>
                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(2) }} />
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
@@ -62,18 +62,18 @@ const LiveEventsComponent = ({ item, index, date, Distance }) => {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                     <Text style={styles.eventtxt}>Event Type</Text>
-                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.eventType ? item.eventType : 'NA'}</Text>
+                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item?.eventType ? item?.eventType : 'NA'}</Text>
                 </View>
                 {
-                    item.amount !== 0 &&
+                    item?.amount !== 0 &&
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                         <Text style={styles.eventtxt}>Amount</Text>
-                        <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.amount ? item.amount : 'NA'} $</Text>
+                        <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item?.amount ? item?.amount : 'NA'} $</Text>
                     </View>
                 }
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>No. of People Required</Text>
-                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}> Min: {item.minPeople ? item.minPeople : 'NA'}- Max: {item.maxPeople ? item.maxPeople : 'NA'}</Text>
+                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}> Min: {item?.minPeople ? item?.minPeople : 'NA'}- Max: {item?.maxPeople ? item?.maxPeople : 'NA'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>No. of Participant Approved</Text>
@@ -81,7 +81,7 @@ const LiveEventsComponent = ({ item, index, date, Distance }) => {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>Date & Time</Text>
-                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{date ? date[0] : 'NA'}, {item.time.start ? item.time.start : 'NA'} - {item.time.end ? item.time.end : 'NA'}</Text>
+                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{date ? date[0] : 'NA'}, {item?.time?.start ? item?.time?.start : 'NA'} - {item?.time?.end ? item?.time?.end : 'NA'}</Text>
                 </View>
                 <View style={{ marginVertical: moderateScaleVertical(5) }}>
                     <Text style={[styles.eventtxt, { fontWeight: '500', color: '#333' }]}>Images</Text>
@@ -90,8 +90,8 @@ const LiveEventsComponent = ({ item, index, date, Distance }) => {
                         showsHorizontalScrollIndicator={false}
                         style={{ marginVertical: moderateScaleVertical(5) }}
                     >
-                        {item.images ?
-                            item?.images && item.images.map((item, index) => {
+                        {item?.images ?
+                            item?.images && item?.images.map((item, index) => {
                                 // console.log(item, 'images')
                                 return (
                                     <View key={index} style={{ marginRight: moderateScale(5) }}>
@@ -115,11 +115,27 @@ const LiveEventsComponent = ({ item, index, date, Distance }) => {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <View style={{ width: '46%' }} >
-                        <ButtonComp  IconColor={'#005BD4'} text='Group Chat' midIcon={true} iconName='chat-outline' textStyle={{ color: '#005BD4', fontSize: textScale(18) }} style={{ borderColor: '#005BD4', borderWidth: textScale(1.7), marginTop: moderateScaleVertical(10) }} />
+                        <ButtonComp IconColor={'#005BD4'} text='Group Chat' midIcon={true} iconName='chat-outline' textStyle={{ color: '#005BD4', fontSize: textScale(18) }} style={{ borderColor: '#005BD4', borderWidth: textScale(1.7), marginTop: moderateScaleVertical(10) }} />
                     </View>
                     <View style={{ width: '46%' }} >
-                        <ButtonComp onPress={()=>navigation.navigate(navigationStrings.SCANNER,{data:item._id})} IconColor={'#005BD4'} text='Scan' midIcon={true} iconName='qrcode-scan' textStyle={{ color: '#005BD4', fontSize: textScale(18) }} style={{ borderColor: '#005BD4', borderWidth: textScale(1.7), marginTop: moderateScaleVertical(10) }} />
+                        <ButtonComp onPress={() => navigation.navigate(navigationStrings.SCANNER, { data: item?._id })} IconColor={'#005BD4'} text='Scan' midIcon={true} iconName='qrcode-scan' textStyle={{ color: '#005BD4', fontSize: textScale(18) }} style={{ borderColor: '#005BD4', borderWidth: textScale(1.7), marginTop: moderateScaleVertical(10) }} />
                     </View>
+                </View>
+                <View style={{ width: '80%', alignSelf: "center" }} >
+                    <ButtonComp
+                        IconColor={'#005BD4'}
+                        text='Complete'
+                        midIcon={true}
+                        // iconName='chat-outline'
+                        textStyle={{ color: '#005BD4', fontSize: textScale(18) }}
+                        style={{
+                            borderColor: '#005BD4', borderWidth: textScale(1.7),
+                            marginTop: moderateScaleVertical(10)
+                        }}
+                        onPress={() => {
+                            onMarkComplete(item?._id || "1323")
+                        }}
+                    />
                 </View>
             </View>
         </View>

@@ -69,7 +69,6 @@ const LiveEvents = ({ navigation }) => {
 
     return (
         <>
-
             <WrapperContainer>
                 <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
                 <HeaderBack mainText='Live Events' isLeftImage={false} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(16) }} />
@@ -79,14 +78,14 @@ const LiveEvents = ({ navigation }) => {
                             LoadEvent ? <Loader /> :
                                 <FlatList
                                     ListEmptyComponent={<View style={{ flex: 1, height: height, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no live events.</Text></View>}
-
+                                    // data={[112]}
                                     data={LiveEventData}
                                     renderItem={({ item, index }) => {
                                         console.log(item, 'ye aaya...')
                                         const UserLocation = CurrentUserLocation;
-                                        const Eventlocation = item.location;
-                                        const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.latitude, Eventlocation.longitude)
-                                        const date = item.dateOfEvent.split('T')
+                                        const Eventlocation = item?.location;
+                                        const Distance = calculateDistance(UserLocation?.latitude, UserLocation?.longitude, Eventlocation?.latitude, Eventlocation?.longitude)
+                                        const date = item?.dateOfEvent?.split('T')
                                         return (
                                             <>
                                                 <LiveEventsComponent item={item}
@@ -94,8 +93,22 @@ const LiveEvents = ({ navigation }) => {
                                                     // UserLocation={UserLocation}
                                                     Distance={Distance}
                                                     date={date}
-                                                // Eventlocation={Eventlocation}
-
+                                                    // Eventlocation={Eventlocation}
+                                                    onMarkComplete={async (id) => {
+                                                        setLoadEvent(true)
+                                                        let usertoken = await getData('UserToken');
+                                                        const headers = {
+                                                            'Authorization': `Bearer ${usertoken}`,
+                                                        };
+                                                        axios.post('https://plansaround-backend.vercel.app/api/mobile/my-event/mark-complete-event/' + id, { headers })
+                                                            .then((res) => {
+                                                                getCurrentEvents();
+                                                            }).
+                                                            catch((err) => {
+                                                                console.log(err)
+                                                                setLoadEvent(false)
+                                                            })
+                                                    }}
                                                 />
 
                                             </>

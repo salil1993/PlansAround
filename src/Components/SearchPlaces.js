@@ -38,7 +38,8 @@ const SearchPlaces = ({
                     textInput: { color: '#333', backgroundColor: '#fff', borderRadius: scale(5), elevation: 3, height: moderateScale(50) },
                     description: { color: '#005BD4', },
                     listView: {
-                        position: 'absolute', top: moderateScaleVertical(55),
+                       // position: 'absolute', 
+                       // top: moderateScaleVertical(55),
                         backgroundColor: '#FFF',
                         zIndex: 1
                     }

@@ -141,6 +141,8 @@ export default {
    Gmap:require('../assets/images/Gmap.png'),
    kycN:require('../assets/images/kycN.png'),
    demand:require('../assets/images/demand.png'),
+   radio_unselect:require('../assets/images/radio_unselect.png'),
+   radio_select:require('../assets/images/radio_select.png'),
     /********************* BottomTabs  Icons **********************/ 
     // firstActiveIcon: require('../assets/images/ic_red_add.png'),
     // firstInActiveIcon: require('../assets/images/ic_home.png'),

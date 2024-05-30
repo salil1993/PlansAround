@@ -15,7 +15,8 @@ import { saveUserData, userStatus } from '../../redux/Slices/UserSlice';
 import Snackbar from 'react-native-snackbar';
 import navigationStrings from '../../Navigation/navigationStrings';
 import { Login } from '../../API/Api';
-import appleAuth, { AppleButton,
+import appleAuth, {
+    AppleButton,
 } from '@invertase/react-native-apple-authentication';
 import {
     GoogleSignin,
@@ -33,7 +34,7 @@ const LogIN = ({ navigation }) => {
         setLoading(true);
         console.log(email)
         console.log(Password)
-        Login(email, Password)
+        Login(email.trim(), Password.trim())
             .then((res) => {
                 console.log(res)
                 console.log(res.token)
@@ -133,14 +134,14 @@ const LogIN = ({ navigation }) => {
                             <Text style={styles.phoneHeading}>Sign In</Text>
                             <Text style={[styles.phoneHeading2, { marginVertical: moderateScaleVertical(15) }]}>Lorem ipsum dolor sit amet, consect etur adi piscing </Text>
                             <View style={{ marginVertical: moderateScaleVertical(15), }}>
-                                <ButtonComptwo text='Sign in with Google' 
-                                style={{
-                                    backgroundColor: '#fff', 
-                                    elevation: 3, 
-                                    height: 56,
-                                    borderColor: 'grey',
-                                    borderWidth: 1
-                                }} leftImg={imagePath.google} onPress={() => handleGoogleSignIn()} />
+                                <ButtonComptwo text='Sign in with Google'
+                                    style={{
+                                        backgroundColor: '#fff',
+                                        elevation: 3,
+                                        height: 56,
+                                        borderColor: 'grey',
+                                        borderWidth: 1
+                                    }} leftImg={imagePath.google} onPress={() => handleGoogleSignIn()} />
                                 {Platform.OS == 'ios' && (
                                     <AppleButton
                                         buttonText={"Sign in with Apple"}

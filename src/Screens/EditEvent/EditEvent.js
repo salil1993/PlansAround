@@ -148,7 +148,7 @@ const EditEvent = ({ navigation, route }) => {
     }
 
     const reverseGeocode = async (latitude, longitude) => {
-        console.log(latitude,'...',longitude,'revrsecode called')
+        console.log(latitude, '...', longitude, 'revrsecode called')
         const apiKey = 'AIzaSyBWnqaUowVdjnPVHJAdLf0MMBgQRm6NMpc';
         const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
@@ -159,7 +159,7 @@ const EditEvent = ({ navigation, route }) => {
 
             if (data.results && data.results.length > 0) {
                 const formattedAddress = data.results[0].formatted_address;
-                console.log(formattedAddress,'reversecoding m')
+                console.log(formattedAddress, 'reversecoding m')
                 setAddress(formattedAddress);
             }
         } catch (error) {
@@ -381,7 +381,7 @@ const EditEvent = ({ navigation, route }) => {
 
     const handleCreateEvent = async () => {
         // reverseGeocode(latitude, longitude);
-        console.log(address,'address')
+        console.log(address, 'address')
         if (SelectedCategory && SelectedsubCategory) {
             setLoading(true);
             console.log(EventName, 'activity')
@@ -396,7 +396,7 @@ const EditEvent = ({ navigation, route }) => {
             console.log(selected, 'participation')
 
             console.log(Newgallery, 'yegallehg');
-            console.log(address,'address');
+            console.log(address, 'address');
 
             const formData = new FormData();
             formData.append('name', EventName);
@@ -493,7 +493,7 @@ const EditEvent = ({ navigation, route }) => {
 
             console.log(Newgallery, 'yegallehg');
             console.log(amount, 'amount')
-            console.log(address,'address');
+            console.log(address, 'address');
 
 
             const formData = new FormData();
@@ -678,7 +678,7 @@ const EditEvent = ({ navigation, route }) => {
                         <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Min. and  Max. Number of people</Text>
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        
+
                             <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                 <TextInputC
                                     placeholder={'Min No. of people '}
@@ -755,8 +755,7 @@ const EditEvent = ({ navigation, route }) => {
                         </View>
                         <View style={{ marginVertical: moderateScaleVertical(5) }}>
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Participant Type</Text>
-
-                            <RadioForm
+                            {/* <RadioForm
                                 labelStyle={{ marginRight: moderateScale(30), color: '#828282' }}
                                 formHorizontal={true}
                                 labelHorizontal={true}
@@ -769,7 +768,22 @@ const EditEvent = ({ navigation, route }) => {
                                 }}
                                 labelcolor='#828282'
                                 buttonSize={15}
-                            />
+                            /> */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                {radioButtons.map((item, index) => {
+                                    return (
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+                                            <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
+                                                handleSelect(label)
+                                            }}>
+                                                <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
+                                            </TouchableOpacity>
+                                            <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                        </View>
+                                    )
+                                })
+                                }
+                            </View>
                         </View>
 
                         {/* <View style={{ marginVertical: moderateScaleVertical(5) }}>

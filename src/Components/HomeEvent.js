@@ -129,7 +129,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
         <>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+                    <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.userId })}  style={{ flexDirection: 'row', alignItems: 'center' }} >
                         {
                             item?.user?.profilePicture ?
                                 <Image source={{ uri: item?.user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
@@ -137,7 +137,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                 <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                         }
                         <Text style={styles.charlie}>{item.user.fullName ? item.user.fullName : 'NA'}</Text>
-                    </View>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={handleProfile}>
                         <IconsettingClose name='dots-vertical' size={30} color='#333' />
 
@@ -164,7 +164,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                         <Text style={[styles.eventtxt, { color: 'red' }]}>{Distance.toLocaleString().substring(0, 4)} km away </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.location, Ulocation: UserLocation })} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.location, Ulocation: UserLocation, type:'HomeEvent' })} style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Image source={imagePath.Gmap} style={{ height: moderateScaleVertical(30), width: moderateScale(30) }} />
                         </TouchableOpacity>
                     </View>

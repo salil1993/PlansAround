@@ -45,7 +45,7 @@ export const validatePhoneNumber = (phoneNumber, countryCode) => {
 
 export const reverseGeocode = async (currentLocation) => {
   const { latitude, longitude } = currentLocation;
-  const apiKey = 'AIzaSyBWnqaUowVdjnPVHJAdLf0MMBgQRm6NMpc';
+  const apiKey = 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk';
   const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
   try {

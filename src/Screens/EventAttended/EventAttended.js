@@ -166,7 +166,7 @@ const EventsAttended = ({ navigation }) => {
                                                         <Text style={[styles.eventtxt, { color: 'red' }]}>{Distance.toLocaleString().substring(0, 4)} km away </Text>
                                                     </View>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.event.location, Ulocation: UserLocation })} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.event.location, Ulocation: UserLocation, type:'EventAttended' })} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                             <Image source={imagePath.Gmap} style={{ height: moderateScaleVertical(30), width: moderateScale(30) }} />
                                                         </TouchableOpacity>
                                                     </View>

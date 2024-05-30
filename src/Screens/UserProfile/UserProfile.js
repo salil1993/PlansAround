@@ -34,8 +34,8 @@ const UserProfile = ({ navigation }) => {
     // const UserKYCstatus = false;
     console.log(user, 'profile m')
     let DOB = user?.dateOfBirth?.split('T');
-      console.log('DOB--->>', DOB)
-    const age = DOB != undefined &&  calculateAge(DOB[0]);
+    console.log('DOB--->>', DOB)
+    const age = DOB != undefined && calculateAge(DOB[0]);
 
     function calculateAge(dateOfBirth) {
         // Convert dateOfBirth string to a Date object
@@ -309,7 +309,7 @@ const UserProfile = ({ navigation }) => {
                 <Modal
                     coverScreen={true}
                     isVisible={openoptionModal3}
-                    backdropColor="#000"
+                    backdropColor="rgba(255,255, 255, 0.8)"
                     backdropOpacity={UserKYCstatus ? 0.9 : 1}
                     onBackdropPress={() => setoptionopenModal3(false)}
                     animationIn="slideInUp"
@@ -353,9 +353,10 @@ const UserProfile = ({ navigation }) => {
                                 <Text style={[styles.phoneHeading, { fontSize: moderateScale(15), color: 'green', marginLeft: moderateScale(10), fontFamily: 'Roboto' }]}>KYC VERIFIED</Text>
                             </TouchableOpacity>
                                 :
-                                <TouchableOpacity onPress={() =>{ 
+                                <TouchableOpacity onPress={() => {
                                     setoptionopenModal3(false)
-                                    navigation.navigate(navigationStrings.REKYC)}} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: moderateScaleVertical(10) }}>
+                                    navigation.navigate(navigationStrings.REKYC)
+                                }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: moderateScaleVertical(10) }}>
                                     <Image source={imagePath.kycN} resizeMode='contain' style={{ height: moderateScaleVertical(30), width: moderateScale(30), }} />
                                     <Text style={[styles.phoneHeading, { fontSize: moderateScale(15), color: 'red', marginLeft: moderateScale(10), fontFamily: 'Roboto' }]}>KYC REQUIRED</Text>
                                 </TouchableOpacity>

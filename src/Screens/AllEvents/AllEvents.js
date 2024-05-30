@@ -5,7 +5,6 @@ import WrapperContainer from '../../Components/WrapperContainer';
 import imagePath from '../../constants/imagePath';
 import { moderateScale, moderateScaleVertical, scale, height } from '../../styles/responsiveSize';
 import ButtonComp from '../../Components/ButtonComp';
-
 import navigationStrings from '../../Navigation/navigationStrings';
 import HeaderBack from '../../Components/HeaderBack';
 import IconsComment from 'react-native-vector-icons/Fontisto'
@@ -13,32 +12,80 @@ import Modal from 'react-native-modal'
 import Iconpaid from 'react-native-vector-icons/MaterialIcons'
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
-
-
-
-
+import { getData } from '../../utils/helperFunctions';
+import axios from 'axios';
 
 // create a component
 const WriteBio = ({ navigation }) => {
     const [scrollRef, setScrollRef] = useState(null);
     const UserKYCstatus = useSelector((state) => state.persistedReducer.authSlice.userData);
-
-    // const UserKYCstatus = useSelector((state) => state.persistedReducer.authSlice.userData.);
-    // const UserKYCstatus = false;
+    const [Loading, setLoading] = useState(false)
+    const [statusCounts, setStatusCounts] = useState(null);
     const [openoptionModal2, setoptionopenModal2] = useState(false);
+
     useFocusEffect(
         React.useCallback(() => {
-          if (scrollRef) {
-            scrollRef.scrollTo({ y: 0, animated: true });
-          }
+            getAllEventList()
+            if (scrollRef) {
+                scrollRef.scrollTo({ y: 0, animated: true });
+            }
         }, [scrollRef])
-      );
+    );
+
+    const getAllEventList = async () => {
+        // if (isLoading) {
+        //     return;
+        // }
+        // setIsLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userToken', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/my-event/`, { headers });
+            const responseData = response.data;
+            console.log('responseData--->>>', responseData)
+            const bookingStatus = responseData?.bookingStatus;
+            const initialStatusCounts = {
+                APPROVED: 0,
+                PENDING: 0,
+                hostings: responseData.hostings || 0,
+                hosted: responseData.hosted || 0,
+                cancelled: responseData.cancelled || 0,
+            };
+
+            const statusCounts = bookingStatus.reduce((acc, status) => {
+                if (status._id === 'APPROVED') {
+                    acc.APPROVED = status.count;
+                } else if (status._id === 'PENDING') {
+                    acc.PENDING = status.count;
+                } else if (status._id == "REJECTED") {
+                    acc.rejected = status.count;
+                }
+                return acc;
+            }, initialStatusCounts);
+
+            console.log('statusCounts--->>>', statusCounts)
+            setStatusCounts(statusCounts);
+        } catch (error) {
+            // setIsLoading(false);
+            // setRefreshing(false);
+            console.log("error", error);
+        }
+    };
 
 
     const handleSumbit = () => {
         setoptionopenModal2(!openoptionModal2)
         // navigation.navigate(navigationStrings.HOST_EVENT, { isLeftImage: true })
     }
+
+
+
+    console.log('statusCounts-->>', statusCounts)
     return (
         <WrapperContainer>
             <StatusBar backgroundColor={'#fff'} />
@@ -47,9 +94,9 @@ const WriteBio = ({ navigation }) => {
                 <ScrollView showsVerticalScrollIndicator={false} ref={(ref) => setScrollRef(ref)}>
                     <View style={{ marginTop: moderateScaleVertical(10), flex: 0.9, justifyContent: 'space-between', }}>
                         <Image source={imagePath.Allevent} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
+                        <Text style={[styles.head2, { marginTop: 10 }]}>As Participant</Text>
                         <TouchableOpacity onPress={() => {
                             navigation.navigate(navigationStrings.EVENTREQUESTED)
-
                         }} style={{
                             marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
                             alignItems: 'center',
@@ -64,19 +111,17 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff',
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
-                                <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Requested (Self)</Text>
+                                <Text style={styles.head1}>{statusCounts?.PENDING}</Text>
+                                <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Requested</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 {/* <IconsComment name='comment' size={20} color='#333' style={{ marginHorizontal: moderateScale(10) }} /> */}
                                 <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
                             </View>
-
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => {
                             navigation.navigate(navigationStrings.EVENTREJECTED)
-
                         }} style={{
                             marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
                             alignItems: 'center',
@@ -88,12 +133,10 @@ const WriteBio = ({ navigation }) => {
                             borderBottomLeftRadius: moderateScale(15),
                             borderBottomRightRadius: moderateScale(15),
                             elevation: 1,
-                            backgroundColor: '#fff',
-
-
+                            backgroundColor: '#fff'
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
+                                <Text style={styles.head1}>{statusCounts?.rejected || 0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Request Rejected </Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -104,7 +147,6 @@ const WriteBio = ({ navigation }) => {
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             navigation.navigate(navigationStrings.EVENTCANCELED)
-
                         }} style={{
                             marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
                             alignItems: 'center',
@@ -119,7 +161,7 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff',
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
+                                <Text style={styles.head1}>{statusCounts?.cancelled || 0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Canceled</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -142,11 +184,12 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff',
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>4</Text>
+                                <Text style={styles.head1}>{statusCounts?.APPROVED || 0}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Approved</Text>
                             </View>
                             <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
                         </TouchableOpacity>
+                        <Text style={[styles.head2, { marginTop: 10 }]}>As Organiser</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 navigation.navigate(navigationStrings.EVENTS_HOSTING)
@@ -166,8 +209,8 @@ const WriteBio = ({ navigation }) => {
                                 backgroundColor: '#fff'
                             }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>1</Text>
-                                <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Hosting (Self)</Text>
+                                <Text style={styles.head1}>{statusCounts?.hostings || 0}</Text>
+                                <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Hosting</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <IconsComment name='comment' size={20} color='#333' style={{ marginHorizontal: moderateScale(10) }} />
@@ -188,8 +231,8 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff'
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>2</Text>
-                                <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Hosted (Self)</Text>
+                                <Text style={styles.head1}>{statusCounts?.hosted || 0}</Text>
+                                <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Hosted</Text>
                             </View>
                             <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
                         </TouchableOpacity>
@@ -261,7 +304,8 @@ const WriteBio = ({ navigation }) => {
             </View>
         </WrapperContainer>
     );
-};
+}
+
 
 // define your styles
 const styles = StyleSheet.create({

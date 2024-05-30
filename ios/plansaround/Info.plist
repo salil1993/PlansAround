@@ -41,6 +41,8 @@
   <string>Plansaround graciously utilizes your device&apos;s camera</string>
   <key>NSPhotoLibraryUsageDescription</key>
   <string>Plansaround graciously utilizes your device&apos;s photos</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Plansaround graciously utilizes your device&apos;s microphone</string>
   <key>CFBundleURLTypes</key>
     <array>
       <dict>
