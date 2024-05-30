@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "689164288056",
-    "project_id": "plansaround-a4ffd",
-    "storage_bucket": "plansaround-a4ffd.appspot.com"
+    "project_number": "139290010094",
+    "project_id": "plansaround-422716",
+    "storage_bucket": "plansaround-422716.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:689164288056:android:9a999bdaa1fefca50166cd",
+        "mobilesdk_app_id": "1:139290010094:android:a7495e5e4262068a816eff",
         "android_client_info": {
           "package_name": "com.plansaround"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "139290010094-bhe13ptp4mu5rhtfodmgm7pi72uaf4sf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.plansaround",
+            "certificate_hash": "d0f9d533682d3ea17eb66d58fb1290ecc3139499"
+          }
+        },
+        {
+          "client_id": "139290010094-hiubrhda8oohsm859cibk7on6o4ai1mv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyC9NKgV2yOCyA351bWY_TIrGUnBTLmlC0c"
+          "current_key": "AIzaSyD9jb69nkTEBSvBZrAD0ooBfVCwI6AcDlM"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139290010094-hiubrhda8oohsm859cibk7on6o4ai1mv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

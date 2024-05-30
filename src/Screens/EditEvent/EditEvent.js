@@ -774,7 +774,7 @@ const EditEvent = ({ navigation, route }) => {
                                     return (
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
                                             <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
-                                                handleSelect(label)
+                                                // handleSelect(label)
                                             }}>
                                                 <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
                                             </TouchableOpacity>
