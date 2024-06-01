@@ -16,7 +16,7 @@ const SearchPlaces = ({
         <View style={{
             marginVertical: moderateScaleVertical(5),
             borderRadius: scale(5),
-            elevation: 3, 
+           // elevation: 3, 
             borderColor:'#D3D3D3',
             borderWidth:1,
         }} >

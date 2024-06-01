@@ -1,11 +1,11 @@
 //import liraries
 import React, { Component, useState, useRef, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, InputAccessoryView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView,Modal, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, InputAccessoryView, Platform } from 'react-native';
 import { moderateScale, moderateScaleVertical, scale, height, textScale, width } from '../../styles/responsiveSize';
 import imagePath from '../../constants/imagePath';
 import ButtonComp from '../../Components/ButtonComp';
 import WrapperContainer from '../../Components/WrapperContainer';
-import Modal from 'react-native-modal'
+//import Modal from 'react-native-modal'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -20,7 +20,12 @@ import { userCurrentLocation } from '../../redux/Slices/UserSlice';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import HomeEvent from '../../Components/HomeEvent';
-
+import {
+	request,
+	PERMISSIONS,
+	openSettings,
+	requestMultiple,
+  } from 'react-native-permissions';
 
 // create a component
 const Home = () => {
@@ -54,8 +59,30 @@ const Home = () => {
 
     useEffect(() => {
         reverseGeocode(latitude, longitude);
+        locationPermission()
         getEventList(1);
     }, [address])
+
+    async function locationPermission() {
+        var response = '';
+        if (Platform.OS == 'android') {
+          response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+          response = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+        } else {
+          response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        }
+        if (response != 'granted') {
+          Alert.alert('Location Permission', 'Please allow from setting manually.', [
+            {
+              text: 'Cancel',
+              onPress: () => null,
+              style: 'cancel',
+            },
+            {text: 'Ok', onPress: () => openSettings()},
+          ]);
+        }
+        return response;
+      }
 
     const radioButtons = useMemo(() => ([
         {
@@ -296,20 +323,22 @@ const Home = () => {
             </View>
             <View>
                 <Modal
-                    swipeDirection={'down'}
-                    onSwipeComplete={() => setFilterOpen(false)}
-                    hasBackdrop={true}
-                    coverScreen={true}
-                    backdropColor="#000"
-                    backdropOpacity={0.8}
-                    isVisible={FilterOpen}
+                    animationType='slide'
+                    transparent={true}
+                    // swipeDirection={'down'}
+                    // onSwipeComplete={() => setFilterOpen(false)}
+                    // hasBackdrop={true}
+                    // coverScreen={true}
+                    // backdropColor="#000"
+                    // backdropOpacity={0.8}
+                    visible={FilterOpen}
                     style={{ justifyContent: 'flex-end', margin: 0, flex: 1 }}
-                    animationIn="slideInUp"
-                    animationOut="slideOutDown"
-                    animationInTiming={1000}
-                    animationOutTiming={900}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600}
+                    // animationIn="slideInUp"
+                    // animationOut="slideOutDown"
+                    // animationInTiming={1000}
+                    // animationOutTiming={900}
+                    // backdropTransitionInTiming={600}
+                    // backdropTransitionOutTiming={600}
                 >
                     <SafeAreaView style={styles.locationmodalStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
@@ -356,9 +385,9 @@ const Home = () => {
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
                                                     <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
                                                         if (label === 'Other') {
-                                                            handleSelect(label)
+                                                            handleSelect(item.label)
                                                         } else {
-                                                            handleSelect(label)
+                                                            handleSelect(item.label)
                                                         }
                                                     }}>
                                                         <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
@@ -444,19 +473,21 @@ const Home = () => {
             </View>
             <View>
                 <Modal
-                    hasBackdrop={true}
-                    coverScreen={true}
-                    backdropColor="#000"
-                    backdropOpacity={0.8}
+                  animationType='slide'
+                  transparent={true}
+                    // hasBackdrop={true}
+                    // coverScreen={true}
+                    // backdropColor="#000"
+                    // backdropOpacity={0.8}
                     // onBackdropPress={() => setLocationModal(false)}
-                    isVisible={openLocationModal}
+                    visible={openLocationModal}
                     style={{ justifyContent: 'flex-end', margin: 0 }}
-                    animationIn="slideInUp"
-                    animationOut="slideOutDown"
-                    animationInTiming={1000}
-                    animationOutTiming={900}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600}
+                    // animationIn="slideInUp"
+                    // animationOut="slideOutDown"
+                    // animationInTiming={1000}
+                    // animationOutTiming={900}
+                    // backdropTransitionInTiming={600}
+                    // backdropTransitionOutTiming={600}
                 >
                     <SafeAreaView style={styles.locationmodalStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>

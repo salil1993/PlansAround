@@ -40,8 +40,8 @@ const TextInputC = ({
                 justifyContent: imgright && 'space-between',
                 flexDirection: 'row',
                 paddingHorizontal: moderateScale(10),
-                borderRadius: scale(5),
-                 elevation: 3, 
+                borderRadius: scale(10),
+                 //elevation: 3, 
                  borderColor:'#D3D3D3',
                  borderWidth:1,
                   ...style

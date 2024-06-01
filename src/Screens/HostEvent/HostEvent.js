@@ -933,7 +933,7 @@ const HostEvent = ({ navigation, route }) => {
                             <Image source={imagePath.hevent} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
                             <Text style={styles.phoneHeading}>Host an Event</Text>
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Basic Information</Text>
-                            <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, elevation: 3, height: moderateScale(50), }}>
+                            <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, height: moderateScale(50), }}>
                                 <Dropdown
                                     mode='default'
                                     containerStyle={{ borderWidth: 3,    }}
@@ -964,7 +964,7 @@ const HostEvent = ({ navigation, route }) => {
                             </View>
                             {eventCategoryError && <Text style={{color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500'}}>{eventCategoryError}</Text>}
                             {SubCategoryList.length > 0 &&
-                                <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, elevation: 3, height: moderateScale(50), }}>
+                                <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, height: moderateScale(50), }}>
                                     <Dropdown
                                         style={{ paddingHorizontal: moderateScale(13) }}
                                         placeholderStyle={styles.placeholderStyle}
