@@ -587,7 +587,7 @@ const EditEvent = ({ navigation, route }) => {
                         <Text style={styles.phoneHeading}>Edit Event</Text>
                         <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Basic Information</Text>
 
-                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), elevation: 3, height: moderateScale(50), }}>
+                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, elevation: 3, height: moderateScale(50), }}>
                             <Dropdown
                                 style={{ paddingHorizontal: moderateScale(13) }}
                                 placeholderStyle={styles.placeholderStyle}
@@ -617,7 +617,7 @@ const EditEvent = ({ navigation, route }) => {
                             />
                         </View>
 
-                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), elevation: 3, height: moderateScale(50), }}>
+                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, elevation: 3, height: moderateScale(50), }}>
                             <Dropdown
                                 style={{ paddingHorizontal: moderateScale(13) }}
                                 placeholderStyle={styles.placeholderStyle}

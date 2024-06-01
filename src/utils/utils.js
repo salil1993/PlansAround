@@ -1,6 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import store from '../redux/store';
+import { Alert } from 'react-native';
 // import types from '../redux/types';
 
 const { dispatch, getState } = store;
@@ -151,4 +152,6 @@ export async function getFirstTime() {
 export async function clearUserData() {
 	return AsyncStorage.removeItem('userData');
 }
+
+
 

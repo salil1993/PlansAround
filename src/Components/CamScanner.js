@@ -13,13 +13,49 @@ import axios from 'axios';
 import { getData } from '../utils/helperFunctions';
 import Loader from './Loader';
 
+import {
+	request,
+	PERMISSIONS,
+	openSettings,
+	requestMultiple,
+  } from 'react-native-permissions';
 // create a component
 const CamScanner = ({ route }) => {
   const [LoadEvent, setLoadEvent] = useState(false)
-
   console.log(route, 'rute...')
   const EventId = route.params.data;
   const navigation = useNavigation();
+
+  useEffect(() => {
+    cameraPermission()
+  
+    return () => {
+
+    }
+  }, [])
+
+   async function cameraPermission() {
+    var response = '';
+    if (Platform.OS == 'android') {
+      response = await request(PERMISSIONS.ANDROID.CAMERA);
+    } else {
+      response = await request(PERMISSIONS.IOS.CAMERA);
+    }
+    if (response != 'granted') {
+      Alert.alert('Camera Permission', 'Please allow from setting manually.', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'Ok', onPress: () => openSettings()},
+      ]);
+    }
+    return response;
+  }
+
+
+  
 
   const handleQRCodeScan = async (scannedData) => {
     console.log(scannedData, 'scannedEvent')
@@ -82,7 +118,7 @@ const CamScanner = ({ route }) => {
         {LoadEvent ? <Loader /> : 
         <QRCodeScanner
          //  onRead={({ data }) => console.log(data, 'data')}
-          // flashMode={RNCamera.Constants.FlashMode.torch}
+          // flashMode={RNCamera.Constants.FlashMode.auto}
           onRead={({ data }) => handleQRCodeScan(data)}
           reactivate={true}
           reactivateTimeout={800}

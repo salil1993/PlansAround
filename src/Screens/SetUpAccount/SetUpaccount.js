@@ -82,7 +82,7 @@ setSecureText(!SecureText)
                                 innerIconStyle={{
                                     borderRadius: 2,
                                     borderWidth: 1,
-                                    borderColor: 'white',
+                                    borderColor: '#D9D9D9',
                                     backgroundColor: Information ? "#005BD4" : 'white' // to make it a little round increase the value accordingly
                                 }}
                                 textStyle={{
@@ -106,7 +106,7 @@ setSecureText(!SecureText)
                                 innerIconStyle={{
                                     borderRadius: 2,
                                     borderWidth: 1,
-                                    borderColor: 'white',
+                                    borderColor: '#D9D9D9',
                                     backgroundColor: TC ? "#005BD4" : 'white' // to make it a little round increase the value accordingly
                                 }}
                                 textStyle={{

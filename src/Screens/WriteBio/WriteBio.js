@@ -103,6 +103,7 @@ const WriteBio = ({ navigation }) => {
                                     </View>
                                     <TextInputC placeholder={'Type here...'}
                                         value={Description}
+                                        editable={true}
                                         onChangeText={(text) => {
                                             setDescription(text)
                                             setLength(text.length);
