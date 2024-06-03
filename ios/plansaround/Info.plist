@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationUsageDescription</key>
+	<string>Plansaround graciously utilizes your device&apos;s location</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Plansaround graciously utilizes your device&apos;s location</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -20,6 +24,27 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.139290010094-3n0pci6cvsp8t15b4q638hu0aivvv215</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.dressupmobile</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>DressUpMobile</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -35,35 +60,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Plansaround graciously utilizes your device&apos;s camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Plansaround gracefully requests access to your location </string>
-  <key>NSCameraUsageDescription</key>
-  <string>Plansaround graciously utilizes your device&apos;s camera</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>Plansaround graciously utilizes your device&apos;s photos</string>
-  <key>NSMicrophoneUsageDescription</key>
-  <string>Plansaround graciously utilizes your device&apos;s microphone</string>
-  <key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>com.googleusercontent.apps.689164288056-5kc7enkeh8qhd65mj4ii1v0iihghg73o</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>com.dressupmobile</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>DressUpMobile</string>
-        </array>
-      </dict>
-    </array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Plansaround graciously utilizes your device&apos;s microphone</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Plansaround graciously utilizes your device&apos;s photos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Black.ttf</string>
@@ -95,7 +99,7 @@
 		<string>Feather.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string>LaunchScreen.storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

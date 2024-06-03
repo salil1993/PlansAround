@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, StatusBar, FlatList, Image, TouchableOpacity, ScrollView, Linking, PermissionsAndroid, Alert } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, FlatList, Image,Modal, TouchableOpacity, ScrollView, Linking, PermissionsAndroid, Alert, SafeAreaView } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import HeaderBack from '../../Components/HeaderBack';
 import { moderateScale, moderateScaleVertical, scale, textScale, height, width } from '../../styles/responsiveSize';
@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import EventhostingComponent from './EventhostingComponent';
 import { useFocusEffect } from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
-import Modal from 'react-native-modal'
+//import Modal from 'react-native-modal'
 import imagePath from '../../constants/imagePath';
 import ButtonComp from '../../Components/ButtonComp';
 
@@ -163,17 +163,24 @@ const EventHosting = ({ navigation }) => {
                 <View>
                 <Modal
                     // coverScreen={false}
-                    isVisible={false}
-                    backdropColor="#000"
-                    backdropOpacity={0.8}
-                    animationIn="zoomInDown"
-                    animationOut="zoomOutUp"
-                    animationInTiming={600}
-                    animationOutTiming={600}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600}
+                    visible={showQR}
+                    transparent={true}
+                    // backdropColor="#000"
+                    // backdropOpacity={0.8}
+                    // animationIn="zoomInDown"
+                    // animationOut="zoomOutUp"
+                    // animationInTiming={600}
+                    // animationOutTiming={600}
+                    // backdropTransitionInTiming={600}
+                    // backdropTransitionOutTiming={600}
                 >
-                    <View style={[styles.modalStyle, { minHeight: moderateScale(height / 1.8) }]}>
+                     <SafeAreaView
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            backgroundColor: `rgba(0,0,0,0.5)`,
+          }}>
+                    <View style={[styles.modalStyle, { minHeight: moderateScale(height / 1.8), backgroundColor:'#fff', padding:20, margin:20, borderRadius:20}]}>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={styles.qrCode}>Scan the QR code</Text>
                             <TouchableOpacity onPress={() => setshowQR(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
@@ -192,21 +199,29 @@ const EventHosting = ({ navigation }) => {
                             <ButtonComp midImg={true} midimgPath={imagePath.download2} text='Download' style={{ backgroundColor: '#005BD4' }} onPress={() => saveQrToDisk()} />
                         </View>
                     </View>
+                    </SafeAreaView>
                 </Modal>
             </View>
             <View>
                 <Modal
-                    isVisible={showDelete}
-                    backdropColor="#000"
-                    backdropOpacity={0.5}
-                    animationIn="zoomInDown"
-                    animationOut="zoomOutUp"
-                    animationInTiming={600}
-                    animationOutTiming={600}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600}
+                    visible={showDelete}
+                    transparent={true}
+                    // backdropColor="#000"
+                    // backdropOpacity={0.5}
+                    // animationIn="zoomInDown"
+                    // animationOut="zoomOutUp"
+                    // animationInTiming={600}
+                    // animationOutTiming={600}
+                    // backdropTransitionInTiming={600}
+                    // backdropTransitionOutTiming={600}
                 >
-                    <View style={styles.modalStyle}>
+                         <SafeAreaView
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            backgroundColor: `rgba(0,0,0,0.5)`,
+          }}>
+                    <View style={[styles.modalStyle,  {  backgroundColor:'#fff', padding:20, margin:20, borderRadius:20}]}>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={styles.qrCode}>Delete Event</Text>
                             <TouchableOpacity onPress={() => setDelete(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
@@ -226,6 +241,7 @@ const EventHosting = ({ navigation }) => {
                             </View>
                         </View>
                     </View>
+                    </SafeAreaView>
                 </Modal>
             </View>
             </WrapperContainer>

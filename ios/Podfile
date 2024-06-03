@@ -5,7 +5,7 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, '13.4'
+platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
@@ -44,26 +44,30 @@ target 'plansaround' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-
-
-pod 'GoogleMaps'#, '~> 3.9.0'
- pod 'Google-Maps-iOS-Utils'
-pod 'react-native-maps', :path => '../node_modules/react-native-maps'
-
+  pod 'GoogleMaps'
+  pod 'Google-Maps-iOS-Utils'
+  pod 'react-native-maps', path: '../node_modules/react-native-maps'
   target 'plansaroundTests' do
     inherit! :complete
     # Pods for testing
   end
 
- post_install do |installer|
-#    #
-#    https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false
-    )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
-    
+#  post_install do |installer|
+#    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+#    react_native_post_install(
+#      installer,
+#      config[:reactNativePath],
+#      :mac_catalyst_enabled => false
+#    )
+#    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+#    
+#  end
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = "arm64"
+      end
+    end
   end
 end
+

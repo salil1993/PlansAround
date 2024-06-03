@@ -21,7 +21,7 @@ const WhatDo = ({ navigation }) => {
     const dispatch = useDispatch();
 
     const [Student, setStudent] = useState(false)
-    const [Unemployed, setUnemployed] = useState(false)
+    const [label, setlabel] = useState('')
     const [Freelancing, setFreelancing] = useState(false)
     const [SalariedJob, setSalariedJob] = useState(false)
     const [Entrepreneur, setEntrepreneur] = useState(false)
@@ -79,6 +79,7 @@ const WhatDo = ({ navigation }) => {
 
     const handleSelect = (label) => {
         console.log(label, 'label')
+        setlabel(label)
         if (label === 'Student') {
             setJobProfile('')
             setCompanyName('')
@@ -225,14 +226,14 @@ const WhatDo = ({ navigation }) => {
                         <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
                         <View style={{ marginVertical: moderateScaleVertical(10) }}>
                             <View style={styles.slidercontainer}>
-                            <View style={{flexDirection:'row', alignItems:'center'}}>
+                            <View style={{}}>
                                     {radioButtons.map((item, index)=>{
                                         return(
-                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
+                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10, marginVertical:10}}>
                                             <TouchableOpacity style={{marginRight:5}} onPress={()=>{
-                                             handleSelect(label)
+                                             handleSelect(item.label)
                                             }}>
-                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
+                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.label == label ?imagePath.radio_select:imagePath.radio_unselect}/>
                                          </TouchableOpacity>
                                           <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
                                          </View>
@@ -394,16 +395,19 @@ const WhatDo = ({ navigation }) => {
                             </View>
                         </View>
                         {
-                            Student && <View>
+                            Student && 
+                            <View>
                                 <Text style={[styles.skip, { fontSize: scale(14), marginBottom: moderateScaleVertical(5) }]}>Student Information</Text>
                                 <TextInputC
                                     placeholder={'Name of University/Institute'}
                                     value={JobProfile}
+                                    editable={true}
                                     onChangeText={(text) => setJobProfile(text)}
                                 />
                                 <TextInputC style={{ marginVertical: moderateScale(3) }}
                                     placeholder={'Degree'}
                                     value={CompanyName}
+                                    editable={true}
                                     onChangeText={(text) => setCompanyName(text)}
                                 />
                             </View>
@@ -415,11 +419,13 @@ const WhatDo = ({ navigation }) => {
                                 <TextInputC
                                     placeholder={'Enter your Job Profile'}
                                     value={JobProfile}
+                                    editable={true}
                                     onChangeText={(text) => setJobProfile(text)}
                                 />
                                 <TextInputC style={{ marginVertical: moderateScale(3) }}
                                     placeholder={'Years of Experience'}
                                     value={CompanyName}
+                                    editable={true}
                                     onChangeText={(text) => setCompanyName(text)}
                                 />
                             </View>
@@ -432,16 +438,19 @@ const WhatDo = ({ navigation }) => {
                                 <TextInputC
                                     placeholder={'Enter your Job Profile'}
                                     value={JobProfile}
+                                    editable={true}
                                     onChangeText={(text) => setJobProfile(text)}
                                 />
                                 <TextInputC style={{ marginVertical: moderateScale(3) }}
                                     placeholder={'Name of your company'}
                                     value={CompanyName}
+                                    editable={true}
                                     onChangeText={(text) => setCompanyName(text)}
                                 />
                                 <TextInputC style={{ marginVertical: moderateScale(3) }}
                                     placeholder={'Years of Experience'}
                                     value={Yexp}
+                                    editable={true}
                                     onChangeText={(text) => setYexp(text)}
                                 />
                             </View>
@@ -451,12 +460,14 @@ const WhatDo = ({ navigation }) => {
                                 <Text style={[styles.skip, { fontSize: scale(14), marginBottom: moderateScaleVertical(5) }]}>Entrepreneur Information</Text>
                                 <TextInputC
                                     placeholder={'Title'}
+                                    editable={true}
                                     value={JobProfile}
                                     onChangeText={(text) => setJobProfile(text)}
                                 />
                                 <TextInputC style={{ marginVertical: moderateScale(3) }}
                                     placeholder={'Name of your company'}
                                     value={CompanyName}
+                                    editable={true}
                                     onChangeText={(text) => setCompanyName(text)}
                                 />
 
@@ -475,7 +486,7 @@ const WhatDo = ({ navigation }) => {
                                 innerIconStyle={{
                                     borderRadius: 2,
                                     borderWidth: 1,
-                                    borderColor: 'white',
+                                    borderColor: '#D9D9D9',
                                     backgroundColor: ProfileShow ? "#005BD4" : 'white' // to make it a little round increase the value accordingly
                                 }}
                                 textStyle={{

@@ -34,10 +34,6 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance, onSh
     };
 
 
-
-
-
-    console.log('item---->>>>', item)
     return (
         <>
             <View style={styles.container2}>

@@ -1,6 +1,6 @@
 //import liraries
-import React, { Component, useState, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, InputAccessoryView } from 'react-native'
+import React, { Component, useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, InputAccessoryView, Alert } from 'react-native'
 import { moderateScale, moderateScaleVertical, textScale, scale, height, width } from '../styles/responsiveSize';
 import imagePath from '../constants/imagePath';
 import IconsettingClose from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -16,6 +16,10 @@ import TextInputC from './TextInputC';
 import navigationStrings from '../Navigation/navigationStrings';
 import { RequestBooking } from '../API/Api';
 import Snackbar from 'react-native-snackbar';
+import { getData } from '../utils/helperFunctions';
+import axios from 'axios';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Loader from './Loader';
 // create a component
 const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) => {
 
@@ -28,9 +32,12 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
     const [askPermission, setaskPermission] = useState(false);
     const [Loading, setLoading] = useState(false)
     const [LoadingP, setLoadingP] = useState(false)
-
+    const [Comment, setComment] = useState('')
+    const [CommentList, setCommentList] = useState([])
     const [selectedImage, setSelectedImage] = useState(null);
-
+    useEffect(() => {
+    
+    }, [CommentList])
     const openImage = (image) => {
         setSelectedImage(image);
     };
@@ -108,13 +115,15 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
     }
 
 
-    const handleComments = () => {
-        setopenCommentModal(true)
+    const handleComments = (event_id) => {
+         getCommentList(event_id,1)
+         setopenCommentModal(true)
     }
 
     const handleOnScroll = event => {
         setoffset(event.nativeEvent.contentOffset.y)
     };
+
     const handleScrollTo = p => {
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollTo(p);
@@ -125,6 +134,61 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
     const handleProfile = () => {
         setopenModal(true)
     }
+
+    const getCommentList = async(eventId,pageNumber) =>{
+     
+        setLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userToken', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+    //        homepage/events/664781883a31949815756328/comment?page=1&limit=10
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${eventId}/comment?page=${pageNumber}&limit=10`, { headers });
+            const responseData = response.data;
+            console.log(JSON.stringify(responseData), 'totalComments')
+             const comments = responseData?.docs;
+             setCommentList(comments)
+            // setEventsList((prevEvents) => {
+            //     if (pageNumber === 1) {
+            //         // If it's the first page, replace existing events
+            //         return newEvents;
+            //     } else {
+            //         // If it's not the first page, append new events to the existing list
+            //         return [...prevEvents, ...newEvents];
+            //     }
+            //});
+            // setPage(pageNumber); // Update the current page number
+            setLoading(false);
+            // setHasMore(newEvents?.length > 0); // Update hasMore based on whether new events were fetched
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+       }
+
+   const postComment = async(event_id) =>{
+        //http://localhost:3000/api/mobile/homepage/events/664781883a31949815756328/comment
+
+        let usertoken = await getData('UserToken');
+        const headers = {
+            'Authorization': `Bearer ${usertoken}`,
+        };
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/comment`,{ "comment": Comment }, { headers })
+            .then((res) => {
+                console.log('PostComment', res)
+                getCommentList(event_id,1);
+                setComment('')
+            }).
+            catch((err) => {
+                console.log('PostComment', err)
+                setLoadEvent(false)
+            })
+       }
+
+
     return (
         <>
             <View style={styles.container}>
@@ -232,12 +296,12 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <IconsLike name='like2' size={20} color='#333' />
-                                    <Text style={[styles.eventtxt, { marginLeft: moderateScale(5) }]}>20</Text>
+                                    <Text style={[styles.eventtxt, { marginLeft: moderateScale(5) }]}>{item?.likesCount}</Text>
 
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={handleComments} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <TouchableOpacity onPress={() =>handleComments(item?._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <IconsComment name='comment' size={20} color='#333' />
-                                    <Text style={[styles.eventtxt, { marginLeft: moderateScale(10) }]}>30</Text>
+                                    <Text style={[styles.eventtxt, { marginLeft: moderateScale(10) }]}>{item?.commentCount}</Text>
 
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{ marginRight: moderateScale(15) }}>
@@ -342,76 +406,66 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     scrollOffsetMax={400 - 300}
                     propagateSwipe={true}
                 >
-                    <View style={[styles.modalStyle, { height: 300 }]}>
-                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={[styles.modalStyle, { height: 500 }]}>
+                    <KeyboardAwareScrollView
+                         keyboardShouldPersistTaps={'handled'} 
+                          style={{flex:1}}
+                         showsVerticalScrollIndicator={false}
+                         >
+                    
+                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(16) }]}>Comments</Text>
 
                             </View>
                             <TouchableOpacity onPress={() => setopenCommentModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
                         </View>
-                        <ScrollView
-                            ref={scrollViewRef}
-                            scrollEventThrottle={16}
-                            onScroll={(e) => handleOnScroll(e)}
-                            style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                <Image source={imagePath.frame2} />
+                        <View style={{height:400,}}>
+                          {Loading ? <Loader /> :
+                                <FlatList
+                                style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
+                                    ListEmptyComponent={<View style={{ flex: 1, height: height/3.5, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no comments.</Text></View>}
+                                    data={CommentList}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
+                                                    {item?.user?.profilePicture != null ? <Image source={{url:item?.user?.profilePicture}} />: <Image source={imagePath.frame2} /> }
+                               
                                 <View>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>Charlie Harper</Text>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit............</Text>
+                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>{item?.user?.fullName}</Text>
+                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>{item?.comment}</Text>
                                 </View>
                             </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                <Image source={imagePath.frame2} />
-                                <View>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>Charlie Harper</Text>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit............</Text>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                <Image source={imagePath.frame2} />
-                                <View>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>Charlie Harper</Text>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit............</Text>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                <Image source={imagePath.frame2} />
-                                <View>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>Charlie Harper</Text>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit............</Text>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                <Image source={imagePath.frame2} />
-                                <View>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>Charlie Harper</Text>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit............</Text>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                <Image source={imagePath.frame2} />
-                                <View>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>Charlie Harper</Text>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit............</Text>
-                                </View>
-                            </View>
-                        </ScrollView>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            </>
+                                        )
+                                    }
+                                    }
+                                />
+                        }
+                         </View>
+                        
+            
+                        <View style={{ flexDirection: 'row', alignSelf: 'flex-end' ,marginBottom:20}}>
                             <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(500), padding: moderateScale(10) }}>
                                 <IconsLike name='tag' color='#005BD4' size={25} />
                             </View>
-                            <View style={{ marginLeft: moderateScale(8), flex: 1 }}>
+                            <View  style={{ flex: 1}}>
                                 <TextInputC
                                     placeholder={'Leave your comment'}
                                     autoFocus={true}
+                                    editable={true}
                                     iconname={'send'}
                                     isrightIcon={true}
-                                    style={{ borderRadius: moderateScale(30) }} />
+                                     value={Comment}
+                                     onPressComment={() =>postComment(item?._id)}
+                                     onChangeText={(text)=>{setComment(text)}}
+                                  //  style={{ paddingVertical:moderateScaleVertical(20) }} 
+                                    />
                             </View>
 
                         </View>
+                        </KeyboardAwareScrollView>
                     </View>
                 </Modal>
 

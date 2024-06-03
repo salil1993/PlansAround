@@ -88,19 +88,25 @@ const WhereStudy = ({ navigation }) => {
                                 </TouchableOpacity>
                                 <Image source={imagePath.help_outline} />
                             </View>
-                            <View style={{ flex: 0.9, justifyContent: 'flex-start' }}>
+                            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
                                 <Image source={imagePath.study} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
                                 <Text style={styles.phoneHeading}>Where did you study?</Text>
                                 <Text style={[styles.phoneHeading2, { marginVertical: moderateScaleVertical(20) }]}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
-                                <View>
-                                    <TextInputC placeholder={'Name of University/Institute'}
+                                <View style={{marginVertical: moderateScaleVertical(10)}}>
+                                    <TextInputC 
+                                    editable={true}
+                                    style={{ height: 50 }}
+                                    placeholder={'Name of University/Institute'}
                                         value={College}
                                         onChangeText={(text) => setCollege(text)}
                                     />
                                 </View>
                                 <View style={{ marginVertical: moderateScaleVertical(15) }}>
-                                    <TextInputC placeholder={'Degree'}
+                                    <TextInputC 
+                                    placeholder={'Degree'}
+                                      editable={true}
                                         value={Degree}
+                                        style={{ height: 50 }}
                                         onChangeText={(text) => setDegree(text)}
                                     />
                                 </View>
@@ -116,7 +122,7 @@ const WhereStudy = ({ navigation }) => {
                                         innerIconStyle={{
                                             borderRadius: 2,
                                             borderWidth: 1,
-                                            borderColor: 'white',
+                                            borderColor: '#D9D9D9',
                                             backgroundColor: ProfileShow ? "#005BD4" : 'white' // to make it a little round increase the value accordingly
                                         }}
                                         textStyle={{

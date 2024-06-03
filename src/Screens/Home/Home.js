@@ -1,33 +1,31 @@
 //import liraries
 import React, { Component, useState, useRef, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, InputAccessoryView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView,Modal, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, Alert, Platform } from 'react-native';
 import { moderateScale, moderateScaleVertical, scale, height, textScale, width } from '../../styles/responsiveSize';
 import imagePath from '../../constants/imagePath';
 import ButtonComp from '../../Components/ButtonComp';
 import WrapperContainer from '../../Components/WrapperContainer';
-import Modal from 'react-native-modal'
+//import Modal from 'react-native-modal'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Icons from 'react-native-vector-icons/Feather'
 import IconsLike from 'react-native-vector-icons/AntDesign'
-import IconsComment from 'react-native-vector-icons/Fontisto'
 import TextInputC from '../../Components/TextInputC';
 import SearchPlaces from '../../Components/SearchPlaces';
 import IconsettingClose from 'react-native-vector-icons/MaterialCommunityIcons'
-import RadioForm from 'react-native-simple-radio-button'
 import Slider from '@react-native-community/slider';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { userCurrentLocation } from '../../redux/Slices/UserSlice';
-import { getEventsList } from '../../API/Api';
-import navigationStrings from '../../Navigation/navigationStrings';
-import Loader from '../../Components/Loader';
-import { RequestBooking } from '../../API/Api';
-import Snackbar from 'react-native-snackbar';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import HomeEvent from '../../Components/HomeEvent';
-
+import {
+	request,
+	PERMISSIONS,
+	openSettings,
+	requestMultiple,
+  } from 'react-native-permissions';
 
 // create a component
 const Home = () => {
@@ -56,13 +54,35 @@ const Home = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    
+
 
 
     useEffect(() => {
         reverseGeocode(latitude, longitude);
+       // locationPermission()
         getEventList(1);
     }, [address])
+
+    async function locationPermission() {
+        var response = '';
+        if (Platform.OS == 'android') {
+          response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+          response = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+        } else {
+         // response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        }
+        if (response != 'granted') {
+          Alert.alert('Location Permission', 'Please allow from setting manually.', [
+            {
+              text: 'Cancel',
+              onPress: () => null,
+              style: 'cancel',
+            },
+            {text: 'Ok', onPress: () => openSettings()},
+          ]);
+        }
+        return response;
+      }
 
     const radioButtons = useMemo(() => ([
         {
@@ -110,10 +130,10 @@ const Home = () => {
     ]
 
     const reverseGeocode = async (latitude, longitude) => {
-       // const apiKey = 'AIzaSyBWnqaUowVdjnPVHJAdLf0MMBgQRm6NMpc';
-       const apiKey = 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk';
+        // const apiKey = 'AIzaSyBWnqaUowVdjnPVHJAdLf0MMBgQRm6NMpc';
+        const apiKey = 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk';
         const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
-       console.log('apiUrl', apiUrl)
+        console.log('apiUrl', apiUrl)
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
@@ -127,9 +147,10 @@ const Home = () => {
             console.error('Error fetching address:', error);
         }
     };
+
     const onSearchhandle = (data, details) => {
         setLoading(true)
-         console.log(details.geometry.location, 'NewLocationyhaHOme change')
+        console.log(details.geometry.location, 'NewLocationyhaHOme change')
         // console.log(details, 'NewLocationyhaHOme p change')
         const selectedLocation = details.geometry.location;
         const { lat, lng } = selectedLocation;
@@ -141,6 +162,7 @@ const Home = () => {
         reverseGeocode(latitude, longitude);
         setLoading(false)
     }
+
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371; // Radius of the Earth in km
         const dLat = (lat2 - lat1) * Math.PI / 180;  // Convert degrees to radians
@@ -216,7 +238,7 @@ const Home = () => {
         </View>
     );
 
-
+ 
 
     return (
         <WrapperContainer>
@@ -303,20 +325,22 @@ const Home = () => {
             </View>
             <View>
                 <Modal
-                    swipeDirection={'down'}
-                    onSwipeComplete={() => setFilterOpen(false)}
-                    hasBackdrop={true}
-                    coverScreen={true}
-                    backdropColor="#000"
-                    backdropOpacity={0.8}
-                    isVisible={FilterOpen}
-                    style={{ justifyContent: 'flex-end', margin: 0,flex:1 }}
-                    animationIn="slideInUp"
-                    animationOut="slideOutDown"
-                    animationInTiming={1000}
-                    animationOutTiming={900}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600}
+                    animationType='slide'
+                    transparent={true}
+                    // swipeDirection={'down'}
+                    // onSwipeComplete={() => setFilterOpen(false)}
+                    // hasBackdrop={true}
+                    // coverScreen={true}
+                    // backdropColor="#000"
+                    // backdropOpacity={0.8}
+                    visible={FilterOpen}
+                    style={{ justifyContent: 'flex-end', margin: 0, flex: 1 }}
+                    // animationIn="slideInUp"
+                    // animationOut="slideOutDown"
+                    // animationInTiming={1000}
+                    // animationOutTiming={900}
+                    // backdropTransitionInTiming={600}
+                    // backdropTransitionOutTiming={600}
                 >
                     <SafeAreaView style={styles.locationmodalStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
@@ -357,25 +381,25 @@ const Home = () => {
                                         buttonSize={12}
                                     /> */}
 
-<View style={{flexDirection:'row', alignItems:'center'}}>
-                                    {radioButtons.map((item, index)=>{
-                                        return(
-                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
-                                            <TouchableOpacity style={{marginRight:5}} onPress={()=>{
-                                                 if (label === 'Other') {
-                                                    handleSelect(label)
-                                                } else {
-                                                    handleSelect(label)
-                                                }
-                                            }}>
-                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
-                                         </TouchableOpacity>
-                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
-                                         </View>
-                                        )  
-                                    })
-                                    }
-                                </View>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        {radioButtons.map((item, index) => {
+                                            return (
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+                                                    <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
+                                                        if (label === 'Other') {
+                                                            handleSelect(item.label)
+                                                        } else {
+                                                            handleSelect(item.label)
+                                                        }
+                                                    }}>
+                                                        <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
+                                                    </TouchableOpacity>
+                                                    <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                                </View>
+                                            )
+                                        })
+                                        }
+                                    </View>
                                 </View>
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginBottom: moderateScaleVertical(10) }}>
@@ -451,24 +475,24 @@ const Home = () => {
             </View>
             <View>
                 <Modal
-                    // swipeDirection={'down'}
-                    // onSwipeco={() => setLocationModal(false)}
-                    hasBackdrop={true}
-                    coverScreen={true}
-                    backdropColor="#000"
-                    backdropOpacity={0.8}
+                  animationType='slide'
+                  transparent={true}
+                    // hasBackdrop={true}
+                    // coverScreen={true}
+                    // backdropColor="#000"
+                    // backdropOpacity={0.8}
                     // onBackdropPress={() => setLocationModal(false)}
-                    isVisible={openLocationModal}
+                    visible={openLocationModal}
                     style={{ justifyContent: 'flex-end', margin: 0 }}
-                    animationIn="slideInUp"
-                    animationOut="slideOutDown"
-                    animationInTiming={1000}
-                    animationOutTiming={900}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600}
+                    // animationIn="slideInUp"
+                    // animationOut="slideOutDown"
+                    // animationInTiming={1000}
+                    // animationOutTiming={900}
+                    // backdropTransitionInTiming={600}
+                    // backdropTransitionOutTiming={600}
                 >
                     <SafeAreaView style={styles.locationmodalStyle}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TouchableOpacity onPress={() => setLocationModal(false)}>
                                 <IconsLike name='down' size={26} color='#333' style={{ marginLeft: moderateScale(5) }} />
                             </TouchableOpacity>
@@ -484,7 +508,9 @@ const Home = () => {
                             <View style={{ height: moderateScaleVertical(280), width: '100%', marginTop: moderateScaleVertical(30), borderRadius: moderateScale(20) }}>
                                 <MapView
                                     style={{
-                                        height: moderateScaleVertical(280), flex: 1, width: '100%',
+                                       // height: moderateScaleVertical(280),
+                                         flex: 1,
+                                         // width: '100%',
                                         borderRadius: moderateScale(10)
                                     }}
                                     provider={PROVIDER_GOOGLE}
@@ -515,11 +541,11 @@ const Home = () => {
                             </View>
                             <ButtonComp onPress={() => setLocationModal(false)} isLoading={Loading} style={{ backgroundColor: '#005BD4', marginTop: moderateScaleVertical(20) }} text='Use my position' />
                         </View>
-                       
+
                     </SafeAreaView>
                 </Modal>
             </View>
-        
+
         </WrapperContainer>
 
     );
@@ -619,7 +645,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: moderateScale(16)
     },
-    
+
 });
 
 //make this component available to the app

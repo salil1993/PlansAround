@@ -587,7 +587,7 @@ const EditEvent = ({ navigation, route }) => {
                         <Text style={styles.phoneHeading}>Edit Event</Text>
                         <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Basic Information</Text>
 
-                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), elevation: 3, height: moderateScale(50), }}>
+                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, elevation: 3, height: moderateScale(50), }}>
                             <Dropdown
                                 style={{ paddingHorizontal: moderateScale(13) }}
                                 placeholderStyle={styles.placeholderStyle}
@@ -617,7 +617,7 @@ const EditEvent = ({ navigation, route }) => {
                             />
                         </View>
 
-                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), elevation: 3, height: moderateScale(50), }}>
+                        <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, elevation: 3, height: moderateScale(50), }}>
                             <Dropdown
                                 style={{ paddingHorizontal: moderateScale(13) }}
                                 placeholderStyle={styles.placeholderStyle}
@@ -659,6 +659,7 @@ const EditEvent = ({ navigation, route }) => {
                                     onChangeText={(text) => setamount(text)}
                                     keyBoardType='numeric'
                                     isrightIcon={true}
+                                    editable={true}
                                     iconname={'paid'}
                                 />
                             </View>
@@ -668,6 +669,7 @@ const EditEvent = ({ navigation, route }) => {
                         <View style={{ marginVertical: moderateScaleVertical(5) }}>
                             <TextInputC placeholder={'Write a Description'}
                                 value={Description}
+                                editable={true}
                                 onChangeText={(text) => setDescription(text)}
                                 keyBoardType='default'
                                 multiline={true}
@@ -683,6 +685,7 @@ const EditEvent = ({ navigation, route }) => {
                                 <TextInputC
                                     placeholder={'Min No. of people '}
                                     value={MnPeople}
+                                    editable={true}
                                     onChangeText={(text) => setMnPeople(text)}
                                     keyBoardType={'numeric'}
                                 />
@@ -692,6 +695,7 @@ const EditEvent = ({ navigation, route }) => {
                                 <TextInputC
                                     placeholder={'Max No. of people'}
                                     value={MxPeople}
+                                    editable={true}
                                     onChangeText={(text) => setMxPeople(text)}
                                     keyBoardType={'numeric'}
                                 />

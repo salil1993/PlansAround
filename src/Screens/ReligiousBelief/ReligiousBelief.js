@@ -331,16 +331,16 @@ const ReligiousBelief = ({ navigation }) => {
                         <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
                         <View style={{ marginVertical: moderateScaleVertical(10) }}>
                             <View style={styles.slidercontainer}>
-                            <View style={{flexDirection:'row', alignItems:'center'}}>
+                            <View style={{}}>
                                     {radioButtons.map((item, index)=>{
                                         return(
-                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
+                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10,  marginVertical:10}}>
                                             <TouchableOpacity style={{marginRight:5}} onPress={()=>{
-                                              if (label === 'Select a religion') {
+                                              if (item.label === 'Select a religion') {
                                                 setOther(true)
-                                                handleSelect(label)
+                                                handleSelect(item.label)
                                             } else {
-                                                handleSelect(label)
+                                                handleSelect(item.label)
     
                                             }
                                             }}>
@@ -700,7 +700,7 @@ const ReligiousBelief = ({ navigation }) => {
                                 innerIconStyle={{
                                     borderRadius: 2,
                                     borderWidth: 1,
-                                    borderColor: 'white',
+                                    borderColor: '#D9D9D9',
                                     backgroundColor: ProfileShow ? "#005BD4" : 'white' // to make it a little round increase the value accordingly
                                 }}
                                 textStyle={{

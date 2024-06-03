@@ -136,6 +136,7 @@ const Register = ({ navigation, route }) => {
                                         <>
                                             <TextInputC
                                                 placeholder={'Email'}
+                                                editable={true}
                                                 keyBoardType={'email-address'}
                                                 onChangeText={handleChange('email')}
                                                 onBlur={handleBlur('email')}
@@ -147,6 +148,7 @@ const Register = ({ navigation, route }) => {
                                                 placeholder={'Password'}
                                                 style={{ marginTop: moderateScaleVertical(10) }}
                                                 imgright={true}
+                                                editable={true}
                                                 imgsrc={visible ? imagePath.eyeoff : imagePath.eye}
                                                 onPressSecure={() => setvisible(!visible)}
                                                 secureText={visible}
@@ -162,6 +164,7 @@ const Register = ({ navigation, route }) => {
                                                 onChangeText={handleChange('CPasord')}
                                                 onBlur={handleBlur('CPasord')}
                                                 value={values.CPasord}
+                                                editable={true}
                                                 style={{ marginTop: moderateScaleVertical(10) }}
                                                 imgright={true}
                                                 imgsrc={visible2 ? imagePath.eyeoff : imagePath.eye}
@@ -175,7 +178,6 @@ const Register = ({ navigation, route }) => {
                                                 <BouncyCheckbox
                                                     size={20}
                                                     disableBuiltInState
-
                                                     isChecked={ProfileShow}
                                                     onPress={() => setProfileShow(!ProfileShow)}
                                                     unfillColor="#FFFFFF"
@@ -184,7 +186,7 @@ const Register = ({ navigation, route }) => {
                                                     innerIconStyle={{
                                                         borderRadius: 2,
                                                         borderWidth: 1,
-                                                        borderColor: 'white',
+                                                        borderColor: '#D9D9D9',
                                                         backgroundColor: ProfileShow ? "#005BD4" : 'white' // to make it a little round increase the value accordingly
                                                     }}
                                                     textStyle={{

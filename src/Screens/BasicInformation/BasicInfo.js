@@ -48,6 +48,7 @@ const BasicInfo = ({ navigation }) => {
     const x1 = x[0].split('-');
     const FDate = x1[0] + '-' + x1[1] + '-' + x1[2]
     setDOB(FDate)
+    hideDatePicker()
   }
 
 //   const handleConfirm = (date) => {
@@ -221,19 +222,24 @@ const BasicInfo = ({ navigation }) => {
               <View style={{ marginVertical: moderateScaleVertical(10) }}>
                 <TextInputC placeholder='First Name'
                   value={FirstName}
+                  editable={true}
                   onChangeText={(text) => setFirstName(text)}
                 />
+                <View     style={{ marginTop: moderateScaleVertical(10) }}>
                 <TextInputC placeholder='Last Name'
-                  style={{ marginVertical: moderateScaleVertical(5) }}
                   value={LastName}
+                  editable={true}
                   onChangeText={(text) => setLastName(text)}
                 />
+                </View>
+                <View     style={{ marginVertical: moderateScaleVertical(10) }}>
                 <TextInputC placeholder={'Date of Birth (DD/MM/YYYY)'}
                   imgsrc={imagePath.calendar} imgright={true}
                   onPressSecure={showDatePicker}
                   editable={false}
                   value={DOB}
                 />
+                </View>
               </View>
               {isDatePickerVisible && <DateTimePickerModal
                 isVisible={isDatePickerVisible}

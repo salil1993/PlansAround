@@ -160,8 +160,11 @@ const LogIN = ({ navigation }) => {
                                 )}
                                 {/* <ButtonComptwo text='Sign in with Facebook' style={{ backgroundColor: '#fff', elevation: 3 }} leftImg={imagePath.fb} /> */}
                                 <Text style={{ color: '#4F4F4F', fontSize: scale(14), textAlign: 'center', fontFamily: 'Roboto', fontWeight: '500', marginVertical: moderateScaleVertical(10) }}>or</Text>
-                                <TextInputC placeholder={'Email'} value={email} onChangeText={(text) => setemail(text)} />
-                                <TextInputC placeholder={'Password'} value={Password} onChangeText={(text) => setPassword(text)} style={{ marginTop: moderateScaleVertical(10), alignItems: 'center' }} imgright={true} imgsrc={visible ? imagePath.eyeoff : imagePath.eye} onPressSecure={() => setvisible(!visible)} secureText={visible} />
+                                <TextInputC editable={true} placeholder={'Email'} value={email} onChangeText={(text) => setemail(text)} />
+                                <View style={{ marginTop: moderateScale(10) }}>
+                                <TextInputC editable={true} placeholder={'Password'} value={Password} onChangeText={(text) => setPassword(text)} style={{alignItems: 'center' }} imgright={true} imgsrc={visible ? imagePath.eyeoff : imagePath.eye} onPressSecure={() => setvisible(!visible)} secureText={visible} />
+                                </View>
+
                             </View>
                             {/* <View style={{ marginVertical: moderateScaleVertical(5), }}>
                                 <BouncyCheckbox

@@ -14,8 +14,11 @@ const SearchPlaces = ({
     // Geolocation.getCurrentPosition(info => console.log(info));
     return (
         <View style={{
-            marginVertical: moderateScaleVertical(10),
-            // height: moderateScaleVertical(300)
+            marginVertical: moderateScaleVertical(5),
+            borderRadius: scale(5),
+           // elevation: 3, 
+            borderColor:'#D3D3D3',
+            borderWidth:1,
         }} >
             <GooglePlacesAutocomplete
                 onPress={onSearchPlaces}
@@ -38,10 +41,11 @@ const SearchPlaces = ({
                     textInput: { color: '#333', backgroundColor: '#fff', borderRadius: scale(5), elevation: 3, height: moderateScale(50) },
                     description: { color: '#005BD4', },
                     listView: {
-                       // position: 'absolute', 
-                       // top: moderateScaleVertical(55),
+                        // position: 'absolute', 
+                        // top: moderateScaleVertical(55),
+                        // bottom:0,
                         backgroundColor: '#FFF',
-                        zIndex: 1
+                       // zIndex: 1
                     }
                 }}
                 GooglePlacesDetailsQuery={{

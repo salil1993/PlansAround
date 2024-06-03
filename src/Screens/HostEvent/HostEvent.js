@@ -42,15 +42,48 @@ const HostEvent = ({ navigation, route }) => {
    // console.log(routedata, 'routedata')
 
     const [openoptionModal, setoptionopenModal] = useState(isFocused);
-    const [value, setvalue] = useState('');
+
+
     const [selected, setselected] = useState('');
     const [userType, setuserType] = useState(' ');
     const [CategoryList, setCategoryList] = useState([]);
     const [SubCategoryList, setSubCategoryList] = useState([]);
+    const [EventName, setEventName] = useState('');
+    const [Description, setDescription] = useState('');
+    const [MxPeople, setMxPeople] = useState('');
+    const [MnPeople, setMnPeople] = useState('');
+    const [DOB, setDOB] = useState('');
+    const [startTime, setstartTime] = useState('');
+    const [EndTime, setEndTime] = useState('');
+    const [latitude, setlatitude] = useState(null)
+    const [longitude, setlongitude] = useState(null)
+    const [ImageModal, setImageModal] = useState(false);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [isStartTime, setisStartTime] = useState(false);
+    const [isEndTime, setisEndTime] = useState(false);
+    const [Uplaod, setUpload] = useState([]);
+    const [gallery, setgallery] = useState([]);
+    const [Loading, setLoading] = useState(false);
+    const [local, setlocal] = useState(false);
+    const [amount, setamount] = useState(null);
+    const [visiblePaid, setvisiblePaid] = useState(false);
+    const [isFocus, setIsFocus] = useState(false);
+    const [SelectedCategory, setSelectedCategory] = useState('')
+    const [SelectedsubCategory, setSelectedsubCategory] = useState('')
+    const [address, setAddress] = useState(null);
 
-    // console.log(routedata);
-    // console.log(userType);
-    // variables
+    
+    const [eventCategoryError, seteventCategoryError] = useState('');
+    const [eventSubCategoryError, seteventSubcategoryError] = useState('');
+    const [eventnameErr, seteventnameErr] = useState('');
+    const [eventamountErr, seteventamountErr] = useState('');
+    const [eventdescriptionErr, seteventdescriptionErr] = useState('');
+    const [eventminpeopleErr, seteventminpeopleErr] = useState('');
+    const [eventmaxpeopleErr, seteventmaxpeopleErr] = useState('');
+    const [eventdateErr, seteventdateErr] = useState('');
+    const [eventstarttimeErr, seteventstarttimeErr] = useState('');
+    const [eventendtimeErr, seteventendtimeErr] = useState('');
+    const [eventaddressErr, seteventaddressErr] = useState('');
 
     const radioButtons = useMemo(() => ([
         {
@@ -128,64 +161,312 @@ const HostEvent = ({ navigation, route }) => {
             .catch((err) => console.log(err, 'subcat m err'))
     }
 
-    const [EventName, setEventName] = useState('');
-    const [Description, setDescription] = useState('');
-    const [MxPeople, setMxPeople] = useState('');
-    const [MnPeople, setMnPeople] = useState('');
-    const [DOB, setDOB] = useState('');
-    const [startTime, setstartTime] = useState('');
-    const [EndTime, setEndTime] = useState('');
-
-    const [latitude, setlatitude] = useState(null)
-    const [longitude, setlongitude] = useState(null)
-
-    const [ImageModal, setImageModal] = useState(false);
-
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [isStartTime, setisStartTime] = useState(false);
-    const [isEndTime, setisEndTime] = useState(false);
-
-
-    const [Uplaod, setUpload] = useState([]);
-    const [gallery, setgallery] = useState([]);
-    const [Loading, setLoading] = useState(false);
-    const [local, setlocal] = useState(false);
-
-    const [amount, setamount] = useState(null);
-    const [visiblePaid, setvisiblePaid] = useState(false);
-    const [isFocus, setIsFocus] = useState(false);
-
-    const [SelectedCategory, setSelectedCategory] = useState('')
-    const [SelectedsubCategory, setSelectedsubCategory] = useState('')
-    const [address, setAddress] = useState(null);
+   
 
     const handleSubmit = () => {
         console.log('hello free event')
-
-        if (EventName && Description && MxPeople && MnPeople && DOB && startTime && EndTime
-            && latitude && longitude && userType && selected
-        ) {
-            setImageModal(true)
-            if (setImageModal) {
-                setoptionopenModal(false)
-            }
-        } else {
-
+        if(SelectedCategory == ''){
+            seteventCategoryError('Please select event category.')
             Snackbar.show({
-                text: `${'All fields required!!'}`,
+                text: `${'Please select event category.'}`,
                 duration: Snackbar.LENGTH_SHORT,
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
         }
-
-
+        else if(SelectedsubCategory == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('Please select event subcategory.')
+            Snackbar.show({
+                text: `${'Please select event subcategory.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }
+        else if(EventName == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('Please enter event name.')
+            Snackbar.show({
+                text: `${'Please enter event name.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(Description == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('Please enter event description.')
+            Snackbar.show({
+                text: `${'Please enter event description.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(MnPeople == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('Please enter min no. of people.')
+            Snackbar.show({
+                text: `${'Please enter min no. of people.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(MxPeople == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('Please enter max no. of people.')
+            Snackbar.show({
+                text: `${'Please enter max no. of people.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(DOB == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('Please select event date.')
+            Snackbar.show({
+                text: `${'Please select event date.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(startTime == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('')
+            seteventstarttimeErr('Please enter event start time.')
+            Snackbar.show({
+                text: `${'Please enter event start time.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(EndTime == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('')
+            seteventstarttimeErr('')
+            seteventendtimeErr('Please enter event end time.')
+            Snackbar.show({
+                text: `${'Please enter event end time.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(address == null){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('')
+            seteventstarttimeErr('')
+            seteventendtimeErr('')
+            seteventaddressErr('Please select Address.')
+            Snackbar.show({
+                text: `${'Please select Address.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if (EventName && Description && MxPeople && MnPeople && DOB && startTime && EndTime
+            && latitude && longitude && userType && selected
+        ) {
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('')
+            seteventstarttimeErr('')
+            seteventendtimeErr('')
+            seteventaddressErr('')
+            setImageModal(true)
+            if (setImageModal) {
+                setoptionopenModal(false)
+            }
+        } else {
+            Snackbar.show({
+                text: `${'Something went wrong!'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }
     }
 
     const handlePaidSubmit = () => {
         console.log('hello paid event')
-
-        if (EventName && Description && MxPeople && MnPeople && DOB && startTime && EndTime
+        if(SelectedCategory == ''){
+            seteventCategoryError('Please select event category.')
+            Snackbar.show({
+                text: `${'Please select event category.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }
+        else if(SelectedsubCategory == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('Please select event subcategory.')
+            Snackbar.show({
+                text: `${'Please select event subcategory.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }
+        else if(EventName == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('Please enter event name.')
+            Snackbar.show({
+                text: `${'Please enter event name.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(amount == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventamountErr('Please enter event amount.')
+            Snackbar.show({
+                text: `${'Please enter event amount.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(Description == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventamountErr('')
+            seteventdescriptionErr('Please enter event description.')
+            Snackbar.show({
+                text: `${'Please enter event description.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(MnPeople == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventamountErr('')
+            seteventminpeopleErr('Please enter min no. of people.')
+            Snackbar.show({
+                text: `${'Please enter min no. of people.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(MxPeople == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventamountErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('Please enter max no. of people.')
+            Snackbar.show({
+                text: `${'Please enter max no. of people.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(DOB == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventamountErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('Please select event date.')
+            Snackbar.show({
+                text: `${'Please select event date.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(startTime == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventamountErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('')
+            seteventstarttimeErr('Please enter event start time.')
+            Snackbar.show({
+                text: `${'Please enter event start time.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(EndTime == ''){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventamountErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('')
+            seteventstarttimeErr('')
+            seteventendtimeErr('Please enter event end time.')
+            Snackbar.show({
+                text: `${'Please enter event end time.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        }else if(address == null){
+            seteventCategoryError('')
+            seteventSubcategoryError('')
+            seteventnameErr('')
+            seteventdescriptionErr('')
+            seteventminpeopleErr('')
+            seteventmaxpeopleErr('')
+            seteventdateErr('')
+            seteventamountErr('')
+            seteventstarttimeErr('')
+            seteventendtimeErr('')
+            seteventaddressErr('Please select Address.')
+            Snackbar.show({
+                text: `${'Please select Address.'}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+        } else if (EventName && Description && MxPeople && MnPeople && DOB && startTime && EndTime
             && latitude && longitude && userType && selected && amount
         ) {
             setImageModal(true)
@@ -194,16 +475,13 @@ const HostEvent = ({ navigation, route }) => {
             }
         } else {
             Snackbar.show({
-                text: `${'All fields required!!'}`,
+                text: `${'Something went wrong!'}`,
                 duration: Snackbar.LENGTH_SHORT,
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
         }
-
-
     }
-
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -247,6 +525,7 @@ const HostEvent = ({ navigation, route }) => {
         console.log(Finaltime, 'ye start time hai')
 
         setstartTime(Finaltime);
+        setisStartTime(false);
     }
     const handletime2 = (date) => {
         const dt = new Date(date);
@@ -487,8 +766,10 @@ const HostEvent = ({ navigation, route }) => {
                 });
             });
     }
+
     const handleCreateEvent = async () => {
         console.log('Free Event')
+       
         setLoading(true);
         console.log(EventName, 'EventName')
         console.log(Description, 'description')
@@ -503,13 +784,9 @@ const HostEvent = ({ navigation, route }) => {
         console.log(longitude, 'longitude');
         console.log(selected, 'participants');
         console.log(userType, 'USERType')
-        // const SCat=SelectedCategory.value;
-        // console.log(SCat);
         console.log(SelectedCategory, 'Category');
         console.log(SelectedsubCategory, 'SubCategory');
         console.log(address, 'address in string')
-
-
         const formData = new FormData();
         formData.append('name', EventName);
         formData.append('description', Description);
@@ -518,7 +795,6 @@ const HostEvent = ({ navigation, route }) => {
         formData.append('dateOfEvent', DOB);
         formData.append('timeStart', startTime);
         formData.append('timeEnd', EndTime);
-
         gallery?.forEach((image, index) => {
             // console.log(image.uri, 'image')
             formData.append(`images`, {
@@ -527,7 +803,6 @@ const HostEvent = ({ navigation, route }) => {
                 name: image.fileName || `image_${index}.jpg`,
             });
         });
-
         formData.append('latitude', latitude);
         formData.append('longitude', longitude);
         formData.append('participantType', selected);
@@ -535,9 +810,7 @@ const HostEvent = ({ navigation, route }) => {
         formData.append('category', SelectedCategory.value);
         formData.append('subCategory', SelectedsubCategory.value);
         formData.append('address', address);
-
         console.log(formData, 'formDatacollection')
-
         let usertoken = await getData('UserToken');
         console.log(usertoken, 'token')
         const headers = {
@@ -571,16 +844,13 @@ const HostEvent = ({ navigation, route }) => {
                 setSelectedCategory('');
                 setSelectedsubCategory('');
                 setgallery([]);
-                // setTimeout(() => {
                 setImageModal(false);
                 navigation.navigate(navigationStrings.HOME)
                 Snackbar.dismiss();
-                // }, 2000);
             })
             .catch((error) => {
-                console.log(error);
                 setLoading(false);
-                console.log('hello')
+                console.log('handleCreateEventError', error)
                 Snackbar.show({
                     text: `${error.response.data.dateOfEvent}`,
                     duration: Snackbar.LENGTH_SHORT,
@@ -588,9 +858,11 @@ const HostEvent = ({ navigation, route }) => {
                     textColor: "#fff",
                 });
             });
+        
     }
+
+
     const reverseGeocode = async (latitude, longitude) => {
-     //   const apiKey = 'AIzaSyBWnqaUowVdjnPVHJAdLf0MMBgQRm6NMpc';
       const apiKey = 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk';
         const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
@@ -661,10 +933,10 @@ const HostEvent = ({ navigation, route }) => {
                             <Image source={imagePath.hevent} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
                             <Text style={styles.phoneHeading}>Host an Event</Text>
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Basic Information</Text>
-                            <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), elevation: 3, height: moderateScale(50), }}>
+                            <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, height: moderateScale(50), }}>
                                 <Dropdown
                                     mode='default'
-                                    containerStyle={{ borderWidth: 5 }}
+                                    containerStyle={{ borderWidth: 3,    }}
                                     style={{ paddingHorizontal: moderateScale(13) }}
                                     placeholderStyle={styles.placeholderStyle}
                                     selectedTextStyle={styles.selectedTextStyle}
@@ -688,9 +960,11 @@ const HostEvent = ({ navigation, route }) => {
                                         setSelectedCategory(item)
                                     }}
                                 />
+                                
                             </View>
+                            {eventCategoryError && <Text style={{color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500'}}>{eventCategoryError}</Text>}
                             {SubCategoryList.length > 0 &&
-                                <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), elevation: 3, height: moderateScale(50), }}>
+                                <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, height: moderateScale(50), }}>
                                     <Dropdown
                                         style={{ paddingHorizontal: moderateScale(13) }}
                                         placeholderStyle={styles.placeholderStyle}
@@ -714,11 +988,16 @@ const HostEvent = ({ navigation, route }) => {
                                             setSelectedsubCategory(item)
                                         }}
                                     />
+                                   
                                 </View>}
+                                {eventSubCategoryError && <Text style={{color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500'}}>{eventSubCategoryError}</Text>} 
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Name of Event</Text>
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
-                                <TextInputC placeholder={'Enter the name of event'}
+                                <TextInputC 
+                                editable={true}
+                                placeholder={'Enter the name of event'}
                                     value={EventName}
+                                    errorTxt={eventnameErr}
                                     onChangeText={(text) => setEventName(text)}
                                     keyBoardType='email-address'
                                 />
@@ -726,7 +1005,10 @@ const HostEvent = ({ navigation, route }) => {
                             {visiblePaid && <>
                                 <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Amount for Event</Text>
                                 <View style={{ marginVertical: moderateScaleVertical(5) }}>
-                                    <TextInputC placeholder={'Enter the amount'}
+                                    <TextInputC 
+                                     editable={true}
+                                     errorTxt={eventamountErr}
+                                     placeholder={'Enter the amount'}
                                         value={amount}
                                         onChangeText={(text) => setamount(text)}
                                         keyBoardType='numeric'
@@ -738,7 +1020,10 @@ const HostEvent = ({ navigation, route }) => {
                             }
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Description of Event</Text>
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
-                                <TextInputC placeholder={'Write a description'}
+                                <TextInputC 
+                                 editable={true}
+                                   placeholder={'Write a description'}
+                                   errorTxt={eventdescriptionErr}
                                     value={Description}
                                     onChangeText={(text) => setDescription(text)}
                                     keyBoardType='email-address'
@@ -755,29 +1040,41 @@ const HostEvent = ({ navigation, route }) => {
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
                                         placeholder={'Min no. of people '}
+                                      //  errorTxt={eventminpeopleErr}
                                         value={MnPeople}
+                                        editable={true}
                                         onChangeText={(text) => setMnPeople(text)}
                                         keyBoardType={'numeric'}
                                     />
+                                   
                                 </View>
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
+                                      editable={true}
+                                   //   errorTxt={eventmaxpeopleErr}
                                         placeholder={'Max no. of people'}
                                         value={MxPeople}
                                         onChangeText={(text) => setMxPeople(text)}
                                         keyBoardType={'numeric'}
                                     />
+                                     
                                 </View>
+                               
                             </View>
+                            {eventminpeopleErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventminpeopleErr}</Text>}
+                            {eventmaxpeopleErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventmaxpeopleErr}</Text>}
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Date of Event</Text>
 
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
-                                <TextInputC placeholder={'Date of event'}
+                                <TextInputC
+                                    placeholder={'Date of event'}
+                                    errorTxt={eventdateErr}
                                     imgsrc={imagePath.calendar}
                                     imgright={true}
                                     onPressSecure={showDatePicker}
                                     editable={false}
                                     value={DOB}
+                                    onPress={showDatePicker}
                                 />
                             </View>
                             {isDatePickerVisible && <DateTimePickerModal
@@ -788,11 +1085,11 @@ const HostEvent = ({ navigation, route }) => {
                                 minimumDate={new Date()}
                             />}
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Timings of Event</Text>
-
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
                                         placeholder={'Start'}
+                                      //  errorTxt={eventstarttimeErr}
                                         imgsrc={imagePath.down} imgright={true}
                                         onPressSecure={showStartTime}
                                         editable={false}
@@ -808,6 +1105,7 @@ const HostEvent = ({ navigation, route }) => {
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
                                         placeholder={'End'}
+                                     //   errorTxt={eventendtimeErr}
                                         imgsrc={imagePath.down} imgright={true}
                                         onPressSecure={showStartTime2}
                                         editable={false}
@@ -822,10 +1120,13 @@ const HostEvent = ({ navigation, route }) => {
                                     />}
                                 </View>
                             </View>
+                            {eventstarttimeErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventstarttimeErr}</Text>}
+                            {eventendtimeErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventendtimeErr}</Text>}
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Address</Text>
                             <View>
                                 <SearchPlaces placeholder='Select Location' onSearchPlaces={onSearchhandle} />
                             </View>
+                            {eventaddressErr && <Text style={{   marginLeft: moderateScale(10),color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14)}}>{eventaddressErr}</Text>}
 
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
                                 <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Participant Type</Text>
