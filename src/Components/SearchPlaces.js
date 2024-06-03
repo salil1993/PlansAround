@@ -5,7 +5,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { height, moderateScale, scale, moderateScaleVertical, textScale } from '../styles/responsiveSize';
 // create a component
 const SearchPlaces = ({
-    onSearchPlaces = () => { },
+    onSearchPlaces,
     placeholder = '',
 
 
@@ -16,11 +16,16 @@ const SearchPlaces = ({
         <View style={{
             marginVertical: moderateScaleVertical(5),
             borderRadius: scale(5),
-           // elevation: 3, 
-            borderColor:'#D3D3D3',
-            borderWidth:1,
+            // elevation: 3, 
+            // borderColor: '#D3D3D3',
+            borderColor: "red",
+            borderWidth: 1,
         }} >
             <GooglePlacesAutocomplete
+                // onPress={(data, details = null) => {
+                //     // 'details' is provided when fetchDetails = true
+                //     console.log(data, details);
+                // }}
                 onPress={onSearchPlaces}
                 query={{
                     key: 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk',
@@ -45,7 +50,7 @@ const SearchPlaces = ({
                         // top: moderateScaleVertical(55),
                         // bottom:0,
                         backgroundColor: '#FFF',
-                       // zIndex: 1
+                        // zIndex: 1
                     }
                 }}
                 GooglePlacesDetailsQuery={{

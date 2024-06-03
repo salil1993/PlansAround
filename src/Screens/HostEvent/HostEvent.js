@@ -39,7 +39,7 @@ const HostEvent = ({ navigation, route }) => {
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const routedata = route?.params;
-   // console.log(routedata, 'routedata')
+    // console.log(routedata, 'routedata')
 
     const [openoptionModal, setoptionopenModal] = useState(isFocused);
 
@@ -72,7 +72,7 @@ const HostEvent = ({ navigation, route }) => {
     const [SelectedsubCategory, setSelectedsubCategory] = useState('')
     const [address, setAddress] = useState(null);
 
-    
+
     const [eventCategoryError, seteventCategoryError] = useState('');
     const [eventSubCategoryError, seteventSubcategoryError] = useState('');
     const [eventnameErr, seteventnameErr] = useState('');
@@ -161,11 +161,11 @@ const HostEvent = ({ navigation, route }) => {
             .catch((err) => console.log(err, 'subcat m err'))
     }
 
-   
+
 
     const handleSubmit = () => {
         console.log('hello free event')
-        if(SelectedCategory == ''){
+        if (SelectedCategory == '') {
             seteventCategoryError('Please select event category.')
             Snackbar.show({
                 text: `${'Please select event category.'}`,
@@ -174,7 +174,7 @@ const HostEvent = ({ navigation, route }) => {
                 textColor: "#fff",
             });
         }
-        else if(SelectedsubCategory == ''){
+        else if (SelectedsubCategory == '') {
             seteventCategoryError('')
             seteventSubcategoryError('Please select event subcategory.')
             Snackbar.show({
@@ -184,7 +184,7 @@ const HostEvent = ({ navigation, route }) => {
                 textColor: "#fff",
             });
         }
-        else if(EventName == ''){
+        else if (EventName == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('Please enter event name.')
@@ -194,7 +194,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(Description == ''){
+        } else if (Description == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -205,7 +205,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(MnPeople == ''){
+        } else if (MnPeople == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -217,7 +217,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(MxPeople == ''){
+        } else if (MxPeople == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -230,7 +230,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(DOB == ''){
+        } else if (DOB == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -244,7 +244,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(startTime == ''){
+        } else if (startTime == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -259,7 +259,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(EndTime == ''){
+        } else if (EndTime == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -275,7 +275,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(address == null){
+        } else if (address == null) {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -292,7 +292,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if (EventName && Description && MxPeople && MnPeople && DOB && startTime && EndTime
+        } else if (EventName && Description && MxPeople && MnPeople && DOB && startTime && EndTime
             && latitude && longitude && userType && selected
         ) {
             seteventCategoryError('')
@@ -321,7 +321,7 @@ const HostEvent = ({ navigation, route }) => {
 
     const handlePaidSubmit = () => {
         console.log('hello paid event')
-        if(SelectedCategory == ''){
+        if (SelectedCategory == '') {
             seteventCategoryError('Please select event category.')
             Snackbar.show({
                 text: `${'Please select event category.'}`,
@@ -330,7 +330,7 @@ const HostEvent = ({ navigation, route }) => {
                 textColor: "#fff",
             });
         }
-        else if(SelectedsubCategory == ''){
+        else if (SelectedsubCategory == '') {
             seteventCategoryError('')
             seteventSubcategoryError('Please select event subcategory.')
             Snackbar.show({
@@ -340,7 +340,7 @@ const HostEvent = ({ navigation, route }) => {
                 textColor: "#fff",
             });
         }
-        else if(EventName == ''){
+        else if (EventName == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('Please enter event name.')
@@ -350,7 +350,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(amount == ''){
+        } else if (amount == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -361,7 +361,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(Description == ''){
+        } else if (Description == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -373,7 +373,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(MnPeople == ''){
+        } else if (MnPeople == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -386,7 +386,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(MxPeople == ''){
+        } else if (MxPeople == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -400,7 +400,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(DOB == ''){
+        } else if (DOB == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -415,7 +415,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(startTime == ''){
+        } else if (startTime == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -431,7 +431,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(EndTime == ''){
+        } else if (EndTime == '') {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -448,7 +448,7 @@ const HostEvent = ({ navigation, route }) => {
                 backgroundColor: 'red',
                 textColor: "#fff",
             });
-        }else if(address == null){
+        } else if (address == null) {
             seteventCategoryError('')
             seteventSubcategoryError('')
             seteventnameErr('')
@@ -769,7 +769,7 @@ const HostEvent = ({ navigation, route }) => {
 
     const handleCreateEvent = async () => {
         console.log('Free Event')
-       
+
         setLoading(true);
         console.log(EventName, 'EventName')
         console.log(Description, 'description')
@@ -817,10 +817,10 @@ const HostEvent = ({ navigation, route }) => {
             'Authorization': `Bearer ${usertoken}`,
             'Content-Type': 'multipart/form-data',
         };
-        console.log(AUTH_CONFIG.EVENT_URL+'/add-new-event', 'endurl');
+        console.log(AUTH_CONFIG.EVENT_URL + '/add-new-event', 'endurl');
         axios.post(AUTH_CONFIG.EVENT_URL + '/add-new-event', formData, { headers })
             .then((res) => {
-                 console.log(res, 'resEvents');
+                console.log(res, 'resEvents');
                 const events = res.data;
                 console.log(events, 'with events')
                 // const data = res.data.user;
@@ -858,12 +858,12 @@ const HostEvent = ({ navigation, route }) => {
                     textColor: "#fff",
                 });
             });
-        
+
     }
 
 
     const reverseGeocode = async (latitude, longitude) => {
-      const apiKey = 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk';
+        const apiKey = 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk';
         const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
         try {
@@ -881,7 +881,10 @@ const HostEvent = ({ navigation, route }) => {
     };
 
     const onSearchhandle = (data, details) => {
-        console.log(details.geometry.location, 'NewLocationyhaHostEvent m')
+        console.log('NewLocationyhaHostEvent m',
+            data,
+            "DETAILS--", details
+        )
         const selectedLocation = details.geometry.location;
         const { lat, lng } = selectedLocation;
         console.log(lat, '...', lng)
@@ -919,7 +922,7 @@ const HostEvent = ({ navigation, route }) => {
         // setSubCategory(item);
         setSelectedsubCategory(item.label);
     }
-     console.log('CategoryList', CategoryList)
+    console.log('CategoryList', CategoryList)
 
 
     return (
@@ -933,10 +936,10 @@ const HostEvent = ({ navigation, route }) => {
                             <Image source={imagePath.hevent} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
                             <Text style={styles.phoneHeading}>Host an Event</Text>
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Basic Information</Text>
-                            <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, height: moderateScale(50), }}>
+                            <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), borderColor: '#D3D3D3', borderWidth: 1, height: moderateScale(50), }}>
                                 <Dropdown
                                     mode='default'
-                                    containerStyle={{ borderWidth: 3,    }}
+                                    containerStyle={{ borderWidth: 3, }}
                                     style={{ paddingHorizontal: moderateScale(13) }}
                                     placeholderStyle={styles.placeholderStyle}
                                     selectedTextStyle={styles.selectedTextStyle}
@@ -960,11 +963,11 @@ const HostEvent = ({ navigation, route }) => {
                                         setSelectedCategory(item)
                                     }}
                                 />
-                                
+
                             </View>
-                            {eventCategoryError && <Text style={{color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500'}}>{eventCategoryError}</Text>}
+                            {eventCategoryError && <Text style={{ color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500' }}>{eventCategoryError}</Text>}
                             {SubCategoryList.length > 0 &&
-                                <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5),backgroundColor: 'white', borderRadius: scale(5),borderColor:'#D3D3D3',borderWidth:1, height: moderateScale(50), }}>
+                                <View style={{ justifyContent: 'center', marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderRadius: scale(5), backgroundColor: 'white', borderRadius: scale(5), borderColor: '#D3D3D3', borderWidth: 1, height: moderateScale(50), }}>
                                     <Dropdown
                                         style={{ paddingHorizontal: moderateScale(13) }}
                                         placeholderStyle={styles.placeholderStyle}
@@ -988,14 +991,14 @@ const HostEvent = ({ navigation, route }) => {
                                             setSelectedsubCategory(item)
                                         }}
                                     />
-                                   
+
                                 </View>}
-                                {eventSubCategoryError && <Text style={{color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500'}}>{eventSubCategoryError}</Text>} 
+                            {eventSubCategoryError && <Text style={{ color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500' }}>{eventSubCategoryError}</Text>}
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Name of Event</Text>
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
-                                <TextInputC 
-                                editable={true}
-                                placeholder={'Enter the name of event'}
+                                <TextInputC
+                                    editable={true}
+                                    placeholder={'Enter the name of event'}
                                     value={EventName}
                                     errorTxt={eventnameErr}
                                     onChangeText={(text) => setEventName(text)}
@@ -1005,10 +1008,10 @@ const HostEvent = ({ navigation, route }) => {
                             {visiblePaid && <>
                                 <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Amount for Event</Text>
                                 <View style={{ marginVertical: moderateScaleVertical(5) }}>
-                                    <TextInputC 
-                                     editable={true}
-                                     errorTxt={eventamountErr}
-                                     placeholder={'Enter the amount'}
+                                    <TextInputC
+                                        editable={true}
+                                        errorTxt={eventamountErr}
+                                        placeholder={'Enter the amount'}
                                         value={amount}
                                         onChangeText={(text) => setamount(text)}
                                         keyBoardType='numeric'
@@ -1020,10 +1023,10 @@ const HostEvent = ({ navigation, route }) => {
                             }
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Description of Event</Text>
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
-                                <TextInputC 
-                                 editable={true}
-                                   placeholder={'Write a description'}
-                                   errorTxt={eventdescriptionErr}
+                                <TextInputC
+                                    editable={true}
+                                    placeholder={'Write a description'}
+                                    errorTxt={eventdescriptionErr}
                                     value={Description}
                                     onChangeText={(text) => setDescription(text)}
                                     keyBoardType='email-address'
@@ -1040,29 +1043,29 @@ const HostEvent = ({ navigation, route }) => {
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
                                         placeholder={'Min no. of people '}
-                                      //  errorTxt={eventminpeopleErr}
+                                        //  errorTxt={eventminpeopleErr}
                                         value={MnPeople}
                                         editable={true}
                                         onChangeText={(text) => setMnPeople(text)}
                                         keyBoardType={'numeric'}
                                     />
-                                   
+
                                 </View>
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
-                                      editable={true}
-                                   //   errorTxt={eventmaxpeopleErr}
+                                        editable={true}
+                                        //   errorTxt={eventmaxpeopleErr}
                                         placeholder={'Max no. of people'}
                                         value={MxPeople}
                                         onChangeText={(text) => setMxPeople(text)}
                                         keyBoardType={'numeric'}
                                     />
-                                     
+
                                 </View>
-                               
+
                             </View>
-                            {eventminpeopleErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventminpeopleErr}</Text>}
-                            {eventmaxpeopleErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventmaxpeopleErr}</Text>}
+                            {eventminpeopleErr && <Text style={{ marginLeft: 10, color: '#FF0000', flex: 1, fontFamily: 'Roboto', fontSize: textScale(13) }}>{eventminpeopleErr}</Text>}
+                            {eventmaxpeopleErr && <Text style={{ marginLeft: 10, color: '#FF0000', flex: 1, fontFamily: 'Roboto', fontSize: textScale(13) }}>{eventmaxpeopleErr}</Text>}
                             <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700' }]}>Date of Event</Text>
 
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
@@ -1089,9 +1092,10 @@ const HostEvent = ({ navigation, route }) => {
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
                                         placeholder={'Start'}
-                                      //  errorTxt={eventstarttimeErr}
+                                        //  errorTxt={eventstarttimeErr}
                                         imgsrc={imagePath.down} imgright={true}
                                         onPressSecure={showStartTime}
+                                        onPress={showStartTime}
                                         editable={false}
                                         value={startTime}
                                     />
@@ -1105,9 +1109,10 @@ const HostEvent = ({ navigation, route }) => {
                                 <View style={{ marginVertical: moderateScaleVertical(5), width: '48%' }}>
                                     <TextInputC
                                         placeholder={'End'}
-                                     //   errorTxt={eventendtimeErr}
+                                        //   errorTxt={eventendtimeErr}
                                         imgsrc={imagePath.down} imgright={true}
                                         onPressSecure={showStartTime2}
+                                        onPress={showStartTime2}
                                         editable={false}
                                         value={EndTime}
                                     />
@@ -1120,26 +1125,32 @@ const HostEvent = ({ navigation, route }) => {
                                     />}
                                 </View>
                             </View>
-                            {eventstarttimeErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventstarttimeErr}</Text>}
-                            {eventendtimeErr && <Text  style={{marginLeft:10,color: '#FF0000',flex:1, fontFamily: 'Roboto', fontSize:textScale(13)}}>{eventendtimeErr}</Text>}
-                            <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Address</Text>
+                            {eventstarttimeErr && <Text style={{ marginLeft: 10, color: '#FF0000', flex: 1, fontFamily: 'Roboto', fontSize: textScale(13) }}>{eventstarttimeErr}</Text>}
+                            {eventendtimeErr && <Text style={{ marginLeft: 10, color: '#FF0000', flex: 1, fontFamily: 'Roboto', fontSize: textScale(13) }}>{eventendtimeErr}</Text>}
+                            <Text
+                                onPress={() => {
+                                    console.log("=============");
+                                }}
+                                style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Address</Text>
                             <View>
-                                <SearchPlaces placeholder='Select Location' onSearchPlaces={onSearchhandle} />
+                                <SearchPlaces
+                                    placeholder='Select Location'
+                                    onSearchPlaces={onSearchhandle} />
                             </View>
-                            {eventaddressErr && <Text style={{   marginLeft: moderateScale(10),color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14)}}>{eventaddressErr}</Text>}
+                            {eventaddressErr && <Text style={{ marginLeft: moderateScale(10), color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14) }}>{eventaddressErr}</Text>}
 
                             <View style={{ marginVertical: moderateScaleVertical(5) }}>
                                 <Text style={[styles.phoneHeading2, { color: '#4F4F4F', fontWeight: '700', marginVertical: moderateScaleVertical(5) }]}>Participant Type</Text>
-                                <View style={{flexDirection:'row', alignItems:'center'}}>
-                                    {radioButtons.map((item, index)=>{
-                                        return(
-                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10}}>
-                                            <TouchableOpacity style={{marginRight:5}} onPress={()=> handleSelect(item.label)}>
-                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
-                                         </TouchableOpacity>
-                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
-                                         </View>
-                                        )  
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    {radioButtons.map((item, index) => {
+                                        return (
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+                                                <TouchableOpacity style={{ marginRight: 5 }} onPress={() => handleSelect(item.label)}>
+                                                    <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
+                                                </TouchableOpacity>
+                                                <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                            </View>
+                                        )
                                     })
                                     }
                                 </View>

@@ -51,16 +51,16 @@ const BasicInfo = ({ navigation }) => {
     hideDatePicker()
   }
 
-//   const handleConfirm = (date) => {
-//     const dt = new Date(date);
-//     const day = dt.getDate().toString().padStart(2, '0'); // Get day and pad with leading zero if necessary
-//     const month = (dt.getMonth() + 1).toString().padStart(2, '0'); // Get month (+1 because months are zero-indexed) and pad with leading zero if necessary
-//     const year = dt.getFullYear(); // Get full year
-//     const formattedDate = `${day}/${month}/${year}`; // Format as DD/MM/YYYY
-//     setDOB(formattedDate);
-//     hideDatePicker();
-//     setcolor(true);
-// }
+  //   const handleConfirm = (date) => {
+  //     const dt = new Date(date);
+  //     const day = dt.getDate().toString().padStart(2, '0'); // Get day and pad with leading zero if necessary
+  //     const month = (dt.getMonth() + 1).toString().padStart(2, '0'); // Get month (+1 because months are zero-indexed) and pad with leading zero if necessary
+  //     const year = dt.getFullYear(); // Get full year
+  //     const formattedDate = `${day}/${month}/${year}`; // Format as DD/MM/YYYY
+  //     setDOB(formattedDate);
+  //     hideDatePicker();
+  //     setcolor(true);
+  // }
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -117,53 +117,53 @@ const BasicInfo = ({ navigation }) => {
 
   const handleSumbit = async () => {
     if (DOB, FirstName, LastName) {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('firstName', FirstName)
-    formData.append('lastName', LastName)
-    formData.append('dateOfBirth', DOB)
-    if (UserPic.length && UserPic[0]) {
-    formData.append("image", {
-      uri: UserPic[0]?.uri,
-      type: UserPic[0]?.type, // Modify the type based on your image type
-      name: UserPic[0]?.fileName,
-      fileName: UserPic[0]?.fileName,
-    });
-  }
-    console.log(formData, 'formdata')
-    let usertoken = await getData('UserToken');
-    const headers = {
-      'Authorization': `Bearer ${usertoken}`,
-      'Content-Type': 'multipart/form-data',
-    };
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('firstName', FirstName)
+      formData.append('lastName', LastName)
+      formData.append('dateOfBirth', DOB)
+      if (UserPic.length && UserPic[0]) {
+        formData.append("image", {
+          uri: UserPic[0]?.uri,
+          type: UserPic[0]?.type, // Modify the type based on your image type
+          name: UserPic[0]?.fileName,
+          fileName: UserPic[0]?.fileName,
+        });
+      }
+      console.log(formData, 'formdata')
+      let usertoken = await getData('UserToken');
+      const headers = {
+        'Authorization': `Bearer ${usertoken}`,
+        'Content-Type': 'multipart/form-data',
+      };
 
-    axios.post('https://plansaround-backend.vercel.app/api/mobile/registration/basic-inforamtion', formData, { headers })
-      .then((res) => {
-        console.log(res, 'basic info');
-        setLoading(false);
-        const data = res.data.user;
-        dispatch(saveUserData(data));
-        Snackbar.show({
-          text: `${res.data.message}`,
-          duration: Snackbar.LENGTH_SHORT,
-          backgroundColor: '#005BD4',
-          textColor: "#fff",
+      axios.post('https://plansaround-backend.vercel.app/api/mobile/registration/basic-inforamtion', formData, { headers })
+        .then((res) => {
+          console.log(res, 'basic info');
+          setLoading(false);
+          const data = res.data.user;
+          dispatch(saveUserData(data));
+          Snackbar.show({
+            text: `${res.data.message}`,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: '#005BD4',
+            textColor: "#fff",
+          });
+          // setTimeout(() => {
+          // Snackbar.dismiss();
+          navigation.navigate(navigationStrings.SET_LOCATION)
+          // }, 2000)
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+          Snackbar.show({
+            text: `${error.response.data.message}`,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: 'red',
+            textColor: "#fff",
+          });
         });
-        // setTimeout(() => {
-        // Snackbar.dismiss();
-        navigation.navigate(navigationStrings.SET_LOCATION)
-        // }, 2000)
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-        Snackbar.show({
-          text: `${error.response.data.message}`,
-          duration: Snackbar.LENGTH_SHORT,
-          backgroundColor: 'red',
-          textColor: "#fff",
-        });
-      });
 
     } else {
       Snackbar.show({
@@ -217,7 +217,7 @@ const BasicInfo = ({ navigation }) => {
                   <Image source={imagePath.Gola} style={{ alignSelf: 'center', height: scale(120), width: scale(120) }} />}
                 <Image source={imagePath.plus} style={{ alignSelf: 'center', height: scale(40), width: scale(40), position: 'absolute', bottom: 0, left: moderateScale(115) }} />
               </TouchableOpacity>
-              <Text style={styles.phoneHeading}>Basic Information</Text>
+              <Text style={styles.phoneHeading}>Basic Information111</Text>
               <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
               <View style={{ marginVertical: moderateScaleVertical(10) }}>
                 <TextInputC placeholder='First Name'
@@ -225,20 +225,20 @@ const BasicInfo = ({ navigation }) => {
                   editable={true}
                   onChangeText={(text) => setFirstName(text)}
                 />
-                <View     style={{ marginTop: moderateScaleVertical(10) }}>
-                <TextInputC placeholder='Last Name'
-                  value={LastName}
-                  editable={true}
-                  onChangeText={(text) => setLastName(text)}
-                />
+                <View style={{ marginTop: moderateScaleVertical(10) }}>
+                  <TextInputC placeholder='Last Name'
+                    value={LastName}
+                    editable={true}
+                    onChangeText={(text) => setLastName(text)}
+                  />
                 </View>
-                <View     style={{ marginVertical: moderateScaleVertical(10) }}>
-                <TextInputC placeholder={'Date of Birth (DD/MM/YYYY)'}
-                  imgsrc={imagePath.calendar} imgright={true}
-                  onPressSecure={showDatePicker}
-                  editable={false}
-                  value={DOB}
-                />
+                <View style={{ marginVertical: moderateScaleVertical(10) }}>
+                  <TextInputC placeholder={'Date of Birth (DD/MM/YYYY)'}
+                    imgsrc={imagePath.calendar} imgright={true}
+                    onPressSecure={showDatePicker}
+                    editable={false}
+                    value={DOB}
+                  />
                 </View>
               </View>
               {isDatePickerVisible && <DateTimePickerModal
