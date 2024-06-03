@@ -54,6 +54,7 @@ setSecureText(!SecureText)
                         <View style={{ marginVertical: moderateScaleVertical(10) }}>
                             <TextInputC placeholder={'Email id'}
                             value={Email}
+                            editable={true}
                             onChangeText={(text)=>setEmail(text)}
                             keyBoardType='email-address'
                             />
@@ -62,6 +63,7 @@ setSecureText(!SecureText)
                             <TextInputC
                              placeholder={'Password'} 
                              imgright={true} 
+                             editable={true}
                              imgsrc={!SecureText? imagePath.eye:imagePath.eyeoff}
                              value={Password}
                              onChangeText={(text)=>setPassword(text)}

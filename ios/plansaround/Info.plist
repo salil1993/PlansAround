@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationUsageDescription</key>
+	<string>Plansaround graciously utilizes your device&apos;s location</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Plansaround graciously utilizes your device&apos;s location</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -57,13 +61,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Plansaround graciously utilizes your device's camera</string>
+	<string>Plansaround graciously utilizes your device&apos;s camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Plansaround gracefully requests access to your location </string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Plansaround graciously utilizes your device's microphone</string>
+	<string>Plansaround graciously utilizes your device&apos;s microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Plansaround graciously utilizes your device's photos</string>
+	<string>Plansaround graciously utilizes your device&apos;s photos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Black.ttf</string>

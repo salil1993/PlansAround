@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useState, useRef, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView,Modal, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, InputAccessoryView, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView,Modal, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, Alert, Platform } from 'react-native';
 import { moderateScale, moderateScaleVertical, scale, height, textScale, width } from '../../styles/responsiveSize';
 import imagePath from '../../constants/imagePath';
 import ButtonComp from '../../Components/ButtonComp';
@@ -59,7 +59,7 @@ const Home = () => {
 
     useEffect(() => {
         reverseGeocode(latitude, longitude);
-        locationPermission()
+       // locationPermission()
         getEventList(1);
     }, [address])
 
@@ -69,7 +69,7 @@ const Home = () => {
           response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
           response = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
         } else {
-          response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+         // response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
         }
         if (response != 'granted') {
           Alert.alert('Location Permission', 'Please allow from setting manually.', [
@@ -147,6 +147,7 @@ const Home = () => {
             console.error('Error fetching address:', error);
         }
     };
+
     const onSearchhandle = (data, details) => {
         setLoading(true)
         console.log(details.geometry.location, 'NewLocationyhaHOme change')
@@ -161,6 +162,7 @@ const Home = () => {
         reverseGeocode(latitude, longitude);
         setLoading(false)
     }
+
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371; // Radius of the Earth in km
         const dLat = (lat2 - lat1) * Math.PI / 180;  // Convert degrees to radians
@@ -236,7 +238,7 @@ const Home = () => {
         </View>
     );
 
-
+ 
 
     return (
         <WrapperContainer>

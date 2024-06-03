@@ -659,6 +659,7 @@ const EditEvent = ({ navigation, route }) => {
                                     onChangeText={(text) => setamount(text)}
                                     keyBoardType='numeric'
                                     isrightIcon={true}
+                                    editable={true}
                                     iconname={'paid'}
                                 />
                             </View>
@@ -668,6 +669,7 @@ const EditEvent = ({ navigation, route }) => {
                         <View style={{ marginVertical: moderateScaleVertical(5) }}>
                             <TextInputC placeholder={'Write a Description'}
                                 value={Description}
+                                editable={true}
                                 onChangeText={(text) => setDescription(text)}
                                 keyBoardType='default'
                                 multiline={true}
@@ -683,6 +685,7 @@ const EditEvent = ({ navigation, route }) => {
                                 <TextInputC
                                     placeholder={'Min No. of people '}
                                     value={MnPeople}
+                                    editable={true}
                                     onChangeText={(text) => setMnPeople(text)}
                                     keyBoardType={'numeric'}
                                 />
@@ -692,6 +695,7 @@ const EditEvent = ({ navigation, route }) => {
                                 <TextInputC
                                     placeholder={'Max No. of people'}
                                     value={MxPeople}
+                                    editable={true}
                                     onChangeText={(text) => setMxPeople(text)}
                                     keyBoardType={'numeric'}
                                 />

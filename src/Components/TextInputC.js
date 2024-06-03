@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, Pressable,TouchableOpacity } from 'react-native';
 import { moderateScale, moderateScaleVertical, scale, textScale } from '../styles/responsiveSize';
 
 import Iconpaid from 'react-native-vector-icons/MaterialIcons'
@@ -10,6 +10,7 @@ import Iconpaid from 'react-native-vector-icons/MaterialIcons'
 // create a component
 const TextInputC = ({
     onPress,
+    onPressComment,
     value,
     text,
     placeholder,
@@ -72,8 +73,11 @@ const TextInputC = ({
                     <Text style={{color: '#333', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500'}}>{value? value:placeholder}</Text>
                     </View>}
                    
-                {imgright && <Pressable onPress={onPressSecure} ><Image source={imgsrc} style={[styles.imgstyling]} /></Pressable>}
-                {isrightIcon && <Iconpaid name={iconname} size={30} color={'#005BD4'} />}
+                {imgright && <TouchableOpacity onPress={onPressSecure} ><Image source={imgsrc} style={[styles.imgstyling]} /></TouchableOpacity>}
+                {isrightIcon && <TouchableOpacity onPress={onPressComment}> 
+                <Iconpaid name={iconname} size={30} color={'#005BD4'} />
+                </TouchableOpacity> 
+                }
             </Pressable>
             {errorTxt && <Text style={{color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14)}}>{errorTxt}</Text>}
         </View>
