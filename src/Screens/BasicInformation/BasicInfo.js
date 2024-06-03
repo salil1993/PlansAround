@@ -30,6 +30,7 @@ const BasicInfo = ({ navigation }) => {
   const [color, setcolor] = useState(false)
   const [UserPic, setUserpic] = useState([])
   const [Loading, setLoading] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date())
 
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
@@ -44,6 +45,7 @@ const BasicInfo = ({ navigation }) => {
 
   const handleConfirm = (date) => {
     const dt = new Date(date);
+    setCurrentDate(dt)
     const x = dt.toISOString().split('T');
     const x1 = x[0].split('-');
     const FDate = x1[0] + '-' + x1[1] + '-' + x1[2]
@@ -217,7 +219,7 @@ const BasicInfo = ({ navigation }) => {
                   <Image source={imagePath.Gola} style={{ alignSelf: 'center', height: scale(120), width: scale(120) }} />}
                 <Image source={imagePath.plus} style={{ alignSelf: 'center', height: scale(40), width: scale(40), position: 'absolute', bottom: 0, left: moderateScale(115) }} />
               </TouchableOpacity>
-              <Text style={styles.phoneHeading}>Basic Information111</Text>
+              <Text style={styles.phoneHeading}>Basic Information</Text>
               <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
               <View style={{ marginVertical: moderateScaleVertical(10) }}>
                 <TextInputC placeholder='First Name'
@@ -242,6 +244,7 @@ const BasicInfo = ({ navigation }) => {
                 </View>
               </View>
               {isDatePickerVisible && <DateTimePickerModal
+                date={currentDate}
                 isVisible={isDatePickerVisible}
                 mode="date"
                 onConfirm={handleConfirm}
