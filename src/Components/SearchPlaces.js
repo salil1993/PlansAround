@@ -14,12 +14,11 @@ const SearchPlaces = ({
     // Geolocation.getCurrentPosition(info => console.log(info));
     return (
         <View style={{
-            marginVertical: moderateScaleVertical(5),
-            borderRadius: scale(5),
-            // elevation: 3, 
-            // borderColor: '#D3D3D3',
-            borderColor: "red",
-            borderWidth: 1,
+            marginVertical: moderateScaleVertical(20),
+            // borderRadius: scale(5),
+            // // elevation: 3, 
+            //  borderColor: '#D3D3D3',
+            // borderWidth: 1,
         }} >
             <GooglePlacesAutocomplete
                 // onPress={(data, details = null) => {
@@ -42,15 +41,12 @@ const SearchPlaces = ({
                 enablePoweredByContainer={false}
                 minLength={4}
                 styles={{
-                    // container: { height: 300,},
+                    container: { flex:0},
                     textInput: { color: '#333', backgroundColor: '#fff', borderRadius: scale(5), elevation: 3, height: moderateScale(50) },
                     description: { color: '#005BD4', },
                     listView: {
-                        // position: 'absolute', 
-                        // top: moderateScaleVertical(55),
-                        // bottom:0,
                         backgroundColor: '#FFF',
-                        // zIndex: 1
+                        zIndex: 1
                     }
                 }}
                 GooglePlacesDetailsQuery={{
