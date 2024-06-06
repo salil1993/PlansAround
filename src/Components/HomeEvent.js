@@ -241,8 +241,9 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
         axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/comment`, { "comment": Comment }, { headers })
             .then((res) => {
                 console.log('PostComment', res)
-                getLikesList(event_id, 1);
+                getCommentList(event_id, 1);
                 setComment('')
+               handleRefresh()
             }).
             catch((err) => {
                 console.log('PostComment', err)
@@ -487,17 +488,22 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     scrollOffsetMax={400 - 300}
                     propagateSwipe={true}
                 >
-                    <View style={[styles.modalStyle, { height: 500 }]}>
+                    <SafeAreaView style={[styles.modalStyle, { height: 500 }]}>
                     
 
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(16) }]}>Comments</Text>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop:moderateScale(20),  marginHorizontal: moderateScale(5), }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' , }}>
+                                    <Text style={[styles.hometxt, { fontSize: moderateScale(16) }]}>Comments</Text>
 
                                 </View>
                                 <TouchableOpacity onPress={() => setopenCommentModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
                             </View>
-                            <View style={{ height: 400, }}>
+                                 <KeyboardAwareScrollView
+                            keyboardShouldPersistTaps={'handled'}
+                            style={{ flex: 1}}
+                            showsVerticalScrollIndicator={false}
+                        >
+                            <View style={{ height: 370 }}>
                                 {Loading ? <Loader /> :
                                     <FlatList
                                         style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
@@ -509,10 +515,12 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                             return (
                                                 <>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                                        {item?.user?.profilePicture != null ? <Image source={{ url: item?.user?.profilePicture }} /> : <Image source={imagePath.frame2} />}
+                                                        {item?.user?.profilePicture != null ?
+                                                         <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={{ url: item?.user?.profilePicture }} />
+                                                          : <Image source={imagePath.Gola} style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} />}
 
                                                         <View>
-                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>{item?.user?.fullName}</Text>
+                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform:'capitalize' }]}>{item?.user?.fullName}</Text>
                                                             <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>{item?.comment}</Text>
                                                         </View>
                                                     </View>
@@ -524,13 +532,9 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                 }
                             </View>
 
-                            <KeyboardAwareScrollView
-                            keyboardShouldPersistTaps={'handled'}
-                            style={{ flex: 1 }}
-                            showsVerticalScrollIndicator={false}
-                        >
-                            <View style={{ flexDirection: 'row', alignSelf: 'flex-end',  }}>
-                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(500), padding: moderateScale(10), marginRight:moderateScale(10) }}>
+                       
+                            <View style={{ flexDirection: 'row', alignSelf: 'flex-end',marginHorizontal:moderateScale(10)  }}>
+                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(500), padding: moderateScale(10), marginRight:moderateScale(10), alignItems:'center' }}>
                                     <IconsLike name='tag' color='#005BD4' size={25} />
                                 </View>
                                 <View style={{ flex: 1 }}>
@@ -543,13 +547,13 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                         value={Comment}
                                         onPressComment={() => postComment(item?._id)}
                                         onChangeText={(text) => { setComment(text) }}
-                                     style={{ height:50 }} 
+                                        style={{ height:moderateScale(50) }} 
                                     />
                                 </View>
 
                             </View>
                         </KeyboardAwareScrollView>
-                    </View>
+                    </SafeAreaView>
                 </Modal>
 {/*------------------ Likes List----------------- */}
                 <Modal
@@ -591,10 +595,10 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                             return (
                                                 <>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                                        {item?.user?.profilePicture != null ? <Image source={{ url: item?.user?.profilePicture }} /> : <Image source={imagePath.frame2} />}
+                                                        {item?.user?.profilePicture != null ? <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={{ url: item?.user?.profilePicture }} /> : <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={imagePath.Gola} />}
 
                                                         <View>
-                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>{item?.fullName}</Text>
+                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform:'capitalize' }]}>{item?.fullName}</Text>
                                                         </View>
                                                     </View>
                                                 </>

@@ -17,7 +17,7 @@ import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const WhatDo = ({ navigation }) => {
+const WhatDo = ({ navigation, route }) => {
     const dispatch = useDispatch();
 
     const [Student, setStudent] = useState(false)
@@ -182,7 +182,12 @@ const WhatDo = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                    navigation.navigate(navigationStrings.POLITICAL_BELIEF)
+                if(route?.params?.isFrom == 'Main'){
+                    navigation.navigate(navigationStrings.POLITICAL_BELIEF,{isFrom:'Main'})
+                  }else{
+                   navigation.navigate(navigationStrings.POLITICAL_BELIEF,{isFrom:'Auth'})
+                }
+                   // navigation.navigate(navigationStrings.POLITICAL_BELIEF)
 
                 // }, 2000)
             })
@@ -502,7 +507,13 @@ const WhatDo = ({ navigation }) => {
                             <View style={{ flex: 0.3, alignItems: 'center' }}>
                                 <Pressable
                                     android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                    onPress={() => navigation.navigate(navigationStrings.POLITICAL_BELIEF)}>
+                                    onPress={() => {
+                                        if(route?.params?.isFrom == 'Main'){
+                                            navigation.navigate(navigationStrings.POLITICAL_BELIEF,{isFrom:'Main'})
+                                          }else{
+                                           navigation.navigate(navigationStrings.POLITICAL_BELIEF,{isFrom:'Auth'})
+                                        }
+                                    }}>
                                     <Text style={styles.skip}>Skip</Text>
                                 </Pressable>
                             </View>

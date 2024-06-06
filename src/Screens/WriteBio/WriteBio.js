@@ -21,7 +21,7 @@ import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const WriteBio = ({ navigation }) => {
+const WriteBio = ({ navigation, route }) => {
     const dispatch = useDispatch();
 
     const [Title, setTitle] = useState('')
@@ -46,7 +46,13 @@ const WriteBio = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                navigation.navigate(navigationStrings.WHERE_STUDY)
+                console.log('Params4-->>',route?.params?.isFrom)
+                if(route?.params?.isFrom == 'Main'){
+                    navigation.navigate(navigationStrings.WHERE_STUDY,{isFrom:'Main'})
+                  }else{
+                   navigation.navigate(navigationStrings.WHERE_STUDY,{isFrom:'Auth'})
+                }
+               // navigation.navigate(navigationStrings.WHERE_STUDY)
                 // }, 2000)
             })
                 .catch((error) => {
@@ -117,7 +123,13 @@ const WriteBio = ({ navigation }) => {
                                     <View style={{ flex: 0.3, alignItems: 'center' }}>
                                         <Pressable
                                             android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                            onPress={() => navigation.navigate(navigationStrings.WHERE_STUDY)}>
+                                            onPress={() => {
+                                                if(route?.params?.isFrom == 'Main'){
+                                                    navigation.navigate(navigationStrings.WHERE_STUDY,{isFrom:'Main'})
+                                                  }else{
+                                                   navigation.navigate(navigationStrings.WHERE_STUDY,{isFrom:'Auth'})
+                                                }
+                                            }}>
                                             <Text style={styles.skip}>Skip</Text>
                                         </Pressable>
                                     </View>

@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component, useState, useMemo } from 'react';
+import React, { Component, useState, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import imagePath from '../../constants/imagePath';
@@ -12,22 +12,19 @@ import { getGender } from '../../API/Api';
 import Snackbar from 'react-native-snackbar';
 import RadioForm from 'react-native-simple-radio-button'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 
 
 // create a component
-const SelectGender = ({ navigation }) => {
+const SelectGender = ({ navigation, route }) => {
   const dispatch = useDispatch();
-
+  const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
     const [ProfileShow, setProfileShow] = useState(false)
-
     const [Other, setOther] = useState(false)
-
     const [selected, setselected] = useState('');
-
     const [value, setvalue] = useState('');
     const [Loading, setLoading] = useState(false);
 
@@ -54,6 +51,12 @@ const SelectGender = ({ navigation }) => {
         }
     ]), []);
 
+    useEffect(() => {
+        if(user){
+            setselected(user?.gender?.name)
+        }
+        }, []);
+
 
 
 
@@ -61,7 +64,6 @@ const SelectGender = ({ navigation }) => {
         console.log(selected, 'finalvalue')
 
         if (selected) {
-
             setLoading(true);
             getGender(ProfileShow, selected).then((res) => {
                 console.log(res,'gender');
@@ -77,7 +79,13 @@ const SelectGender = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                navigation.navigate(navigationStrings.WRITE_BIO)
+                console.log('Params3-->>',route?.params?.isFrom)
+                if(route?.params?.isFrom == 'Main'){
+                    navigation.navigate(navigationStrings.WRITE_BIO,{isFrom:'Main'})
+                  }else{
+                   navigation.navigate(navigationStrings.WRITE_BIO,{isFrom:'Auth'})
+                }
+                //navigation.navigate(navigationStrings.WRITE_BIO)
                 // }, 2000)
             })
                 .catch((error) => {

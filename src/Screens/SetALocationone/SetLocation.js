@@ -18,19 +18,49 @@ import { LocationTwo } from '../../API/Api';
 import Snackbar from 'react-native-snackbar';
 import navigationStrings from '../../Navigation/navigationStrings';
 // create a component
-const SetLocation = ({ navigation }) => {
-    const [Loading, setLoading] = useState(false);
-    const IsFocused = useIsFocused();
+const SetLocation = ({ navigation, route }) => {
     const dispatch = useDispatch();
-    useEffect(() => {
-        requestLocationPermission();
-    }, []);
-
+    const IsFocused = useIsFocused();
+    const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
+    const [Loading, setLoading] = useState(false);
     const [Textshow, setTextshow] = useState(false)
     const [FirstLocation, setFirstLocation] = useState(false)
-
-    const [CurrentLocation, setCurrentLocation] = useState('');
     const [ShowMap, setShowMap] = useState(false)
+     const [address, setAddress] = useState(null)
+    const [CurrentLocation, setCurrentLocation] = useState('');
+
+
+    useEffect(() => {
+    requestLocationPermission();
+    }, []);
+
+
+    const reverseGeocode = async (latitude, longitude) => {
+        const apiKey = 'AIzaSyDoIp9EAqQ10AGtqcgNm6TWndqvUgroHJk';
+        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            // console.log(data, 'addrress')
+
+            if (data.results && data.results.length > 0) {
+                const formattedAddress = data.results[0].formatted_address;
+                console.log('formattedAddress', formattedAddress)
+                setAddress(formattedAddress);
+                setCurrentLocation({ latitude, longitude })
+                setFirstLocation(false);
+                setShowMap(true)
+                dispatch(userCurrentLocation({ latitude, longitude }))
+                setLoading(false);
+
+            }
+        } catch (error) {
+            console.error('Error fetching address:', error);
+        }
+    };
+
+  
 
     const requestLocationPermission = async () => {
         try {
@@ -62,36 +92,43 @@ const SetLocation = ({ navigation }) => {
 
     const getCurrentLocation = () => {
         setLoading(true);
-        Geolocation.getCurrentPosition(
-            position => {
-                const { latitude, longitude } = position.coords;
-                console.log('Current Location:', { latitude, longitude });
-                setCurrentLocation({ latitude, longitude })
-                dispatch(userCurrentLocation(CurrentLocation))
-                setLoading(false);
-                setFirstLocation(true);
-                setTextshow(true)
-            },
-            error => {
-                console.error('Error getting location: ', error);
-                setLoading(false);
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-        );
+        if(user){
+            var latitude = user?.location?.latitude;
+            var longitude = user?.location?.longitude;
+            reverseGeocode(latitude,longitude)
+        }else{
+            Geolocation.getCurrentPosition(
+                position => {
+                    const { latitude, longitude } = position.coords;
+                    console.log('Current Location:', { latitude, longitude });
+                    setCurrentLocation({ latitude, longitude })
+                    dispatch(userCurrentLocation(CurrentLocation))
+                    setLoading(false);
+                    setFirstLocation(true);
+                    setTextshow(true)
+                },
+                error => {
+                    console.error('Error getting location: ', error);
+                    setLoading(false);
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+            );
+        }
+       
     };
 
     const onSearchhandle = (data, details) => {
         console.log(details.geometry.location, 'NewLocationyha')
         const selectedLocation = details.geometry.location;
         const { lat, lng } = selectedLocation;
-        console.log(lat, '...', lng)
         const latitude = lat;
         const longitude = lng;
         setCurrentLocation({ latitude, longitude })
+        dispatch(userCurrentLocation({ latitude, longitude }))
         setFirstLocation(false);
         setShowMap(true)
         setTextshow(true)
-        // setFirstLocation(true);
+        setAddress('')
         console.log(CurrentLocation, 'selected location')
     }
 
@@ -111,7 +148,13 @@ const SetLocation = ({ navigation }) => {
                 backgroundColor: '#005BD4',
                 textColor: "#fff",
             });
-            navigation.navigate(navigationStrings.SELECT_GENDER)
+           // navigation.navigate(navigationStrings.SELECT_GENDER)
+           console.log('Params1-->>',route?.params?.isFrom)
+           if(route?.params?.isFrom == 'Main'){
+            navigation.navigate(navigationStrings.SELECT_GENDER,{isFrom:'Main'})
+          }else{
+           navigation.navigate(navigationStrings.SELECT_GENDER,{isFrom:'Auth'})
+        }
 
         }).catch((err) => {
             setLoading(false);
@@ -141,7 +184,13 @@ const SetLocation = ({ navigation }) => {
                 backgroundColor: '#005BD4',
                 textColor: "#fff",
             });
-            navigation.navigate(navigationStrings.SELECT_GENDER)
+            console.log('Params2-->>',route?.params?.isFrom)
+           // navigation.navigate(navigationStrings.SELECT_GENDER)
+           if(route?.params?.isFrom == 'Main'){
+            navigation.navigate(navigationStrings.SELECT_GENDER,{isFrom:'Main'})
+          }else{
+           navigation.navigate(navigationStrings.SELECT_GENDER,{isFrom:'Auth'})
+        }
         }).catch((err) => {
             setLoading(false);
             console.log(err, 'errlocatioon')
@@ -169,7 +218,7 @@ const SetLocation = ({ navigation }) => {
                         <View style={{ flex: 0.9, justifyContent: 'flex-start' }}>
                             <Image source={imagePath.location} style={{ alignSelf: 'center', height: scale(100), width: scale(100) }} />
                             <Text style={styles.phoneHeading}>Set a location</Text>
-                            <Text style={[styles.phoneHeading2, { marginVertical: moderateScaleVertical(15) }]}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
+                            <Text style={[styles.phoneHeading2, { marginVertical: moderateScaleVertical(5) }]}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
                             <View>
                                 <SearchPlaces onSearchPlaces={onSearchhandle} placeholder='Select a location' />
                             </View>
@@ -180,7 +229,6 @@ const SetLocation = ({ navigation }) => {
                                         flex: 1,
                                         marginVertical: moderateScale(20),
                                     }}
-
                                     loadingEnabled={true}
                                     loadingIndicatorColor='#005BD4'
                                     moveOnMarkerPress={true}
@@ -206,8 +254,8 @@ const SetLocation = ({ navigation }) => {
                             </View>
                                 :
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    {Textshow ? <Text style={styles.phoneHeading2}>Current Position Updated.</Text> :
-                                        <Text style={styles.phoneHeading2}>Getting your current location. Please wait....</Text>}</View>}
+                                    {Textshow ? <Text style={styles.phoneHeading2}>{`Current Position Updated.`}</Text> :address?<Text style={styles.phoneHeading2}>{address}</Text>:
+                                        <Text style={styles.phoneHeading2}>Getting your current location. Please wait....</Text>}</View>}                
                             <View>
                                 {ShowMap &&
                                     <View style={{ height: moderateScaleVertical(300), borderRadius: moderateScale(20) }}>
@@ -232,8 +280,8 @@ const SetLocation = ({ navigation }) => {
                                                 tappable={true}
                                                 pinColor='red'
                                                 coordinate={{
-                                                    latitude: CurrentLocation.latitude,
-                                                    longitude: CurrentLocation.longitude,
+                                                    latitude:CurrentLocation.latitude,
+                                                    longitude:CurrentLocation.longitude,
                                                 }}
                                                 title="Your are Here!"
                                             />
@@ -242,9 +290,9 @@ const SetLocation = ({ navigation }) => {
                                     </View>
                                 }
                             </View>
-                            {ShowMap ? <ButtonComp isLoading={Loading} onPress={handleSumbitSelcted} text='Use Selected Position' style={{ backgroundColor: '#005BD4', marginTop: moderateScaleVertical(10) }} />
+                            {ShowMap ? <ButtonComp isLoading={Loading} onPress={handleSumbitSelcted} text='Use Selected Position' style={{ backgroundColor: '#005BD4', marginVertical: moderateScaleVertical(10) }} />
                                 :
-                                <ButtonComp isLoading={Loading} onPress={handleSumbit} text='Use my current position' style={{ backgroundColor: '#005BD4', marginTop: moderateScaleVertical(10) }} />
+                                <ButtonComp isLoading={Loading} onPress={handleSumbit} text='Use my current position' style={{ backgroundColor: '#005BD4', marginVertical: moderateScaleVertical(10) }} />
                             }
                         </View>
                     </View>

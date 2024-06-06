@@ -170,7 +170,8 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance, onSh
                         <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => {
                             // setShowOptions(false);
                             // setDelete(!showDelete)
-                            setDelete(), setShowOptions(false)
+                            setDelete(),
+                             setShowOptions(false)
                         }}>
 
                             <IconsComment name='delete-outline' size={35} color='#333' style={{ width: '30%', textAlign: 'center' }} />

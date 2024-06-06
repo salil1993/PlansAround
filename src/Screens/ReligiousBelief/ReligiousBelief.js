@@ -17,7 +17,7 @@ import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const ReligiousBelief = ({ navigation }) => {
+const ReligiousBelief = ({ navigation, route }) => {
     const dispatch = useDispatch();
 
     const [Judaism, setJudaism] = useState(false)
@@ -289,7 +289,12 @@ const ReligiousBelief = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                    navigation.navigate(navigationStrings.INTERESTS)
+                   if(route?.params?.isFrom == 'Main'){
+                    navigation.navigate(navigationStrings.INTERESTS,{isFrom:'Main'})
+                   }else{
+                    navigation.navigate(navigationStrings.INTERESTS,{isFrom:'Auth'})
+                   }
+                  
                 // }, 2000)
             })
                 .catch((error) => {
@@ -716,7 +721,13 @@ const ReligiousBelief = ({ navigation }) => {
                             <View style={{ flex: 0.3, alignItems: 'center' }}>
                                 <Pressable
                                     android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                    onPress={() => navigation.navigate(navigationStrings.INTERESTS)}>
+                                    onPress={() => {
+                                        if(route?.params?.isFrom == 'Main'){
+                                            navigation.navigate(navigationStrings.INTERESTS,{isFrom:'Main'})
+                                           }else{
+                                            navigation.navigate(navigationStrings.INTERESTS,{isFrom:'Auth'})
+                                           }
+                                    }}>
                                     <Text style={styles.skip}>Skip</Text>
                                 </Pressable>
                             </View>

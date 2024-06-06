@@ -511,36 +511,84 @@ const HostEvent = ({ navigation, route }) => {
         setDOB(FDate)
         hideDatePicker();
     }
-    const handletime = (date) => {
-        const dt = new Date(date);
-        let tzTime = dt.toLocaleTimeString()
-        let newTime = tzTime.split(':')
-        // console.log(typeof(newTime[2]));
-        let Dformat = newTime[2]
-        // let value = newTime.map(function (str) {
-        //     return str.substring(2);
-        // });
-        // console.log(value,'new')
-        let Finaltime = newTime[0] + ':' + newTime[1] + ' ' + Dformat.substring(3, 5).toUpperCase();
-        console.log(Finaltime, 'ye start time hai')
+    // const handletime = (date) => {
+    //     const dt = new Date(date);
+    //     console.log('dob',DOB)
+    //     let tzTime = dt.toLocaleTimeString()
+    //     let newTime = tzTime.split(':')
+    //     let Dformat = newTime[2]
+    //     let Finaltime = newTime[0] + ':' + newTime[1] + ' ' + Dformat.substring(3, 5).toUpperCase();
+    //     console.log(Finaltime, 'ye start time hai')
 
+    //     setstartTime(Finaltime);
+    //     setisStartTime(false);
+    // }
+
+    const handletime = (date) => {
+        const selectedDate = new Date(date);
+        const currentDate = new Date();
+        const selectedTime = selectedDate.getTime();
+        const currentTime = currentDate.getTime();
+
+        // Check if the selected date and time is in the past
+        if (selectedTime < currentTime) {
+            Alert.alert('Start time is in the past. Please select a future time.')
+            return;
+        }
+    
+        let tzTime = selectedDate.toLocaleTimeString();
+        let newTime = tzTime.split(':');
+        let Dformat = newTime[2];
+        let Finaltime = newTime[0] + ':' + newTime[1] + ' ' + Dformat.substring(3, 5).toUpperCase();
+        
+        console.log(Finaltime, 'ye start time hai');
+    
         setstartTime(Finaltime);
         setisStartTime(false);
-    }
+    };
+
     const handletime2 = (date) => {
-        const dt = new Date(date);
-        let tzTime = dt.toLocaleTimeString()
-        let newTime = tzTime.split(':')
-        let Dformat = newTime[2]
-        // let value = newTime.map(function (str) {
-        //     return str.substring(2);
-        // });
-        // console.log(value,'new')
+        const selectedDate = new Date(date);
+    
+        // Parse the startTime (e.g., "11:50 AM")
+        const [time, modifier] = startTime.split(' ');
+        let [hours, minutes] = time.split(':');
+        hours = parseInt(hours);
+        minutes = parseInt(minutes);
+    
+        if (modifier === 'PM' && hours !== 12) {
+            hours += 12;
+        } else if (modifier === 'AM' && hours === 12) {
+            hours = 0;
+        }
+    
+        // Set the start time on the selected date
+        const startDate = new Date(selectedDate);
+        startDate.setHours(hours, minutes, 0, 0);
+    
+        console.log('startTime', startTime);
+        console.log('selectedDate', selectedDate);
+        console.log('startDate', startDate);
+    
+        const selectedTime = selectedDate.getTime();
+        const startTimeMillis = startDate.getTime();
+    
+        // Check if the selected date and time is in the past
+        if (selectedTime <= startTimeMillis) {
+            Alert.alert('Start time should not be less than or equal to end time');
+            return;
+        }
+    
+        let tzTime = selectedDate.toLocaleTimeString();
+        let newTime = tzTime.split(':');
+        let Dformat = newTime[2];
         let Finaltime = newTime[0] + ':' + newTime[1] + ' ' + Dformat.substring(3, 5).toUpperCase();
+    
         setEndTime(Finaltime);
-        console.log(Finaltime, 'ye Endtime time hai')
+        console.log(Finaltime, 'ye Endtime time hai');
         setisEndTime(false);
-    }
+    };
+    
 
     const requestCameraPermission = async () => {
         if (Platform.OS === 'android') {

@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useState, useRef, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, Alert, Platform, PermissionsAndroid } from 'react-native';
 import { moderateScale, moderateScaleVertical, scale, height, textScale, width } from '../../styles/responsiveSize';
 import imagePath from '../../constants/imagePath';
 import ButtonComp from '../../Components/ButtonComp';
@@ -20,12 +20,7 @@ import { userCurrentLocation } from '../../redux/Slices/UserSlice';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import HomeEvent from '../../Components/HomeEvent';
-import {
-	request,
-	PERMISSIONS,
-	openSettings,
-	requestMultiple,
-  } from 'react-native-permissions';
+
 
 // create a component
 const Home = () => {
@@ -58,31 +53,60 @@ const Home = () => {
 
 
     useEffect(() => {
-        reverseGeocode(latitude, longitude);
-       // locationPermission()
+        requestLocationPermission()
         getEventList(1);
+        if(User){
+            reverseGeocode(User?.location?.latitude, User?.location?.longitude);
+            var latitude = User?.location?.latitude;
+            var longitude = User?.location?.longitude;
+            setCurrentLocation({latitude, longitude})
+        }
     }, [address])
 
-    async function locationPermission() {
-        var response = '';
-        if (Platform.OS == 'android') {
-          response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-          response = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
-        } else {
-         // response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    const requestLocationPermission = async () => {
+        try {
+            if (Platform.OS === 'ios') {
+                // No need to request permission on iOS
+                getCurrentLocation();
+            } else {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                        title: 'Location Permission',
+                        message: 'This app needs access to your location.',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    },
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    getCurrentLocation();
+                } else {
+                    console.log('Location permission denied');
+                }
+            }
+        } catch (error) {
+            console.error('Error requesting location permission: ', error);
         }
-        if (response != 'granted') {
-          Alert.alert('Location Permission', 'Please allow from setting manually.', [
-            {
-              text: 'Cancel',
-              onPress: () => null,
-              style: 'cancel',
+    };
+
+    const getCurrentLocation = () => {
+        setLoading(true);
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                console.log('Current Location:', { latitude, longitude });
+                setCurrentLocation({ latitude, longitude })
+                setLoading(false);
             },
-            {text: 'Ok', onPress: () => openSettings()},
-          ]);
-        }
-        return response;
-      }
+            error => {
+                console.error('Error getting location: ', error);
+                setLoading(false);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        );
+    };
+
 
     const radioButtons = useMemo(() => ([
         {
@@ -494,7 +518,7 @@ const Home = () => {
                     backdropTransitionInTiming={600}
                     backdropTransitionOutTiming={600}
                 >
-                    <View style={styles.locationmodalStyle}>
+                    <SafeAreaView style={styles.locationmodalStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
                             <TouchableOpacity onPress={() => setLocationModal(false)}>
                                 <IconsLike name='down' size={26} color='#333' style={{ marginLeft: moderateScale(5) }} />
@@ -523,8 +547,8 @@ const Home = () => {
                                     zoomEnabled={true}
                                     zoomControlEnabled={true}
                                     initialRegion={{
-                                        latitude: latitude,
-                                        longitude: longitude,
+                                        latitude: latitude != null ?latitude:CurrentLocation.latitude,
+                                        longitude: longitude != null ?longitude:CurrentLocation.longitude,
                                         latitudeDelta: 1,
                                         longitudeDelta: 1,
                                     }}>
@@ -532,8 +556,8 @@ const Home = () => {
                                         tappable={true}
                                         pinColor='red'
                                         coordinate={{
-                                            latitude: latitude,
-                                            longitude: longitude,
+                                            latitude: latitude != null ?latitude :CurrentLocation.latitude,
+                                            longitude: longitude != null ?longitude :CurrentLocation.longitude,
                                         }}
                                         title="Your are Here!"
                                     />
@@ -541,7 +565,7 @@ const Home = () => {
                             </View>
                             <ButtonComp onPress={() => setLocationModal(false)} isLoading={Loading} style={{ backgroundColor: '#005BD4', marginTop: moderateScaleVertical(10) }} text='Use my position' />
                         </View>
-                    </View>
+                    </SafeAreaView>
                 </Modal>
             </View>
 

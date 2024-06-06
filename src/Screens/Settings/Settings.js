@@ -25,6 +25,13 @@ const Settings = ({ navigation }) => {
                     </View>
                     <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.BASIC_INFO,{isFrom:'Main'})} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: moderateScaleVertical(20) }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Iconsetting name='account-circle' size={20} color='#4F4F4F' />
+                        <Text style={styles.settingsText}>Edit Profile</Text>
+                    </View>
+                    <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.PACKAGEPURCHASED)} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: moderateScaleVertical(20) }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='account-circle' size={20} color='#4F4F4F' />

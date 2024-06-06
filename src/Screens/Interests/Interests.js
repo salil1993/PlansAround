@@ -17,7 +17,7 @@ import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const Interests = ({ navigation }) => {
+const Interests = ({ navigation, route }) => {
     const dispatch = useDispatch();
 
     const [ProfileShow, setProfileShow] = useState(false);
@@ -109,7 +109,12 @@ const Interests = ({ navigation }) => {
                     });
                     // setTimeout(() => {
                     //     Snackbar.dismiss();
-                    navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                    if(route?.params?.isFrom == 'Main'){
+                        navigation.navigate(navigationStrings.SETTINGS )
+                    }else{
+                        navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                    }
+                   
                     // }, 2000)
                 })
                 .catch((error) => {
@@ -132,9 +137,6 @@ const Interests = ({ navigation }) => {
             });
 
         }
-
-
-        // navigation.navigate(navigationStrings.KYC_VERIFICATION)
     }
     return (
         <>
@@ -328,7 +330,13 @@ const Interests = ({ navigation }) => {
                                 <View style={{ flex: 0.3, alignItems: 'center' }}>
                                     <Pressable
                                         android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                        onPress={() => navigation.navigate(navigationStrings.KYC_VERIFICATION)}>
+                                        onPress={() => {
+                                            if(route?.params?.isFrom == 'Main'){
+                                                navigation.navigate(navigationStrings.SETTINGS )
+                                            }else{
+                                                navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                                            }
+                                        }}>
                                         <Text style={styles.skip}>Skip</Text>
                                     </Pressable>
                                 </View>

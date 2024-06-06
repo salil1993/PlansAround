@@ -99,16 +99,6 @@ export default function (Stack) {
                 options={{ headerShown: false }}
             />
 
-
-
-
-
-
-
-
-
-
-
         </>
     );
 }

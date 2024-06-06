@@ -21,7 +21,7 @@ import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const WhereStudy = ({ navigation }) => {
+const WhereStudy = ({ navigation, route }) => {
     const dispatch = useDispatch();
 
     const [College, setCollege] = useState('')
@@ -46,7 +46,12 @@ const WhereStudy = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 Snackbar.dismiss();
-                navigation.navigate(navigationStrings.WHAT_DO)
+                if(route?.params?.isFrom == 'Main'){
+                    navigation.navigate(navigationStrings.WHAT_DO,{isFrom:'Main'})
+                  }else{
+                   navigation.navigate(navigationStrings.WHAT_DO,{isFrom:'Auth'})
+                }
+              //  navigation.navigate(navigationStrings.WHAT_DO)
                 // }, 2000)
             })
                 .catch((error) => {
@@ -139,7 +144,13 @@ const WhereStudy = ({ navigation }) => {
                                     <View style={{ flex: 0.3, alignItems: 'center' }}>
                                         <Pressable
                                             android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                            onPress={() => navigation.navigate(navigationStrings.WHAT_DO)}>
+                                            onPress={() => {
+                                                if(route?.params?.isFrom == 'Main'){
+                                                    navigation.navigate(navigationStrings.WHAT_DO,{isFrom:'Main'})
+                                                  }else{
+                                                   navigation.navigate(navigationStrings.WHAT_DO,{isFrom:'Auth'})
+                                                }
+                                            }}>
                                             <Text style={styles.skip}>Skip</Text>
                                         </Pressable>
                                     </View>
