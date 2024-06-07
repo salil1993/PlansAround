@@ -12,22 +12,23 @@ import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import { AUTH_CONFIG } from '../../constants/Path';
 import navigationStrings from '../../Navigation/navigationStrings';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const Interests = ({ navigation }) => {
+const Interests = ({ navigation, route }) => {
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
     const [ProfileShow, setProfileShow] = useState(false);
     const [openModal, setopenModal] = useState(false);
     const [Loading, setLoading] = useState(false);
-    const [CategoryList, setCategoryList] = useState('');
+    const [CategoryList, setCategoryList] = useState([]);
     const [length, setlength] = useState(0);
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedCategory, setselectedCategory] = useState([]);
 
+    console.log("user====", user);
 
     useEffect(() => {
         getCategoryData();
@@ -48,11 +49,12 @@ const Interests = ({ navigation }) => {
                     ...category,
                     subCategories: category.subCategories.map(subcategory => ({
                         ...subcategory,
-                        isSelected: false
+                        isSelected: user?.interests?.length > 0 ? user?.interests?.includes(subcategory?._id) : false
                     }))
                 }));
                 console.log(modifiedData, 'modified data')
                 setCategoryList(modifiedData)
+                setselectedCategory(user?.interests || [])
 
             })
             .catch((err) => console.log(err, 'cat m err'))
@@ -72,20 +74,37 @@ const Interests = ({ navigation }) => {
             })
         })
 
-        setSelectedItems([...selectedItems, item._id]);
-        setselectedCategory([...selectedCategory, item.category_id]);
+        if (selectedItems.includes(item._id)) {
+            const index = selectedItems.indexOf(item._id);
+            setSelectedItems(selectedItems.splice(index, 1));
+        } else {
+            setSelectedItems([...selectedItems, item._id]);
+        }
+
+        if (selectedCategory.includes(item.category_id)) {
+            const index = selectedCategory.indexOf(item.category_id);
+            setselectedCategory(selectedCategory.splice(index, 1));
+        } else {
+            setselectedCategory([...selectedCategory, item.category_id]);
+        }
+
+        // setSelectedItems([...selectedItems, item._id]);
+        // setselectedCategory([...selectedCategory, item.category_id]);
     }
     // console.log(selectedItems, 'items total')
     // console.log(selectedCategory, 'items category')
 
     const handleSumbit = async () => {
 
+
         if (selectedItems.length > 0) {
             // console.log(selectedCategory, 'ye final category');
             // console.log(selectedItems, 'ye final items');
 
             const FinalCategory = [...new Set(selectedCategory)];
-            console.log(FinalCategory, 'filtered category');
+
+            console.log('selectedInterests====', FinalCategory);
+            console.log('selectedItems====', selectedItems);
             setLoading(true);
             let usertoken = await getData('UserToken');
             console.log(usertoken, 'token')
@@ -109,7 +128,12 @@ const Interests = ({ navigation }) => {
                     });
                     // setTimeout(() => {
                     //     Snackbar.dismiss();
-                    navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                    if (route?.params?.isFrom == 'Main') {
+                        navigation.navigate(navigationStrings.SETTINGS)
+                    } else {
+                        navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                    }
+
                     // }, 2000)
                 })
                 .catch((error) => {
@@ -132,9 +156,6 @@ const Interests = ({ navigation }) => {
             });
 
         }
-
-
-        // navigation.navigate(navigationStrings.KYC_VERIFICATION)
     }
     return (
         <>
@@ -328,7 +349,13 @@ const Interests = ({ navigation }) => {
                                 <View style={{ flex: 0.3, alignItems: 'center' }}>
                                     <Pressable
                                         android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                        onPress={() => navigation.navigate(navigationStrings.KYC_VERIFICATION)}>
+                                        onPress={() => {
+                                            if (route?.params?.isFrom == 'Main') {
+                                                navigation.navigate(navigationStrings.SETTINGS)
+                                            } else {
+                                                navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                                            }
+                                        }}>
                                         <Text style={styles.skip}>Skip</Text>
                                     </Pressable>
                                 </View>

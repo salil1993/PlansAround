@@ -28,16 +28,20 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
     const navigation = useNavigation();
     const [openModal, setopenModal] = useState(false);
     const [openCommentModal, setopenCommentModal] = useState(false);
+    const [openLikesModal,setopenLikesModal] = useState(false)
     const [offset, setoffset] = useState(null)
     const [askPermission, setaskPermission] = useState(false);
     const [Loading, setLoading] = useState(false)
     const [LoadingP, setLoadingP] = useState(false)
     const [Comment, setComment] = useState('')
     const [CommentList, setCommentList] = useState([])
+    const [LikesList, setLikesList] = useState([])
     const [selectedImage, setSelectedImage] = useState(null);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     useEffect(() => {
-    
-    }, [CommentList])
+
+    }, [])
     const openImage = (image) => {
         setSelectedImage(image);
     };
@@ -116,8 +120,13 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
 
 
     const handleComments = (event_id) => {
-         getCommentList(event_id,1)
-         setopenCommentModal(true)
+        getCommentList(event_id, 1)
+        setopenCommentModal(true)
+    }
+
+    const handleLikes = (event_id) => {
+        getLikesList(event_id, 1)
+        setopenLikesModal(true)
     }
 
     const handleOnScroll = event => {
@@ -135,8 +144,10 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
         setopenModal(true)
     }
 
-    const getCommentList = async(eventId,pageNumber) =>{
-     
+    const getCommentList = async (eventId, pageNumber) => {
+        if (Loading) {
+            return;
+        }
         setLoading(true);
         try {
             let usertoken = await getData('UserToken');
@@ -145,55 +156,124 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                 'Authorization': `Bearer ${usertoken}`,
                 'Content-Type': "application/json",
             };
-    //        homepage/events/664781883a31949815756328/comment?page=1&limit=10
+            //        homepage/events/664781883a31949815756328/comment?page=1&limit=10
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${eventId}/comment?page=${pageNumber}&limit=10`, { headers });
             const responseData = response.data;
             console.log(JSON.stringify(responseData), 'totalComments')
-             const comments = responseData?.docs;
-             setCommentList(comments)
-            // setEventsList((prevEvents) => {
-            //     if (pageNumber === 1) {
-            //         // If it's the first page, replace existing events
-            //         return newEvents;
-            //     } else {
-            //         // If it's not the first page, append new events to the existing list
-            //         return [...prevEvents, ...newEvents];
-            //     }
-            //});
-            // setPage(pageNumber); // Update the current page number
+            const comments = responseData?.docs;
+            //  setCommentList(comments)
+            setCommentList((prevComments) => {
+                if (pageNumber === 1) {
+                    // If it's the first page, replace existing events
+                    return comments;
+                } else {
+                    // If it's not the first page, append new events to the existing list
+                    return [...prevComments, ...comments];
+                }
+            });
+            setPage(pageNumber); // Update the current page number
             setLoading(false);
-            // setHasMore(newEvents?.length > 0); // Update hasMore based on whether new events were fetched
+            if(comments?.length <= responseData?.totalDocs ){
+                setHasMore(true);
+            }else{
+                setHasMore(false);
+            }
+           // Update hasMore based on whether new events were fetched
         } catch (error) {
             setLoading(false);
             console.log(error);
         }
-       }
+    }
 
-   const postComment = async(event_id) =>{
-        //http://localhost:3000/api/mobile/homepage/events/664781883a31949815756328/comment
+    const getLikesList = async (eventId, pageNumber) => {
+        if (Loading) {
+            return;
+        }
+        setLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userToken', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+            //        homepage/events/664781883a31949815756328/comment?page=1&limit=10
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${eventId}/likes?page=${pageNumber}&limit=10`, { headers });
+            const responseData = response?.data;
+            console.log(JSON.stringify(responseData), 'totalComments')
+            const likes = responseData?.data?.likedUsers;
+            //  setCommentList(comments)
+            setLikesList((prevLikes) => {
+                if (pageNumber === 1) {
+                    // If it's the first page, replace existing events
+                    return likes;
+                } else {
+                    // If it's not the first page, append new events to the existing list
+                    return [...prevLikes, ...likes];
+                }
+            });
+            setPage(pageNumber); // Update the current page number
+            setLoading(false);
+            if(likes?.length <= responseData?.totalDocs ){
+                setHasMore(true);
+            }else{
+                setHasMore(false);
+            }
+           // Update hasMore based on whether new events were fetched
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+    }
 
+    // Define your function for handling load more
+    const handleLoadMore = () => {
+        if (!Loading && hasMore) {
+            getCommentList(page + 1);
+        }
+    };
+
+    const postComment = async (event_id) => {
         let usertoken = await getData('UserToken');
         const headers = {
             'Authorization': `Bearer ${usertoken}`,
         };
-        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/comment`,{ "comment": Comment }, { headers })
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/comment`, { "comment": Comment }, { headers })
             .then((res) => {
                 console.log('PostComment', res)
-                getCommentList(event_id,1);
+                getCommentList(event_id, 1);
                 setComment('')
+               handleRefresh()
             }).
             catch((err) => {
                 console.log('PostComment', err)
-                setLoadEvent(false)
+                
             })
-       }
+    }
+
+    const postLikes = async (event_id) => {
+        let usertoken = await getData('UserToken');
+        const headers = {
+            'Authorization': `Bearer ${usertoken}`,
+        };
+        console.log(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/likes`)
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/likes`,null, { headers })
+            .then((res) => {
+                console.log('LikesRes', res)
+                getLikesList(event_id, 1);
+                handleRefresh()
+            }).
+            catch((err) => {
+                console.log('LikesErr', err)
+            })
+    }
 
 
     return (
         <>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
-                    <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.userId })}  style={{ flexDirection: 'row', alignItems: 'center' }} >
+                    <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.userId })} style={{ flexDirection: 'row', alignItems: 'center' }} >
                         {
                             item?.user?.profilePicture ?
                                 <Image source={{ uri: item?.user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
@@ -228,7 +308,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                         <Text style={[styles.eventtxt, { color: 'red' }]}>{Distance.toLocaleString().substring(0, 4)} km away </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.location, Ulocation: UserLocation, type:'HomeEvent' })} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.location, Ulocation: UserLocation, type: 'HomeEvent' })} style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Image source={imagePath.Gmap} style={{ height: moderateScaleVertical(30), width: moderateScale(30) }} />
                         </TouchableOpacity>
                     </View>
@@ -265,7 +345,6 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     >
                         {item?.images ?
                             item?.images && item.images.map((item, index) => {
-                                // console.log(item, 'images')
                                 return (
                                     <View key={index} style={{ marginRight: moderateScale(5) }}>
                                         <TouchableOpacity key={index} onPress={() => openImage(item)}>
@@ -294,12 +373,14 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                         <View style={{ width: '50%', }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <IconsLike name='like2' size={20} color='#333' />
+                                <TouchableOpacity onPress={() => handleLikes(item?._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                   <TouchableOpacity onPress={() =>postLikes(item?._id)}>
+                                    <IconsLike name='like2' size={20} color={item?.userHasLiked ?'red':'#333'} /> 
+                                    </TouchableOpacity> 
                                     <Text style={[styles.eventtxt, { marginLeft: moderateScale(5) }]}>{item?.likesCount}</Text>
 
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() =>handleComments(item?._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <TouchableOpacity onPress={() => handleComments(item?._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <IconsComment name='comment' size={20} color='#333' />
                                     <Text style={[styles.eventtxt, { marginLeft: moderateScale(10) }]}>{item?.commentCount}</Text>
 
@@ -387,6 +468,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                         </View>
                     </View>
                 </Modal>
+                {/* ------------------Comment List------------------ */}
                 <Modal
                     hasBackdrop={true}
                     coverScreen={true}
@@ -406,69 +488,130 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     scrollOffsetMax={400 - 300}
                     propagateSwipe={true}
                 >
-                    <View style={[styles.modalStyle, { height: 500 }]}>
-                    <KeyboardAwareScrollView
-                         keyboardShouldPersistTaps={'handled'} 
-                          style={{flex:1}}
-                         showsVerticalScrollIndicator={false}
-                         >
+                    <SafeAreaView style={[styles.modalStyle, { height: 500 }]}>
                     
-                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(16) }]}>Comments</Text>
 
-                            </View>
-                            <TouchableOpacity onPress={() => setopenCommentModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
-                        </View>
-                        <View style={{height:400,}}>
-                          {Loading ? <Loader /> :
-                                <FlatList
-                                style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
-                                    ListEmptyComponent={<View style={{ flex: 1, height: height/3.5, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no comments.</Text></View>}
-                                    data={CommentList}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                                    {item?.user?.profilePicture != null ? <Image source={{url:item?.user?.profilePicture}} />: <Image source={imagePath.frame2} /> }
-                               
-                                <View>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18) }]}>{item?.user?.fullName}</Text>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>{item?.comment}</Text>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop:moderateScale(20),  marginHorizontal: moderateScale(5), }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' , }}>
+                                    <Text style={[styles.hometxt, { fontSize: moderateScale(16) }]}>Comments</Text>
+
                                 </View>
+                                <TouchableOpacity onPress={() => setopenCommentModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
                             </View>
-                                            </>
-                                        )
-                                    }
-                                    }
-                                />
-                        }
-                         </View>
-                        
-            
-                        <View style={{ flexDirection: 'row', alignSelf: 'flex-end' ,marginBottom:20}}>
-                            <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(500), padding: moderateScale(10) }}>
-                                <IconsLike name='tag' color='#005BD4' size={25} />
-                            </View>
-                            <View  style={{ flex: 1}}>
-                                <TextInputC
-                                    placeholder={'Leave your comment'}
-                                    autoFocus={true}
-                                    editable={true}
-                                    iconname={'send'}
-                                    isrightIcon={true}
-                                     value={Comment}
-                                     onPressComment={() =>postComment(item?._id)}
-                                     onChangeText={(text)=>{setComment(text)}}
-                                  //  style={{ paddingVertical:moderateScaleVertical(20) }} 
+                                 <KeyboardAwareScrollView
+                            keyboardShouldPersistTaps={'handled'}
+                            style={{ flex: 1}}
+                            showsVerticalScrollIndicator={false}
+                        >
+                            <View style={{ height: 370 }}>
+                                {Loading ? <Loader /> :
+                                    <FlatList
+                                        style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
+                                        ListEmptyComponent={<View style={{ flex: 1, height: height / 3.5, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no comments.</Text></View>}
+                                        data={CommentList}
+                                        contentContainerStyle={{paddingBottom:20}}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <>
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
+                                                        {item?.user?.profilePicture != null ?
+                                                         <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={{ url: item?.user?.profilePicture }} />
+                                                          : <Image source={imagePath.Gola} style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} />}
+
+                                                        <View>
+                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform:'capitalize' }]}>{item?.user?.fullName}</Text>
+                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>{item?.comment}</Text>
+                                                        </View>
+                                                    </View>
+                                                </>
+                                            )
+                                        }
+                                        }
                                     />
+                                }
                             </View>
 
-                        </View>
+                       
+                            <View style={{ flexDirection: 'row', alignSelf: 'flex-end',marginHorizontal:moderateScale(10)  }}>
+                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(500), padding: moderateScale(10), marginRight:moderateScale(10), alignItems:'center' }}>
+                                    <IconsLike name='tag' color='#005BD4' size={25} />
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <TextInputC
+                                        placeholder={'Leave your comment'}
+                                        autoFocus={true}
+                                        editable={true}
+                                        iconname={'send'}
+                                        isrightIcon={true}
+                                        value={Comment}
+                                        onPressComment={() => postComment(item?._id)}
+                                        onChangeText={(text) => { setComment(text) }}
+                                        style={{ height:moderateScale(50) }} 
+                                    />
+                                </View>
+
+                            </View>
                         </KeyboardAwareScrollView>
+                    </SafeAreaView>
+                </Modal>
+{/*------------------ Likes List----------------- */}
+                <Modal
+                    hasBackdrop={true}
+                    coverScreen={true}
+                    backdropColor="#000"
+                    backdropOpacity={0.5}
+                    onBackdropPress={() => setopenLikesModal(false)}
+                    isVisible={openLikesModal}
+                    style={{ justifyContent: 'flex-end', margin: 0, }}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    animationInTiming={800}
+                    animationOutTiming={800}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}
+                    scrollTo={(p) => handleScrollTo(p)}
+                    scrollOffset={offset}
+                    scrollOffsetMax={400 - 300}
+                    propagateSwipe={true}
+                >
+                    <View style={[styles.modalStyle, { height: 500 }]}>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(16) }]}>Likes</Text>
+
+                                </View>
+                                <TouchableOpacity onPress={() => setopenLikesModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                            </View>
+                            <View style={{ flex:1 }}>
+                                {Loading ? <Loader /> :
+                                    <FlatList
+                                        style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
+                                        ListEmptyComponent={<View style={{ flex: 1, height: height / 3.5, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no Likes on this event.</Text></View>}
+                                        data={LikesList}
+                                        contentContainerStyle={{paddingBottom:20}}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <>
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
+                                                        {item?.user?.profilePicture != null ? <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={{ url: item?.user?.profilePicture }} /> : <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={imagePath.Gola} />}
+
+                                                        <View>
+                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform:'capitalize' }]}>{item?.fullName}</Text>
+                                                        </View>
+                                                    </View>
+                                                </>
+                                            )
+                                        }
+                                        }
+                                    />
+                                }
+                            </View>
+
+                           
                     </View>
                 </Modal>
-
             </View>
             <View>
                 <Modal
@@ -605,7 +748,7 @@ const styles = StyleSheet.create({
         padding: moderateScale(16)
     },
     modalContainer: {
-        flex: 1/2,
+        flex: 1 / 2,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -629,5 +772,4 @@ const styles = StyleSheet.create({
 
 });
 
-//make this component available to the app
 export default HomeEvent;

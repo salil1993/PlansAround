@@ -1,11 +1,11 @@
 //import liraries
 import React, { Component, useState, useRef, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView,Modal, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, FlatList, StatusBar, ActivityIndicator, Image, RefreshControl, ScrollView, TouchableOpacity, TouchableOpacityComponent, Alert, Platform, PermissionsAndroid } from 'react-native';
 import { moderateScale, moderateScaleVertical, scale, height, textScale, width } from '../../styles/responsiveSize';
 import imagePath from '../../constants/imagePath';
 import ButtonComp from '../../Components/ButtonComp';
 import WrapperContainer from '../../Components/WrapperContainer';
-//import Modal from 'react-native-modal'
+import Modal from 'react-native-modal'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -20,12 +20,7 @@ import { userCurrentLocation } from '../../redux/Slices/UserSlice';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import HomeEvent from '../../Components/HomeEvent';
-import {
-	request,
-	PERMISSIONS,
-	openSettings,
-	requestMultiple,
-  } from 'react-native-permissions';
+
 
 // create a component
 const Home = () => {
@@ -58,31 +53,60 @@ const Home = () => {
 
 
     useEffect(() => {
-        reverseGeocode(latitude, longitude);
-       // locationPermission()
+        requestLocationPermission()
         getEventList(1);
+        if(User){
+            reverseGeocode(User?.location?.latitude, User?.location?.longitude);
+            var latitude = User?.location?.latitude;
+            var longitude = User?.location?.longitude;
+            setCurrentLocation({latitude, longitude})
+        }
     }, [address])
 
-    async function locationPermission() {
-        var response = '';
-        if (Platform.OS == 'android') {
-          response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-          response = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
-        } else {
-         // response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    const requestLocationPermission = async () => {
+        try {
+            if (Platform.OS === 'ios') {
+                // No need to request permission on iOS
+                getCurrentLocation();
+            } else {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                        title: 'Location Permission',
+                        message: 'This app needs access to your location.',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    },
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    getCurrentLocation();
+                } else {
+                    console.log('Location permission denied');
+                }
+            }
+        } catch (error) {
+            console.error('Error requesting location permission: ', error);
         }
-        if (response != 'granted') {
-          Alert.alert('Location Permission', 'Please allow from setting manually.', [
-            {
-              text: 'Cancel',
-              onPress: () => null,
-              style: 'cancel',
+    };
+
+    const getCurrentLocation = () => {
+        setLoading(true);
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                console.log('Current Location:', { latitude, longitude });
+                setCurrentLocation({ latitude, longitude })
+                setLoading(false);
             },
-            {text: 'Ok', onPress: () => openSettings()},
-          ]);
-        }
-        return response;
-      }
+            error => {
+                console.error('Error getting location: ', error);
+                setLoading(false);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        );
+    };
+
 
     const radioButtons = useMemo(() => ([
         {
@@ -324,25 +348,23 @@ const Home = () => {
                 />
             </View>
             <View>
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    // swipeDirection={'down'}
-                    // onSwipeComplete={() => setFilterOpen(false)}
-                    // hasBackdrop={true}
-                    // coverScreen={true}
-                    // backdropColor="#000"
-                    // backdropOpacity={0.8}
-                    visible={FilterOpen}
-                    style={{ justifyContent: 'flex-end', margin: 0, flex: 1 }}
-                    // animationIn="slideInUp"
-                    // animationOut="slideOutDown"
-                    // animationInTiming={1000}
-                    // animationOutTiming={900}
-                    // backdropTransitionInTiming={600}
-                    // backdropTransitionOutTiming={600}
+            <Modal
+                    swipeDirection={'down'}
+                    onSwipeComplete={() => setFilterOpen(false)}
+                    hasBackdrop={true}
+                    coverScreen={true}
+                    backdropColor="#000"
+                    backdropOpacity={0.8}
+                    isVisible={FilterOpen}
+                    style={{ justifyContent: 'flex-end', margin: 0, }}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    animationInTiming={1000}
+                    animationOutTiming={900}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}
                 >
-                    <SafeAreaView style={styles.locationmodalStyle}>
+                    <View style={styles.locationmodalStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
                             <TouchableOpacity onPress={() => setFilterOpen(false)}>
                                 <IconsettingClose name='close-thick' size={25} color='#000' />
@@ -380,26 +402,31 @@ const Home = () => {
                                         labelcolor='#828282'
                                         buttonSize={12}
                                     /> */}
+                                                                    
 
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        {radioButtons.map((item, index) => {
-                                            return (
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-                                                    <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
-                                                        if (label === 'Other') {
-                                                            handleSelect(item.label)
-                                                        } else {
-                                                            handleSelect(item.label)
-                                                        }
-                                                    }}>
-                                                        <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
-                                                    </TouchableOpacity>
-                                                    <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
-                                                </View>
-                                            )
-                                        })
-                                        }
-                                    </View>
+<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    {radioButtons.map((item, index) => {
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+                <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
+                    if (item.label === 'Other') {
+                        handleSelect(item.label)
+                    } else {
+                        handleSelect(item.label)
+                    }
+                }}>
+                    <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
+                </TouchableOpacity>
+                <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+            </View>
+        )
+    })
+    }
+</View>
+
+
+
+
                                 </View>
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginBottom: moderateScaleVertical(10) }}>
@@ -470,47 +497,45 @@ const Home = () => {
                             </View>
                         </ScrollView>
 
-                    </SafeAreaView>
+                    </View>
                 </Modal>
             </View>
             <View>
-                <Modal
-                  animationType='slide'
-                  transparent={true}
-                    // hasBackdrop={true}
-                    // coverScreen={true}
-                    // backdropColor="#000"
-                    // backdropOpacity={0.8}
+            <Modal
+                    // swipeDirection={'down'}
+                    // onSwipeco={() => setLocationModal(false)}
+                    hasBackdrop={true}
+                    coverScreen={true}
+                    backdropColor="#000"
+                    backdropOpacity={0.8}
                     // onBackdropPress={() => setLocationModal(false)}
-                    visible={openLocationModal}
-                    style={{ justifyContent: 'flex-end', margin: 0 }}
-                    // animationIn="slideInUp"
-                    // animationOut="slideOutDown"
-                    // animationInTiming={1000}
-                    // animationOutTiming={900}
-                    // backdropTransitionInTiming={600}
-                    // backdropTransitionOutTiming={600}
+                    isVisible={openLocationModal}
+                    style={{ justifyContent: 'flex-end', margin: 0, }}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    animationInTiming={1000}
+                    animationOutTiming={900}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}
                 >
                     <SafeAreaView style={styles.locationmodalStyle}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
                             <TouchableOpacity onPress={() => setLocationModal(false)}>
                                 <IconsLike name='down' size={26} color='#333' style={{ marginLeft: moderateScale(5) }} />
                             </TouchableOpacity>
                             <Text style={styles.charlie}>Select Location</Text>
                         </View>
                         <View style={{ borderWidth: 0.5, borderColor: '#fff', }} />
-                        <View style={{ marginTop: moderateScaleVertical(30), paddingHorizontal: moderateScale(12) }}>
+                        <View style={{ marginTop: moderateScaleVertical(10), paddingHorizontal: moderateScale(12) }}>
                             <SearchPlaces onSearchPlaces={onSearchhandle} placeholder='Select new location' />
                         </View>
-                        <View style={{ marginTop: moderateScale(50), backgroundColor: '#fff', marginHorizontal: moderateScale(15), padding: moderateScale(10), borderRadius: moderateScale(10) }}>
+                        <View style={{ marginTop: moderateScale(10), backgroundColor: '#fff', marginHorizontal: moderateScale(15), padding: moderateScale(10), borderRadius: moderateScale(10) }}>
                             <Text style={[styles.alleventtxt, { fontSize: textScale(18) }]}>{'Current Location:'}</Text>
                             <Text style={[styles.address, { marginVertical: moderateScaleVertical(5), fontSize: textScale(14) }]}>{address}</Text>
                             <View style={{ height: moderateScaleVertical(280), width: '100%', marginTop: moderateScaleVertical(30), borderRadius: moderateScale(20) }}>
                                 <MapView
                                     style={{
-                                       // height: moderateScaleVertical(280),
-                                         flex: 1,
-                                         // width: '100%',
+                                        height: moderateScaleVertical(280), flex: 1, width: '100%',
                                         borderRadius: moderateScale(10)
                                     }}
                                     provider={PROVIDER_GOOGLE}
@@ -519,12 +544,11 @@ const Home = () => {
                                     loadingIndicatorColor='#005BD4'
                                     moveOnMarkerPress={true}
                                     showsUserLocation={true}
-                                    // showsMyLocationButton={true}
                                     zoomEnabled={true}
                                     zoomControlEnabled={true}
                                     initialRegion={{
-                                        latitude: latitude,
-                                        longitude: longitude,
+                                        latitude: latitude != null ?latitude:CurrentLocation.latitude,
+                                        longitude: longitude != null ?longitude:CurrentLocation.longitude,
                                         latitudeDelta: 1,
                                         longitudeDelta: 1,
                                     }}>
@@ -532,16 +556,15 @@ const Home = () => {
                                         tappable={true}
                                         pinColor='red'
                                         coordinate={{
-                                            latitude: latitude,
-                                            longitude: longitude,
+                                            latitude: latitude != null ?latitude :CurrentLocation.latitude,
+                                            longitude: longitude != null ?longitude :CurrentLocation.longitude,
                                         }}
                                         title="Your are Here!"
                                     />
                                 </MapView>
                             </View>
-                            <ButtonComp onPress={() => setLocationModal(false)} isLoading={Loading} style={{ backgroundColor: '#005BD4', marginTop: moderateScaleVertical(20) }} text='Use my position' />
+                            <ButtonComp onPress={() => setLocationModal(false)} isLoading={Loading} style={{ backgroundColor: '#005BD4', marginTop: moderateScaleVertical(10) }} text='Use my position' />
                         </View>
-
                     </SafeAreaView>
                 </Modal>
             </View>

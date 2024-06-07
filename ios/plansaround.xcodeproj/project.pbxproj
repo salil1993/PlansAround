@@ -55,7 +55,6 @@
 		8A71B47A2BF89F27004E3522 /* RCTConvert+GMSMapViewType.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A71B45E2BF89F27004E3522 /* RCTConvert+GMSMapViewType.m */; };
 		90FEE493E3C748C5B92BB74E /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E1676A5343D443C099AFC3D4 /* Poppins-ExtraBoldItalic.ttf */; };
 		911084C62BE6283B002DE1EB /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 911084C52BE6283A002DE1EB /* assets */; };
-		911084C82BE62B32002DE1EB /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 911084C72BE62B32002DE1EB /* main.jsbundle */; };
 		911084D32BE62C8B002DE1EB /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 911084C92BE62C8B002DE1EB /* Feather.ttf */; };
 		911084D42BE62C8B002DE1EB /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 911084CA2BE62C8B002DE1EB /* Ionicons.ttf */; };
 		911084D52BE62C8B002DE1EB /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 911084CB2BE62C8B002DE1EB /* MaterialCommunityIcons.ttf */; };
@@ -66,6 +65,7 @@
 		911084DA2BE62C8B002DE1EB /* FontAwesome6.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 911084D02BE62C8B002DE1EB /* FontAwesome6.ttf */; };
 		911084DB2BE62C8B002DE1EB /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 911084D12BE62C8B002DE1EB /* Fontisto.ttf */; };
 		911084DC2BE62C8B002DE1EB /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 911084D22BE62C8B002DE1EB /* Foundation.ttf */; };
+		91D81AF62C122CAE00BAB172 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 91D81AF52C122CAE00BAB172 /* main.jsbundle */; };
 		A3F238EF2AFB42E7AC5AAFB0 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB157A11367940849D751362 /* Poppins-Bold.ttf */; };
 		A69DBCBCFD9745C5929FBA8A /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DA1477B3E204DADB39F539F /* Poppins-ExtraLightItalic.ttf */; };
 		B0E8C88443CA03454A16D407 /* libPods-plansaround-plansaroundTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF6696517AABA3EC57ADD61D /* libPods-plansaround-plansaroundTests.a */; };
@@ -163,7 +163,6 @@
 		8A71B45E2BF89F27004E3522 /* RCTConvert+GMSMapViewType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+GMSMapViewType.m"; sourceTree = "<group>"; };
 		911084A82BE6157D002DE1EB /* plansaround.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = plansaround.entitlements; path = plansaround/plansaround.entitlements; sourceTree = "<group>"; };
 		911084C52BE6283A002DE1EB /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../src/assets; sourceTree = "<group>"; };
-		911084C72BE62B32002DE1EB /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		911084C92BE62C8B002DE1EB /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = ../src/assets/fonts/Feather.ttf; sourceTree = "<group>"; };
 		911084CA2BE62C8B002DE1EB /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = ../src/assets/fonts/Ionicons.ttf; sourceTree = "<group>"; };
 		911084CB2BE62C8B002DE1EB /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = ../src/assets/fonts/MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
@@ -174,6 +173,7 @@
 		911084D02BE62C8B002DE1EB /* FontAwesome6.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome6.ttf; path = ../src/assets/fonts/FontAwesome6.ttf; sourceTree = "<group>"; };
 		911084D12BE62C8B002DE1EB /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Fontisto.ttf; path = ../src/assets/fonts/Fontisto.ttf; sourceTree = "<group>"; };
 		911084D22BE62C8B002DE1EB /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Foundation.ttf; path = ../src/assets/fonts/Foundation.ttf; sourceTree = "<group>"; };
+		91D81AF52C122CAE00BAB172 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = plansaround/main.jsbundle; sourceTree = "<group>"; };
 		9570B280FB69469CAB153047 /* Poppins-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-BlackItalic.ttf"; path = "../src/assets/fonts/Poppins-BlackItalic.ttf"; sourceTree = "<group>"; };
 		A3B6276DF2E062887C8E2868 /* Pods-plansaround.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-plansaround.debug.xcconfig"; path = "Target Support Files/Pods-plansaround/Pods-plansaround.debug.xcconfig"; sourceTree = "<group>"; };
 		A8792E8E13A14EA2ADCCBCEA /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
@@ -234,7 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				8A4B7B8D2C0A436400150E62 /* GoogleService-Info.plist */,
-				911084C72BE62B32002DE1EB /* main.jsbundle */,
+				91D81AF52C122CAE00BAB172 /* main.jsbundle */,
 				911084A82BE6157D002DE1EB /* plansaround.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -513,6 +513,7 @@
 				911084DC2BE62C8B002DE1EB /* Foundation.ttf in Resources */,
 				911084C62BE6283B002DE1EB /* assets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				91D81AF62C122CAE00BAB172 /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				BB28D7E8823441E0AE88E1C8 /* Poppins-Black.ttf in Resources */,
 				7B75ADBE25FB4773BB32A0E9 /* Poppins-BlackItalic.ttf in Resources */,
@@ -528,7 +529,6 @@
 				4033DF329B8345A08D8F7597 /* Poppins-Medium.ttf in Resources */,
 				4C774F3BD82B4ECB921FD56E /* Poppins-MediumItalic.ttf in Resources */,
 				040F7DED051F4FF3A39FA1E0 /* Poppins-Regular.ttf in Resources */,
-				911084C82BE62B32002DE1EB /* main.jsbundle in Resources */,
 				6FEE9B023ED94D46AE779A5E /* Poppins-SemiBold.ttf in Resources */,
 				8A4B7B8E2C0A436400150E62 /* GoogleService-Info.plist in Resources */,
 				81CD0C6477D54051BCC1F6AB /* Poppins-SemiBoldItalic.ttf in Resources */,

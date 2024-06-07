@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import imagePath from '../../constants/imagePath';
@@ -12,14 +12,14 @@ import navigationStrings from '../../Navigation/navigationStrings';
 import Snackbar from 'react-native-snackbar';
 import { getReligiousBelief } from '../../API/Api';
 import RadioForm from 'react-native-simple-radio-button'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const ReligiousBelief = ({ navigation }) => {
+const ReligiousBelief = ({ navigation, route }) => {
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
     const [Judaism, setJudaism] = useState(false)
     const [Christianity, setChristianity] = useState(false)
     const [Islam, setIslam] = useState(false)
@@ -252,10 +252,16 @@ const ReligiousBelief = ({ navigation }) => {
         },
         {
 
-            value: 'Select a religion',
-            label: 'Select a religion'
+            value: 'Other',
+            label: 'Other'
         },
     ]), []);
+
+    useEffect(() => {
+        setselected(user?.religiousBelief?.name)
+        setProfileShow(user?.religiousBelief?.showOnProfile)
+
+    }, [])
 
     const handleSelect = (label) => {
         console.log(label)
@@ -276,7 +282,7 @@ const ReligiousBelief = ({ navigation }) => {
         if (selected) {
             setLoading(true)
             getReligiousBelief(selected, ProfileShow).then((res) => {
-                console.log(res,'religious');
+                console.log(res, 'religious');
                 const data = res.user;
                 dispatch(saveUserData(data));
 
@@ -289,7 +295,12 @@ const ReligiousBelief = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                    navigation.navigate(navigationStrings.INTERESTS)
+                if (route?.params?.isFrom == 'Main') {
+                    navigation.navigate(navigationStrings.INTERESTS, { isFrom: 'Main' })
+                } else {
+                    navigation.navigate(navigationStrings.INTERESTS, { isFrom: 'Auth' })
+                }
+
                 // }, 2000)
             })
                 .catch((error) => {
@@ -331,24 +342,24 @@ const ReligiousBelief = ({ navigation }) => {
                         <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
                         <View style={{ marginVertical: moderateScaleVertical(10) }}>
                             <View style={styles.slidercontainer}>
-                            <View style={{}}>
-                                    {radioButtons.map((item, index)=>{
-                                        return(
-                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10,  marginVertical:10}}>
-                                            <TouchableOpacity style={{marginRight:5}} onPress={()=>{
-                                              if (item.label === 'Select a religion') {
-                                                setOther(true)
-                                                handleSelect(item.label)
-                                            } else {
-                                                handleSelect(item.label)
-    
-                                            }
-                                            }}>
-                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
-                                         </TouchableOpacity>
-                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
-                                         </View>
-                                        )  
+                                <View style={{}}>
+                                    {radioButtons.map((item, index) => {
+                                        return (
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10, marginVertical: 10 }}>
+                                                <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
+                                                    if (item.label === 'Select a religion') {
+                                                        setOther(true)
+                                                        handleSelect(item.label)
+                                                    } else {
+                                                        handleSelect(item.label)
+
+                                                    }
+                                                }}>
+                                                    <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
+                                                </TouchableOpacity>
+                                                <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                            </View>
+                                        )
                                     })
                                     }
                                 </View>
@@ -716,7 +727,13 @@ const ReligiousBelief = ({ navigation }) => {
                             <View style={{ flex: 0.3, alignItems: 'center' }}>
                                 <Pressable
                                     android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                    onPress={() => navigation.navigate(navigationStrings.INTERESTS)}>
+                                    onPress={() => {
+                                        if (route?.params?.isFrom == 'Main') {
+                                            navigation.navigate(navigationStrings.INTERESTS, { isFrom: 'Main' })
+                                        } else {
+                                            navigation.navigate(navigationStrings.INTERESTS, { isFrom: 'Auth' })
+                                        }
+                                    }}>
                                     <Text style={styles.skip}>Skip</Text>
                                 </Pressable>
                             </View>

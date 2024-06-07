@@ -34,7 +34,7 @@ const UserProfile = ({ navigation }) => {
     // const UserKYCstatus = false;
     console.log(user, 'profile m')
     let DOB = user?.dateOfBirth?.split('T');
-    console.log('DOB--->>', DOB)
+   // console.log('DOB--->>', DOB)
     const age = DOB != undefined && calculateAge(DOB[0]);
 
     function calculateAge(dateOfBirth) {

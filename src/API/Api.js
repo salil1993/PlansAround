@@ -95,7 +95,7 @@ export async function getUniversity(Uni, Degree, showProfile) {
     }, { headers }).then(res => res.data)
 }
 
-export async function getProfession(Name, title, CDegree, showProfile) {
+export async function getProfession(Name, title, CDegree, experience, showProfile) {
   let usertoken = await getData('UserToken');
   console.log(usertoken);
   const headers = {
@@ -107,6 +107,7 @@ export async function getProfession(Name, title, CDegree, showProfile) {
       "name": Name,
       "title_profile": title,
       "company_degree": CDegree,
+      "experience": experience,
       "showOnProfile": showProfile
     }, { headers }).then(res => res.data)
 }
@@ -141,7 +142,7 @@ export async function getReligiousBelief(Name, showProfile) {
 
 
 export async function getEventsList(Page) {
-  console.log(Page,'pagenumber')
+  console.log(Page, 'pagenumber')
   let usertoken = await getData('UserToken');
   // console.log(usertoken);
   const headers = {

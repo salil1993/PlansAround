@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, PermissionsAndroid, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import imagePath from '../../constants/imagePath';
@@ -17,11 +17,11 @@ import { getData } from '../../utils/helperFunctions';
 import Snackbar from 'react-native-snackbar';
 import navigationStrings from '../../Navigation/navigationStrings';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 // create a component
-const BasicInfo = ({ navigation }) => {
+const BasicInfo = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [FirstName, setFirstName] = useState('')
   const [LastName, setLastName] = useState('')
@@ -31,9 +31,21 @@ const BasicInfo = ({ navigation }) => {
   const [UserPic, setUserpic] = useState([])
   const [Loading, setLoading] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date())
-
+  const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+  useEffect(() => {
+    if (user) {
+      setFirstName(user?.firstName)
+      setLastName(user?.lastName)
+      const dt = new Date(user?.dateOfBirth);
+      const x = dt.toISOString().split('T');
+      const x1 = x[0].split('-');
+      const FDate = x1[0] + '-' + x1[1] + '-' + x1[2]
+      setDOB(FDate)
+    }
+  }, [])
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -44,7 +56,10 @@ const BasicInfo = ({ navigation }) => {
   };
 
   const handleConfirm = (date) => {
+    console.log("DATA=====", date);
     const dt = new Date(date);
+    console.log("DATA1111=====", dt);
+
     setCurrentDate(dt)
     const x = dt.toISOString().split('T');
     const x1 = x[0].split('-');
@@ -53,16 +68,7 @@ const BasicInfo = ({ navigation }) => {
     hideDatePicker()
   }
 
-  //   const handleConfirm = (date) => {
-  //     const dt = new Date(date);
-  //     const day = dt.getDate().toString().padStart(2, '0'); // Get day and pad with leading zero if necessary
-  //     const month = (dt.getMonth() + 1).toString().padStart(2, '0'); // Get month (+1 because months are zero-indexed) and pad with leading zero if necessary
-  //     const year = dt.getFullYear(); // Get full year
-  //     const formattedDate = `${day}/${month}/${year}`; // Format as DD/MM/YYYY
-  //     setDOB(formattedDate);
-  //     hideDatePicker();
-  //     setcolor(true);
-  // }
+
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -153,7 +159,13 @@ const BasicInfo = ({ navigation }) => {
           });
           // setTimeout(() => {
           // Snackbar.dismiss();
-          navigation.navigate(navigationStrings.SET_LOCATION)
+          console.log('Params-->>', route?.params?.isFrom)
+          if (route?.params?.isFrom == 'Main') {
+            navigation.navigate(navigationStrings.SET_LOCATION, { isFrom: 'Main' })
+          } else {
+            navigation.navigate(navigationStrings.SET_LOCATION, { isFrom: 'Auth' })
+          }
+          // navigation.navigate(navigationStrings.SET_LOCATION)
           // }, 2000)
         })
         .catch((error) => {
@@ -236,7 +248,9 @@ const BasicInfo = ({ navigation }) => {
                 </View>
                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
                   <TextInputC placeholder={'Date of Birth (DD/MM/YYYY)'}
-                    imgsrc={imagePath.calendar} imgright={true}
+                    imgsrc={imagePath.calendar}
+                    imgright={true}
+                    onPress={showDatePicker}
                     onPressSecure={showDatePicker}
                     editable={false}
                     value={DOB}
@@ -250,6 +264,7 @@ const BasicInfo = ({ navigation }) => {
                 onConfirm={handleConfirm}
                 onCancel={hideDatePicker}
                 maximumDate={eighteenYearsAgo}
+                timeZoneOffsetInMinutes={0}
               />}
               <ButtonComp isLoading={Loading} onPress={handleSumbit} text='Submit'
                 style={{ backgroundColor: color ? '#005BD4' : '#828282', marginVertical: moderateScaleVertical(10) }} />

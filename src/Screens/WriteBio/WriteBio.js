@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View, Text, StyleSheet, Image,
     TouchableWithoutFeedback, Keyboard, Pressable, TouchableOpacity,
@@ -13,7 +13,7 @@ import navigationStrings from '../../Navigation/navigationStrings';
 import { getBio } from '../../API/Api';
 import Snackbar from 'react-native-snackbar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
@@ -21,19 +21,23 @@ import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const WriteBio = ({ navigation }) => {
+const WriteBio = ({ navigation, route }) => {
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
     const [Title, setTitle] = useState('')
     const [Description, setDescription] = useState('')
     const [Length, setLength] = useState(0)
     const [Loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        setDescription(user?.bio?.description)
+    }, [])
+
 
     const handleSumbit = () => {
         if (Description) {
             setLoading(true)
-            getBio("Title", Description).then((res) => {
+            getBio(Description).then((res) => {
                 console.log(res, 'title');
                 const data = res.user;
                 dispatch(saveUserData(data));
@@ -46,7 +50,13 @@ const WriteBio = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                navigation.navigate(navigationStrings.WHERE_STUDY)
+                console.log('Params4-->>', route?.params?.isFrom)
+                if (route?.params?.isFrom == 'Main') {
+                    navigation.navigate(navigationStrings.WHERE_STUDY, { isFrom: 'Main' })
+                } else {
+                    navigation.navigate(navigationStrings.WHERE_STUDY, { isFrom: 'Auth' })
+                }
+                // navigation.navigate(navigationStrings.WHERE_STUDY)
                 // }, 2000)
             })
                 .catch((error) => {
@@ -117,7 +127,13 @@ const WriteBio = ({ navigation }) => {
                                     <View style={{ flex: 0.3, alignItems: 'center' }}>
                                         <Pressable
                                             android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                            onPress={() => navigation.navigate(navigationStrings.WHERE_STUDY)}>
+                                            onPress={() => {
+                                                if (route?.params?.isFrom == 'Main') {
+                                                    navigation.navigate(navigationStrings.WHERE_STUDY, { isFrom: 'Main' })
+                                                } else {
+                                                    navigation.navigate(navigationStrings.WHERE_STUDY, { isFrom: 'Auth' })
+                                                }
+                                            }}>
                                             <Text style={styles.skip}>Skip</Text>
                                         </Pressable>
                                     </View>

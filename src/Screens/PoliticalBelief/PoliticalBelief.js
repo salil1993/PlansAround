@@ -10,23 +10,18 @@ import navigationStrings from '../../Navigation/navigationStrings';
 import { getPoliticalBelief } from '../../API/Api';
 import Snackbar from 'react-native-snackbar';
 import RadioForm from 'react-native-simple-radio-button'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 
 // create a component
-const PoliticalBelief = ({ navigation }) => {
+const PoliticalBelief = ({ navigation, route }) => {
     const dispatch = useDispatch();
-
-
+    const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
     const [ProfileShow, setProfileShow] = useState(false)
-
-
     const [Selected, setSelected] = useState('');
     const [Loading, setLoading] = useState(false);
-
-
     const [value, setvalue] = useState('');
     const [selected, setselected] = useState('');
 
@@ -57,6 +52,12 @@ const PoliticalBelief = ({ navigation }) => {
             label: 'Prefer not to say'
         },
     ]), []);
+
+    useEffect(() => {
+        setselected(user?.politicalBelief?.name)
+        setProfileShow(user?.politicalBelief?.showOnProfile)
+    }, [])
+
 
 
 
@@ -125,7 +126,11 @@ const PoliticalBelief = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                navigation.navigate(navigationStrings.RELIGIOUS_BELIEF)
+                if (route?.params?.isFrom == 'Main') {
+                    navigation.navigate(navigationStrings.RELIGIOUS_BELIEF, { isFrom: 'Main' })
+                } else {
+                    navigation.navigate(navigationStrings.RELIGIOUS_BELIEF, { isFrom: 'Auth' })
+                }
                 // }, 2000)
             })
                 .catch((error) => {
@@ -167,21 +172,21 @@ const PoliticalBelief = ({ navigation }) => {
                     <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
                     <View style={{ marginVertical: moderateScaleVertical(20) }}>
                         <View style={styles.slidercontainer}>
-                        <View style={{}}>
-                                    {radioButtons.map((item, index)=>{
-                                        return(
-                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10,marginVertical:10}}>
-                                            <TouchableOpacity style={{marginRight:5}} onPress={()=>{
+                            <View style={{}}>
+                                {radioButtons.map((item, index) => {
+                                    return (
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10, marginVertical: 10 }}>
+                                            <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
                                                 handleSelect(item.label)
                                             }}>
-                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.value == selected ?imagePath.radio_select:imagePath.radio_unselect}/>
-                                         </TouchableOpacity>
-                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
-                                         </View>
-                                        )  
-                                    })
-                                    }
-                                </View>
+                                                <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
+                                            </TouchableOpacity>
+                                            <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                        </View>
+                                    )
+                                })
+                                }
+                            </View>
                             {/* <RadioForm
                                 radio_props={radioButtons}
                                 initial={value}
@@ -364,7 +369,13 @@ const PoliticalBelief = ({ navigation }) => {
                         <View style={{ flex: 0.3, alignItems: 'center' }}>
                             <Pressable
                                 android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                onPress={() => navigation.navigate(navigationStrings.RELIGIOUS_BELIEF)}>
+                                onPress={() => {
+                                    if (route?.params?.isFrom == 'Main') {
+                                        navigation.navigate(navigationStrings.RELIGIOUS_BELIEF, { isFrom: 'Main' })
+                                    } else {
+                                        navigation.navigate(navigationStrings.RELIGIOUS_BELIEF, { isFrom: 'Auth' })
+                                    }
+                                }}>
                                 <Text style={styles.skip}>Skip</Text>
                             </Pressable>
                         </View>

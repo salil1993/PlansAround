@@ -19,7 +19,7 @@ const OrgProfile = ({ navigation, route }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [Gcategory, setGcategory] = useState(1)
     let DOB = ProfileN?.dateOfBirth?.split('T');
-    console.log('DOB--->>', DOB)
+    //console.log('DOB--->>', DOB)
     const age = DOB != undefined && calculateAge(DOB[0]);
     useEffect(() => {
         getOrgProfile()

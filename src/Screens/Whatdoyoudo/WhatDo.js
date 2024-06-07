@@ -1,6 +1,6 @@
 //import liraries
-import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, Image, Pressable,TouchableOpacity } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import imagePath from '../../constants/imagePath';
 import { moderateScale, moderateScaleVertical, scale } from '../../styles/responsiveSize';
@@ -12,14 +12,14 @@ import Snackbar from 'react-native-snackbar';
 import { getProfession } from '../../API/Api';
 import navigationStrings from '../../Navigation/navigationStrings';
 import RadioForm from 'react-native-simple-radio-button'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 // create a component
-const WhatDo = ({ navigation }) => {
+const WhatDo = ({ navigation, route }) => {
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
     const [Student, setStudent] = useState(false)
     const [label, setlabel] = useState('')
     const [Freelancing, setFreelancing] = useState(false)
@@ -75,6 +75,53 @@ const WhatDo = ({ navigation }) => {
         },
     ]), []);
 
+    useEffect(() => {
+        if (user?.profession?.name) {
+            setlabel(user?.profession?.name)
+            setJobProfile(user?.profession?.information?.title_profile)
+            setCompanyName(user?.profession?.information?.company_degree)
+            setYexp(`${user?.profession?.information?.experience}`)
+            setProfileShow(user?.profession?.showOnProfile)
+            handleSavedData(user?.profession?.name)
+        }
+    }, [])
+
+    const handleSavedData = (label) => {
+        console.log(label, 'label')
+        setlabel(label)
+        if (label === 'Student') {
+            setStudent(true)
+            setFreelancing(false)
+            setSalariedJob(false)
+            setEntrepreneur(false)
+        }
+        if (label === 'Freelancing') {
+            setFreelancing(true)
+            setStudent(false);
+            setSalariedJob(false)
+            setEntrepreneur(false)
+        }
+        if (label === 'Salaried Job') {
+            setSalariedJob(true)
+            setStudent(false);
+            setFreelancing(false)
+            setEntrepreneur(false)
+        }
+        if (label === 'Entrepreneur') {
+            setEntrepreneur(true)
+            setStudent(false);
+            setFreelancing(false)
+            setSalariedJob(false)
+        }
+        if (label === 'Unemployed') {
+            setEntrepreneur(false)
+            setStudent(false);
+            setFreelancing(false)
+            setSalariedJob(false)
+        }
+
+    }
+
 
 
     const handleSelect = (label) => {
@@ -121,56 +168,22 @@ const WhatDo = ({ navigation }) => {
             setStudent(false);
             setFreelancing(false)
             setSalariedJob(false)
-            setJobProfile('NA')
-            setCompanyName('NA')
-            setYexp('Unemployed')
+            setJobProfile('')
+            setCompanyName('')
+            setYexp('')
         }
 
     }
 
-    const HandleSelect = (value, profession) => {
-        console.log(value, profession);
-        if (profession === 'Student') {
-            setDsbUn(true);
-            setDsbFree(true);
-            setDsbslry(true);
-            setDsbEnt(true);
-        }
-        if (profession === 'Unemployed') {
-            setDsb(true);
-            setDsbFree(true);
-            setDsbslry(true);
-            setDsbEnt(true);
-            setJobProfile('Unemployed')
-            setCompanyName('Unemployed')
-            setYexp('0')
-        }
-        if (profession === 'Freelancing') {
-            setDsb(true);
-            setDsbUn(true);
-            setDsbslry(true);
-            setDsbEnt(true);
-        }
-        if (profession === 'Salaried') {
-            setDsb(true);
-            setDsbUn(true);
-            setDsbFree(true);
-            setDsbEnt(true);
-        }
-        if (profession === 'Entrepreneur') {
-            setDsb(true);
-            setDsbUn(true);
-            setDsbFree(true);
-            setDsbslry(true);
-        }
 
-    }
 
     const handleSumbit = () => {
         if (JobProfile && CompanyName) {
+            console.log("=======", JobProfile, CompanyName, Yexp);
             setLoading(true)
-            getProfession(JobProfile, CompanyName, Yexp).then((res) => {
-                console.log(res,'Doing');
+
+            getProfession(label, JobProfile, CompanyName, Yexp, ProfileShow).then((res) => {
+                console.log(res, 'Doing');
                 const data = res.user;
                 dispatch(saveUserData(data));
                 setLoading(false);
@@ -182,7 +195,12 @@ const WhatDo = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 //     Snackbar.dismiss();
-                    navigation.navigate(navigationStrings.POLITICAL_BELIEF)
+                if (route?.params?.isFrom == 'Main') {
+                    navigation.navigate(navigationStrings.POLITICAL_BELIEF, { isFrom: 'Main' })
+                } else {
+                    navigation.navigate(navigationStrings.POLITICAL_BELIEF, { isFrom: 'Auth' })
+                }
+                // navigation.navigate(navigationStrings.POLITICAL_BELIEF)
 
                 // }, 2000)
             })
@@ -226,18 +244,18 @@ const WhatDo = ({ navigation }) => {
                         <Text style={styles.phoneHeading2}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
                         <View style={{ marginVertical: moderateScaleVertical(10) }}>
                             <View style={styles.slidercontainer}>
-                            <View style={{}}>
-                                    {radioButtons.map((item, index)=>{
-                                        return(
-                                            <View style={{flexDirection:'row', alignItems:'center', marginRight:10, marginVertical:10}}>
-                                            <TouchableOpacity style={{marginRight:5}} onPress={()=>{
-                                             handleSelect(item.label)
-                                            }}>
-                                             <Image style={{height:24, width:24, resizeMode:'contain', tintColor:'#828282'}} source={item.label == label ?imagePath.radio_select:imagePath.radio_unselect}/>
-                                         </TouchableOpacity>
-                                          <Text style={{color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
-                                         </View>
-                                        )  
+                                <View style={{}}>
+                                    {radioButtons.map((item, index) => {
+                                        return (
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10, marginVertical: 10 }}>
+                                                <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
+                                                    handleSelect(item.label)
+                                                }}>
+                                                    <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.label == label ? imagePath.radio_select : imagePath.radio_unselect} />
+                                                </TouchableOpacity>
+                                                <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                            </View>
+                                        )
                                     })
                                     }
                                 </View>
@@ -395,7 +413,7 @@ const WhatDo = ({ navigation }) => {
                             </View>
                         </View>
                         {
-                            Student && 
+                            Student &&
                             <View>
                                 <Text style={[styles.skip, { fontSize: scale(14), marginBottom: moderateScaleVertical(5) }]}>Student Information</Text>
                                 <TextInputC
@@ -502,7 +520,13 @@ const WhatDo = ({ navigation }) => {
                             <View style={{ flex: 0.3, alignItems: 'center' }}>
                                 <Pressable
                                     android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                    onPress={() => navigation.navigate(navigationStrings.POLITICAL_BELIEF)}>
+                                    onPress={() => {
+                                        if (route?.params?.isFrom == 'Main') {
+                                            navigation.navigate(navigationStrings.POLITICAL_BELIEF, { isFrom: 'Main' })
+                                        } else {
+                                            navigation.navigate(navigationStrings.POLITICAL_BELIEF, { isFrom: 'Auth' })
+                                        }
+                                    }}>
                                     <Text style={styles.skip}>Skip</Text>
                                 </Pressable>
                             </View>

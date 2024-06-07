@@ -14,20 +14,26 @@ import TextInputC from '../../Components/TextInputC';
 import navigationStrings from '../../Navigation/navigationStrings';
 import { getUniversity } from '../../API/Api';
 import Snackbar from 'react-native-snackbar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
 
 
 
 
 // create a component
-const WhereStudy = ({ navigation }) => {
+const WhereStudy = ({ navigation, route }) => {
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
     const [College, setCollege] = useState('')
     const [Degree, setDegree] = useState('')
     const [ProfileShow, setProfileShow] = useState(false)
     const [Loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        setCollege(user?.study?.university)
+        setDegree(user?.study?.degree)
+        setProfileShow(user?.study?.showOnProfile)
+    }, [])
 
 
     const handleSumbit = () => {
@@ -46,7 +52,12 @@ const WhereStudy = ({ navigation }) => {
                 });
                 // setTimeout(() => {
                 Snackbar.dismiss();
-                navigation.navigate(navigationStrings.WHAT_DO)
+                if (route?.params?.isFrom == 'Main') {
+                    navigation.navigate(navigationStrings.WHAT_DO, { isFrom: 'Main' })
+                } else {
+                    navigation.navigate(navigationStrings.WHAT_DO, { isFrom: 'Auth' })
+                }
+                //  navigation.navigate(navigationStrings.WHAT_DO)
                 // }, 2000)
             })
                 .catch((error) => {
@@ -92,19 +103,19 @@ const WhereStudy = ({ navigation }) => {
                                 <Image source={imagePath.study} style={{ alignSelf: 'center', height: scale(110), width: scale(110) }} />
                                 <Text style={styles.phoneHeading}>Where did you study?</Text>
                                 <Text style={[styles.phoneHeading2, { marginVertical: moderateScaleVertical(20) }]}>Lorem ipsum dolor sit amet, consect etur adi piscing elit, sed do eiusmod tempor incididunt.</Text>
-                                <View style={{marginVertical: moderateScaleVertical(10)}}>
-                                    <TextInputC 
-                                    editable={true}
-                                    style={{ height: 50 }}
-                                    placeholder={'Name of University/Institute'}
+                                <View style={{ marginVertical: moderateScaleVertical(10) }}>
+                                    <TextInputC
+                                        editable={true}
+                                        style={{ height: 50 }}
+                                        placeholder={'Name of University/Institute'}
                                         value={College}
                                         onChangeText={(text) => setCollege(text)}
                                     />
                                 </View>
                                 <View style={{ marginVertical: moderateScaleVertical(15) }}>
-                                    <TextInputC 
-                                    placeholder={'Degree'}
-                                      editable={true}
+                                    <TextInputC
+                                        placeholder={'Degree'}
+                                        editable={true}
                                         value={Degree}
                                         style={{ height: 50 }}
                                         onChangeText={(text) => setDegree(text)}
@@ -139,7 +150,13 @@ const WhereStudy = ({ navigation }) => {
                                     <View style={{ flex: 0.3, alignItems: 'center' }}>
                                         <Pressable
                                             android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
-                                            onPress={() => navigation.navigate(navigationStrings.WHAT_DO)}>
+                                            onPress={() => {
+                                                if (route?.params?.isFrom == 'Main') {
+                                                    navigation.navigate(navigationStrings.WHAT_DO, { isFrom: 'Main' })
+                                                } else {
+                                                    navigation.navigate(navigationStrings.WHAT_DO, { isFrom: 'Auth' })
+                                                }
+                                            }}>
                                             <Text style={styles.skip}>Skip</Text>
                                         </Pressable>
                                     </View>
