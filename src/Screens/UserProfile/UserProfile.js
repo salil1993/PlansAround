@@ -57,6 +57,8 @@ const UserProfile = ({ navigation }) => {
 
         return age;
     }
+
+
     // useEffect(() => {
     //     setoptionopenModal2(false)
     // }, [isFocused])
@@ -85,6 +87,7 @@ const UserProfile = ({ navigation }) => {
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
             <HeaderBack onRightIconClick={() => navigation.navigate(navigationStrings.SETTINGS)} rightIcon={true} isLeftImage={false} onRightImgClick={() => setoptionopenModal3(!openoptionModal3)} rightImage={imagePath.sq} rightImg={true} mainText={user.fullName} maintxtstyle={{ color: '#333', fontFamily: 'Roboto', fontSize: scale(22) }} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(16) }} />
+            
             <ScrollView>
                 <View style={styles.container}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between', }}>
@@ -107,8 +110,8 @@ const UserProfile = ({ navigation }) => {
                                 <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Following</Text>
                             </View>
                         </View>
-
                     </View>
+
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: moderateScaleVertical(5), marginLeft: moderateScale(3) }}>
                         <Text style={{ textAlign: 'center', color: '#333', fontFamily: 'Roboto', fontSize: scale(15), fontWeight: '700' }}>{user.fullName ? user.fullName : 'NA'}</Text>
                         <Iconpaid name='verified' size={18} color='#005BD4' style={{ marginLeft: moderateScale(3) }} />
@@ -152,10 +155,12 @@ const UserProfile = ({ navigation }) => {
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'right', fontWeight: '500' }]}>{'Not verified'}</Text>
                         </View> */}
                     </View>
+
                     <View style={{ padding: moderateScaleVertical(15), backgroundColor: '#fff', borderRadius: moderateScale(8), }}>
                         <Text style={[styles.txt, { textAlign: 'left', fontWeight: 'bold' }]}>Bio</Text>
                         <Text style={[styles.txt, { textAlign: 'left', fontWeight: '500' }]}>{user.bio ? user.bio.description : 'NA'}</Text>
                     </View>
+
                     {/* <View style={{ padding: moderateScaleVertical(15), backgroundColor: '#fff', borderRadius: moderateScale(8), marginVertical: moderateScaleVertical(15) }}>
                         <Text style={[styles.txt, { textAlign: 'left', fontWeight: 'bold' }]}>Interests</Text>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -166,7 +171,9 @@ const UserProfile = ({ navigation }) => {
                                             <View style={styles.Interestscontainer}>
                                                 <Text style={[styles.txt, {
                                                     color: '#4F4F4F', fontWeight: '500', fontSize: textScale(16), paddingHorizontal: moderateScale(5)
-                                                }]}>{item}</Text>
+                                                }]}>
+                                                {item}
+                                                </Text>
                                             </View>
                                         </View>
                                     )
@@ -174,6 +181,7 @@ const UserProfile = ({ navigation }) => {
                             }
                         </View>
                     </View> */}
+
                     <View>
                         <Reputation />
                     </View>
@@ -200,8 +208,7 @@ const UserProfile = ({ navigation }) => {
                         style={{
                             borderRadius: moderateScale(10),
                             paddingVertical: moderateScaleVertical(10), backgroundColor: '#fff', paddingHorizontal: moderateScale(10)
-                        }}
-                    >
+                        }} >
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -227,21 +234,17 @@ const UserProfile = ({ navigation }) => {
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700', paddingBottom: moderateScaleVertical(10) }]}>946 Brook Ranch, Italy</Text>
                         </View>
                     </View>
-                    <View
-                        style={{
+                    {/* <View style={{
                             borderRadius: moderateScale(10), marginVertical: moderateScaleVertical(10),
                             paddingVertical: moderateScaleVertical(10), backgroundColor: '#fff', paddingHorizontal: moderateScale(10)
-                        }}
-                    >
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
+                        }} > */}
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Image source={imagePath.frame2} />
                                 <Text style={[styles.textone, { marginLeft: moderateScale(10) }]}>Charlie Harper</Text>
                             </View>
-                            {/* <Image source={imagePath.dotted}/> */}
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        </View> */}
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5) }]}>Date</Text>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>02 March 2023</Text>
                         </View>
@@ -256,11 +259,11 @@ const UserProfile = ({ navigation }) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500' }]}>Location</Text>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700', paddingBottom: moderateScaleVertical(10) }]}>946 Brook Ranch, Italy</Text>
-                        </View>
-                    </View>
-
+                        </View> */}
+                    {/* </View> */}
                 </View>
             </ScrollView>
+
             <View>
                 <Modal
                     style={{ position: 'absolute', right: 0, top: moderateScaleVertical(25) }}
@@ -305,6 +308,7 @@ const UserProfile = ({ navigation }) => {
                     </View>
                 </Modal>
             </View>
+
             <View>
                 <Modal
                     coverScreen={true}

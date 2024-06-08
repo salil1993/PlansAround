@@ -123,11 +123,9 @@ const Home = () => {
     const handleSelect = (label) => {
         if (label === 'Other') {
             setselected('')
-
         } else {
             setselected(label)
         }
-
     }
 
 
