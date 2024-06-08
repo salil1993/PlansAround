@@ -55,11 +55,11 @@ const Home = () => {
     useEffect(() => {
         requestLocationPermission()
         getEventList(1);
-        if(User){
+        if (User) {
             reverseGeocode(User?.location?.latitude, User?.location?.longitude);
             var latitude = User?.location?.latitude;
             var longitude = User?.location?.longitude;
-            setCurrentLocation({latitude, longitude})
+            setCurrentLocation({ latitude, longitude })
         }
     }, [address])
 
@@ -260,7 +260,7 @@ const Home = () => {
         </View>
     );
 
- 
+
 
     return (
         <WrapperContainer>
@@ -346,7 +346,7 @@ const Home = () => {
                 />
             </View>
             <View>
-            <Modal
+                <Modal
                     swipeDirection={'down'}
                     onSwipeComplete={() => setFilterOpen(false)}
                     hasBackdrop={true}
@@ -362,7 +362,7 @@ const Home = () => {
                     backdropTransitionInTiming={600}
                     backdropTransitionOutTiming={600}
                 >
-                    <View style={styles.locationmodalStyle}>
+                    <SafeAreaView style={styles.locationmodalStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
                             <TouchableOpacity onPress={() => setFilterOpen(false)}>
                                 <IconsettingClose name='close-thick' size={25} color='#000' />
@@ -400,31 +400,27 @@ const Home = () => {
                                         labelcolor='#828282'
                                         buttonSize={12}
                                     /> */}
-                                                                    
-
-<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-    {radioButtons.map((item, index) => {
-        return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-                <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
-                    if (item.label === 'Other') {
-                        handleSelect(item.label)
-                    } else {
-                        handleSelect(item.label)
-                    }
-                }}>
-                    <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
-                </TouchableOpacity>
-                <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
-            </View>
-        )
-    })
-    }
-</View>
 
 
-
-
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        {radioButtons.map((item, index) => {
+                                            return (
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+                                                    <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
+                                                        if (item.label === 'Other') {
+                                                            handleSelect(item.label)
+                                                        } else {
+                                                            handleSelect(item.label)
+                                                        }
+                                                    }}>
+                                                        <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
+                                                    </TouchableOpacity>
+                                                    <Text style={{ color: '#4F4F4F', fontWeight: '500' }} >{item.value}</Text>
+                                                </View>
+                                            )
+                                        })
+                                        }
+                                    </View>
                                 </View>
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginBottom: moderateScaleVertical(10) }}>
@@ -495,11 +491,11 @@ const Home = () => {
                             </View>
                         </ScrollView>
 
-                    </View>
+                    </SafeAreaView>
                 </Modal>
             </View>
             <View>
-            <Modal
+                <Modal
                     // swipeDirection={'down'}
                     // onSwipeco={() => setLocationModal(false)}
                     hasBackdrop={true}
@@ -545,8 +541,8 @@ const Home = () => {
                                     zoomEnabled={true}
                                     zoomControlEnabled={true}
                                     initialRegion={{
-                                        latitude: latitude != null ?latitude:CurrentLocation.latitude,
-                                        longitude: longitude != null ?longitude:CurrentLocation.longitude,
+                                        latitude: latitude != null ? latitude : CurrentLocation.latitude,
+                                        longitude: longitude != null ? longitude : CurrentLocation.longitude,
                                         latitudeDelta: 1,
                                         longitudeDelta: 1,
                                     }}>
@@ -554,8 +550,8 @@ const Home = () => {
                                         tappable={true}
                                         pinColor='red'
                                         coordinate={{
-                                            latitude: latitude != null ?latitude :CurrentLocation.latitude,
-                                            longitude: longitude != null ?longitude :CurrentLocation.longitude,
+                                            latitude: latitude != null ? latitude : CurrentLocation.latitude,
+                                            longitude: longitude != null ? longitude : CurrentLocation.longitude,
                                         }}
                                         title="Your are Here!"
                                     />

@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, StatusBar, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image,SafeAreaView, ScrollView, StatusBar, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 
 import { moderateScale, moderateScaleVertical, scale, height, width, textScale } from '../../styles/responsiveSize';
@@ -13,11 +13,26 @@ import Iconsetting from 'react-native-vector-icons/MaterialIcons'
 import Reputation from '../../Components/Reputation';
 import Iconpaid from 'react-native-vector-icons/MaterialIcons'
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+import Loader from '../../Components/Loader';
+import axios from 'axios';
+import { getData } from '../../utils/helperFunctions';
 
 
 
 
-
+const category = [{
+    id: 1,
+    cat: 'All Event’s'
+},
+{
+    id: 2,
+    cat: 'Past Events'
+},
+{
+    id: 3,
+    cat: 'Upcoming Events'
+},
+]
 
 
 // create a component
@@ -25,14 +40,18 @@ const UserProfile = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [Gcategory, setGcategory] = useState(1)
     const [menuOpen, setmenuOpen] = useState(false);
+    const [followerModal, setfollowerModal] = useState(false);
+    const [followlistModal, setfollowlistModal] = useState(false)
     const [openoptionModal3, setoptionopenModal3] = useState();
-
+    const [followersList, setfollowersList] = useState([]);
+    const [followingList, setfollowingList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const user = useSelector((state) => state.persistedReducer.authSlice.userData);
-    console.log(user, 'profile m')
+   // console.log(user, 'profile m')
 
     const UserKYCstatus = user.kyc.isVerified;
     // const UserKYCstatus = false;
-    console.log(user, 'profile m')
+   // console.log(user, 'profile m')
     let DOB = user?.dateOfBirth?.split('T');
    // console.log('DOB--->>', DOB)
     const age = DOB != undefined && calculateAge(DOB[0]);
@@ -59,30 +78,44 @@ const UserProfile = ({ navigation }) => {
     }
 
 
-    // useEffect(() => {
-    //     setoptionopenModal2(false)
-    // }, [isFocused])
+    useEffect(() => {
+        getFollowerList()
+    }, [])
 
 
-    const category = [{
-        id: 1,
-        cat: 'All Event’s'
-    },
-    {
-        id: 2,
-        cat: 'Past Events'
-    },
-    {
-        id: 3,
-        cat: 'Upcoming Events'
-    },
-    ]
+    const getFollowerList = async (pageNumber) => {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userToken', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/profile`, { headers });
+            const responseData = response.data;
+            console.log(responseData, 'totalUsers')
+            // const packageList = responseData?.packages;
+            // setPlanList(packageList)
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
+        }
+    };
+
+
     const handleCategory = (id) => {
         setGcategory(id)
     }
+
     const handleSumbit = () => {
         // navigation.navigate(navigationStrings.WHERE_STUDY)
     }
+
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
@@ -185,7 +218,7 @@ const UserProfile = ({ navigation }) => {
                     <View>
                         <Reputation />
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: moderateScale(5), marginVertical: moderateScaleVertical(10) }}>
+                    {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: moderateScale(5), marginVertical: moderateScaleVertical(10) }}>
                         <Image source={imagePath.filter} tintColor={'#333'} resizeMode='contain' style={{ height: moderateScale(20), width: moderateScale(20) }} />
                         <View>
                             <FlatList
@@ -203,37 +236,36 @@ const UserProfile = ({ navigation }) => {
                                 }}
                             />
                         </View>
-                    </View>
-                    <View
+                    </View> */}
+                    {/* <View
                         style={{
                             borderRadius: moderateScale(10),
                             paddingVertical: moderateScaleVertical(10), backgroundColor: '#fff', paddingHorizontal: moderateScale(10)
-                        }} >
+                        }} > */}
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Image source={imagePath.frame2} />
                                 <Text style={[styles.textone, { marginLeft: moderateScale(10) }]}>Charlie Harper</Text>
                             </View>
-                            {/* <Image source={imagePath.dotted}/> */}
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        </View> */}
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5) }]}>Date</Text>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>02 March 2023</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        </View> */}
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500' }]}>Event</Text>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>Badminton</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        </View> */}
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5) }]}>No. of people attended</Text>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>4</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        </View> */}
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500' }]}>Location</Text>
                             <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700', paddingBottom: moderateScaleVertical(10) }]}>946 Brook Ranch, Italy</Text>
-                        </View>
-                    </View>
+                        </View> */}
+                    {/* </View> */}
                     {/* <View style={{
                             borderRadius: moderateScale(10), marginVertical: moderateScaleVertical(10),
                             paddingVertical: moderateScaleVertical(10), backgroundColor: '#fff', paddingHorizontal: moderateScale(10)
@@ -369,6 +401,131 @@ const UserProfile = ({ navigation }) => {
                 </Modal>
             </View>
 
+       
+
+            <View>
+                <Modal
+                    // swipeDirection={'down'}
+                    // onSwipeco={() => setLocationModal(false)}
+                    hasBackdrop={true}
+                    coverScreen={true}
+                    backdropColor="#000"
+                    backdropOpacity={0.8}
+                    // onBackdropPress={() => setLocationModal(false)}
+                    isVisible={followerModal}
+                    style={{ justifyContent: 'flex-end', margin: 0 }}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    animationInTiming={1000}
+                    animationOutTiming={900}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600} >
+                    <SafeAreaView style={styles.locationmodalStyle}>
+                    {
+                    isLoading ? <Loader/> : (
+                        followingList.length > 0  ? followingList.map((item, index)=>{
+                            return(
+                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                <View>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
+                                    <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.shortDescription}</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.longDescription}</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Amount: {item?.amount}$</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Validity: {item?.noOfDays}</Text>
+                                </View>
+                            </View>
+                            )
+
+                        }) : <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
+                    )
+                }
+                    </SafeAreaView>
+                </Modal>
+            </View>
+
+            <View>
+                <Modal
+                    // swipeDirection={'down'}
+                    // onSwipeco={() => setLocationModal(false)}
+                    hasBackdrop={true}
+                    coverScreen={true}
+                    backdropColor="#000"
+                    backdropOpacity={0.8}
+                    // onBackdropPress={() => setLocationModal(false)}
+                    isVisible={followlistModal}
+                    style={{ justifyContent: 'flex-end', margin: 0 }}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    animationInTiming={1000}
+                    animationOutTiming={900}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600} >
+                    <SafeAreaView style={styles.locationmodalStyle}>
+                    {
+                    isLoading ? <Loader/> : (
+                        followersList.length > 0  ? followersList.map((item, index)=>{
+                            return(
+                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                <View>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
+                                    <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.shortDescription}</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.longDescription}</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Amount: {item?.amount}$</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Validity: {item?.noOfDays}</Text>
+                                </View>
+                            </View>
+                            )
+
+                        }) : <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
+                    )
+                }
+                    </SafeAreaView>
+                </Modal>
+            </View>
+
+            <View>
+                <Modal
+                    // swipeDirection={'down'}
+                    // onSwipeco={() => setLocationModal(false)}
+                    hasBackdrop={true}
+                    coverScreen={true}
+                    backdropColor="#000"
+                    backdropOpacity={0.8}
+                    // onBackdropPress={() => setLocationModal(false)}
+                    isVisible={followlistModal}
+                    style={{ justifyContent: 'flex-end', margin: 0 }}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    animationInTiming={1000}
+                    animationOutTiming={900}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600} >
+                    <SafeAreaView style={styles.locationmodalStyle}>
+                    {
+                    isLoading ? <Loader/> : (
+                        followlistModal.length > 0  ? followlistModal.map((item, index)=>{
+                            return(
+                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                <View>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
+                                    <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.shortDescription}</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.longDescription}</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Amount: {item?.amount}$</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Validity: {item?.noOfDays}</Text>
+                                </View>
+                            </View>
+                            )
+
+                        }) : <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
+                    )
+                }
+                    </SafeAreaView>
+                </Modal>
+            </View>
+
         </WrapperContainer>
     );
 };
@@ -379,6 +536,11 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: moderateScale(12),
         backgroundColor: '#F2F2F2',
+    },
+    locationmodalStyle: {
+        flex: 1,
+        backgroundColor: '#F2F2F2',
+        minHeight: moderateScale(height / 3),
     },
     txt: {
         color: '#4F4F4F',

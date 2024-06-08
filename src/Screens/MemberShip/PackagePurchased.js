@@ -38,10 +38,10 @@ const PackagePurchased = () => {
                 'Content-Type': "application/json",
             };
 
-            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/packages`, { headers });
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/packages/purchase-history`, { headers });
             const responseData = response.data;
             console.log(responseData, 'totalPackages')
-            const packageList = responseData?.packages;
+            const packageList = responseData?.history;
             setPlanList(packageList)
             setIsLoading(false);
         } catch (error) {
@@ -62,14 +62,13 @@ const PackagePurchased = () => {
                             return(
                                 <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
                                 <View>
-                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
+                                    {/* <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
                                     <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
                                     <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.shortDescription}</Text>
-                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.longDescription}</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{item?.longDescription}</Text> */}
                                     <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Amount: {item?.amount}$</Text>
                                     <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Validity: {item?.noOfDays}</Text>
                                 </View>
-                                <ButtonComp text='Pay Now' isLoading={isLoading} onPress={() => handleSelect(item?._id)} style={{ backgroundColor: '#005BD4', }} />
                             </View>
                             )
 
