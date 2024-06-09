@@ -1830,10 +1830,10 @@
   resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-14.12.0.tgz"
   integrity sha512-4JF93pYLyFiLjwU2RYlHMKSjI7DKLuqQrqCnC3M2yhgTDeYaJsqnYnTSDMfmmh9vZHfHjTztc6E2scwr/Mw8tg==
 
-"@react-native-google-signin/google-signin@^10.0.1":
-  version "10.0.1"
-  resolved "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-10.0.1.tgz"
-  integrity sha512-oZoU2lfKyn0s0GqqdFsi4v2FSENrxQYQU9DD/RSkxDdkIQ49Wwo6p5LKlgXY04GwZEVdYMuvZN3G89gQW0ig2g==
+"@react-native-google-signin/google-signin@^11.0.1":
+  version "11.0.1"
+  resolved "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-11.0.1.tgz"
+  integrity sha512-ZRSEd1ME31XZ+azS3Qe6TRb8NRicGmtRdD1vT4Tz2birnlTfNfRgy4qLrEKNZyMUTodA6+J2UvA2JWwT8ZQ/dw==
 
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
@@ -6634,6 +6634,11 @@ react-native-screens@^3.25.0, "react-native-screens@>= 3.0.0":
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
+react-native-share@^10.2.1:
+  version "10.2.1"
+  resolved "https://registry.npmjs.org/react-native-share/-/react-native-share-10.2.1.tgz"
+  integrity sha512-Z2LWGYWH7raM4H6Oauttv1tEhaB43XSWJAN8iS6oaSG9CnyrUBeYFF4QpU1AH5RgNeylXQdN8CtbizCHHt6coQ==
 
 react-native-simple-radio-button@^2.7.4:
   version "2.7.4"

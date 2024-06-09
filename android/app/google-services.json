@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "139290010094-oe3p3dkrjkq3qhvr9q9ucs3cukrv9dr1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.plansaround",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "139290010094-hiubrhda8oohsm859cibk7on6o4ai1mv.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -37,6 +45,13 @@
             {
               "client_id": "139290010094-hiubrhda8oohsm859cibk7on6o4ai1mv.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "139290010094-3n0pci6cvsp8t15b4q638hu0aivvv215.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.plansaround"
+              }
             }
           ]
         }

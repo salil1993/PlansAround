@@ -248,7 +248,7 @@ const WriteBio = ({ navigation }) => {
                     isVisible={openoptionModal2}
                     backdropColor="#000"
                     hasBackdrop={true}
-                    backdropOpacity={UserKYCstatus.kyc.isVerified ? 0.8 : 1}
+                    backdropOpacity={UserKYCstatus?.kyc?.isVerified ? 0.8 : 1}
                     animationIn="slideInUp"
                     animationOut="slideOutDown"
                     animationInTiming={800}
@@ -265,7 +265,7 @@ const WriteBio = ({ navigation }) => {
                             <TouchableOpacity onPress={() => setoptionopenModal2(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
                         </View>
                         <View style={{ backgroundColor: '#ffff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(10) }}>
-                            <TouchableOpacity disabled={UserKYCstatus.kyc.isVerified ? false : true} onPress={() => {
+                            <TouchableOpacity disabled={UserKYCstatus?.kyc?.isVerified ? false : true} onPress={() => {
                                 setoptionopenModal2(false)
                                 UserKYCstatus.packageValidTill !== null ? navigation.navigate(navigationStrings.HOST_EVENT, { isPaid: true, modal: false, EventType: 'PAID' }) : navigation.navigate(navigationStrings.ALLPLANS)
                             }}
@@ -275,7 +275,7 @@ const WriteBio = ({ navigation }) => {
                             </TouchableOpacity>
                         </View>
                         <View style={{ backgroundColor: '#ffff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(5) }}>
-                            <TouchableOpacity disabled={UserKYCstatus.kyc.isVerified ? false : true} onPress={() => {
+                            <TouchableOpacity disabled={UserKYCstatus?.kyc?.isVerified ? false : true} onPress={() => {
                                 setoptionopenModal2(false)
                                 navigation.navigate(navigationStrings.HOST_EVENT, { isLeftImage: true, modal: false, EventType: 'FREE' })
                             }
@@ -285,7 +285,7 @@ const WriteBio = ({ navigation }) => {
                             </TouchableOpacity>
                         </View>
                         {
-                            UserKYCstatus.kyc.isVerified ? <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: moderateScaleVertical(10) }}>
+                            UserKYCstatus?.kyc?.isVerified ? <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: moderateScaleVertical(10) }}>
                                 <Image source={imagePath.kycN} resizeMode='contain' style={{ height: moderateScaleVertical(30), width: moderateScale(30), }} />
                                 <Text style={[styles.phoneHeading, { fontSize: moderateScale(15), color: 'green', marginLeft: moderateScale(10), fontFamily: 'Roboto' }]}>KYC VERIFIED</Text>
                             </TouchableOpacity>

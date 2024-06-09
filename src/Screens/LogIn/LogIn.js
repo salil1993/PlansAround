@@ -77,13 +77,13 @@ const LogIN = ({ navigation }) => {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             console.error('userInfo sign-in RES:', userInfo);
-            // handleLoginApi(
-            //     userInfo.user.name,
-            //     userInfo.user.email,
-            //     userInfo.serverAuthCode,
-            //     'Google',
-            //     userInfo.user.photo,
-            // );
+            handleLoginApi(
+                userInfo.user.name,
+                userInfo.user.email,
+                userInfo.serverAuthCode,
+                'Google',
+                userInfo.user.photo,
+            );
 
             // You're now signed in with Google!
         } catch (error) {
@@ -115,6 +115,7 @@ const LogIN = ({ navigation }) => {
                 } else {
                 }
             } else {
+                Alert.alert('PlansAround', 'Failed to login with Apple');
             }
         } catch (error) {
             Alert.alert('PlansAround', 'Failed to login with Apple');
@@ -162,7 +163,7 @@ const LogIN = ({ navigation }) => {
                                 <Text style={{ color: '#4F4F4F', fontSize: scale(14), textAlign: 'center', fontFamily: 'Roboto', fontWeight: '500', marginVertical: moderateScaleVertical(10) }}>or</Text>
                                 <TextInputC editable={true} placeholder={'Email'} value={email} onChangeText={(text) => setemail(text)} />
                                 <View style={{ marginTop: moderateScale(10) }}>
-                                <TextInputC editable={true} placeholder={'Password'} value={Password} onChangeText={(text) => setPassword(text)} style={{alignItems: 'center' }} imgright={true} imgsrc={visible ? imagePath.eyeoff : imagePath.eye} onPressSecure={() => setvisible(!visible)} secureText={visible} />
+                                    <TextInputC editable={true} placeholder={'Password'} value={Password} onChangeText={(text) => setPassword(text)} style={{ alignItems: 'center' }} imgright={true} imgsrc={visible ? imagePath.eyeoff : imagePath.eye} onPressSecure={() => setvisible(!visible)} secureText={visible} />
                                 </View>
 
                             </View>

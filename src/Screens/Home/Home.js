@@ -31,17 +31,18 @@ const Home = () => {
     const User = useSelector((state) => state.persistedReducer.authSlice.userData);
     // console.log(CurrentUserLocation, 'user---->>')
     const { latitude, longitude } = CurrentUserLocation;
+    const searchRef = useRef(null)
     const [address, setAddress] = useState(null);
     const [CurrentLocation, setCurrentLocation] = useState(CurrentUserLocation)
     const [value, setvalue] = useState('');
-    const [selected, setselected] = useState('');
+    const [selected, setselected] = useState('All');
     const [Range, setRange] = useState('')
     const [FilterOpen, setFilterOpen] = useState(false);
     const [openLocationModal, setLocationModal] = useState(false);
     const [Gcategory, setGcategory] = useState(1)
     const [LoadEvents, setLoadEvents] = useState(false);
 
-    const [EventsLength, setEventLength] = useState(null)
+    const [categoryName, setCategoryName] = useState("")
     const [Loading, setLoading] = useState(false)
 
     const [EventsList, setEventsList] = useState([]);
@@ -59,6 +60,7 @@ const Home = () => {
             reverseGeocode(User?.location?.latitude, User?.location?.longitude);
             var latitude = User?.location?.latitude;
             var longitude = User?.location?.longitude;
+            dispatch(userCurrentLocation({ latitude, longitude }))
             setCurrentLocation({ latitude, longitude })
             setLoading(false)
         }
@@ -111,7 +113,11 @@ const Home = () => {
 
     const radioButtons = useMemo(() => ([
         {
-            // acts as primary key, should be unique and non-empty string
+
+            value: 'All',
+            label: 'All'
+        },
+        {
             value: 'Free',
             label: 'Free'
         },
@@ -122,11 +128,7 @@ const Home = () => {
         },
     ]), []);
     const handleSelect = (label) => {
-        if (label === 'Other') {
-            setselected('')
-        } else {
-            setselected(label)
-        }
+        setselected(label)
     }
 
 
@@ -213,7 +215,9 @@ const Home = () => {
                 'Content-Type': "application/json",
             };
 
-            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events?page=${pageNumber}`, { headers });
+            const url = `https://plansaround-backend.vercel.app/api/mobile/homepage/events?page=${pageNumber}&search=${categoryName}&eventType=${selected.toUpperCase()}`
+            console.log("url====", url);
+            const response = await axios.get(url, { headers });
             const responseData = response.data;
             console.log(responseData, 'totalevents')
             const newEvents = responseData?.events;
@@ -262,6 +266,7 @@ const Home = () => {
 
 
 
+    console.log("searchRef====", searchRef);
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
@@ -281,9 +286,16 @@ const Home = () => {
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', flex: 0.2, justifyContent: 'space-between' }}>
                         <TouchableOpacity>
-                            <Icon name='notifications-none' size={30} color={'gray'} />
+                            <Icon name='notifications-none' size={30} color={'white'} />
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setFilterOpen(true)
+                                // setTimeout(() => {
+                                //     // searchRef.current.focus()
+                                // }, 2000);
+                            }}
+                        >
                             <Icons name='search' size={28} color={'gray'} />
                         </TouchableOpacity>
                     </View>
@@ -338,7 +350,7 @@ const Home = () => {
                         const date = item.dateOfEvent.split('T')
                         return (
                             <>
-                                <HomeEvent User={User} item={item} key={index} Distance={Distance} date={date} UserLocation={UserLocation} Eventlocation={Eventlocation} handleRefresh={handleRefresh} />
+                                <HomeEvent User={User} item={item} key={index} Distance={isNaN(Distance) ? 0 : Distance} date={date} UserLocation={UserLocation} Eventlocation={Eventlocation} handleRefresh={handleRefresh} />
                             </>
                         )
                     }
@@ -376,8 +388,17 @@ const Home = () => {
                             </View>
                             <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), margin: moderateScale(10), elevation: 2, padding: moderateScale(15) }}>
                                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
-                                    <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Category (Enter event name...) :</Text>
-                                    <TextInputC placeholder={'Search'} />
+                                    <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Events (Enter event name...) :</Text>
+                                    <TextInputC
+                                        // ref={searchRef}
+                                        // autoFocus={true}
+                                        value={categoryName}
+                                        editable={true}
+                                        placeholder={'Search'}
+                                        onChangeText={(text) => {
+                                            setCategoryName(text)
+                                        }}
+                                    />
                                 </View>
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginBottom: moderateScaleVertical(10) }}>
@@ -422,8 +443,8 @@ const Home = () => {
                                         }
                                     </View>
                                 </View>
-                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
-                                <View style={{ marginBottom: moderateScaleVertical(10) }}>
+                                {/* <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} /> */}
+                                {/* <View style={{ marginBottom: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Distance Range :</Text>
                                     <Text style={[styles.alleventtxt, { textAlign: 'center' }]}>{Range}</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -441,8 +462,8 @@ const Home = () => {
                                         />
                                         <Text style={[styles.address, { fontSize: textScale(16) }]}>20</Text>
                                     </View>
-                                </View>
-                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
+                                </View> */}
+                                {/* <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Number of Participants :</Text>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -467,9 +488,9 @@ const Home = () => {
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Time of day (morning, afternoon, evening, night) :</Text>
                                     <TextInputC placeholder={'Enter'} />
                                 </View>
-                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
+                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} /> */}
 
-                                <View style={{ marginBottom: moderateScaleVertical(10) }}>
+                                {/* <View style={{ marginBottom: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Age Range :</Text>
                                     <Text style={[styles.alleventtxt, { textAlign: 'center' }]}>{Range}</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -486,8 +507,13 @@ const Home = () => {
                                         />
                                         <Text style={[styles.address, { fontSize: textScale(16) }]}>60</Text>
                                     </View>
-                                </View>
-                                <ButtonComp text='Submit' style={{ backgroundColor: '#005BD4' }} textStyle={{ textAlign: 'center' }} />
+                                </View> */}
+                                <ButtonComp
+                                    onPress={() => {
+                                        getEventList(1)
+                                        setFilterOpen(false)
+                                    }}
+                                    text='Submit' style={{ backgroundColor: '#005BD4' }} textStyle={{ textAlign: 'center' }} />
                             </View>
                         </ScrollView>
 

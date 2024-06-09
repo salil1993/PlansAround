@@ -9,7 +9,6 @@ import {
 } from 'react-native-fbsdk';
 
 export const googleLogin = async () => {
-    GoogleSignin.configure();
     try {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();

@@ -1283,7 +1283,7 @@ const HostEvent = ({ navigation, route }) => {
                     coverScreen={true}
                     isVisible={openoptionModal}
                     backdropColor="rgba(255,255, 255, 0.8)"
-                    backdropOpacity={User.kyc.isVerified ? 0.8 : 1}
+                    backdropOpacity={User?.kyc?.isVerified ? 0.8 : 1}
                     hasBackdrop={true}
                     // onBackdropPress={() => setoptionopenModal(false)}
                     animationIn="slideInUp"
@@ -1299,10 +1299,10 @@ const HostEvent = ({ navigation, route }) => {
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Text style={styles.hometxt}>Choose Event Type</Text>
                             </View>
-                            <TouchableOpacity onPress={() => User.kyc.isVerified ? navigation.navigate(navigationStrings.HOME) : navigation.navigate(navigationStrings.HOME)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                            <TouchableOpacity onPress={() => User?.kyc?.isVerified ? navigation.navigate(navigationStrings.HOME) : navigation.navigate(navigationStrings.HOME)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
                         </View>
                         <View style={{ backgroundColor: '#ffff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(10) }}>
-                            <TouchableOpacity disabled={User.kyc.isVerified ? false : true} onPress={() => {
+                            <TouchableOpacity disabled={User?.kyc?.isVerified ? false : true} onPress={() => {
                                 setoptionopenModal(false)
                                 User.packageValidTill !== null ? (setuserType('PAID'), setvisiblePaid(true)) :
                                     navigation.navigate(navigationStrings.ALLPLANS)
@@ -1312,7 +1312,7 @@ const HostEvent = ({ navigation, route }) => {
                             </TouchableOpacity>
                         </View>
                         <View style={{ backgroundColor: '#ffff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(5) }}>
-                            <TouchableOpacity disabled={User.kyc.isVerified ? false : true} onPress={() => {
+                            <TouchableOpacity disabled={User?.kyc?.isVerified ? false : true} onPress={() => {
                                 setuserType('FREE')
                                 setoptionopenModal(false)
                             }} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
@@ -1321,7 +1321,7 @@ const HostEvent = ({ navigation, route }) => {
                             </TouchableOpacity>
                         </View>
                         {
-                            User.kyc.isVerified ? <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: moderateScaleVertical(10) }}>
+                            User?.kyc?.isVerified ? <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: moderateScaleVertical(10) }}>
                                 <Image source={imagePath.kycN} resizeMode='contain' style={{ height: moderateScaleVertical(30), width: moderateScale(30), }} />
                                 <Text style={[styles.phoneHeading, { fontSize: moderateScale(15), color: 'green', marginLeft: moderateScale(10), fontFamily: 'Roboto' }]}>KYC VERIFIED</Text>
                             </TouchableOpacity>
