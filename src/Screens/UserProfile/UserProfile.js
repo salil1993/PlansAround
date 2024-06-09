@@ -219,6 +219,7 @@ const UserProfile = ({ navigation }) => {
     };
 
     const handleUnfollow = async(id) =>{
+        console.log('handleUnfollowiddddd', id)
         if (isLoading) {
             return;
         }
@@ -231,11 +232,12 @@ const UserProfile = ({ navigation }) => {
                 'Content-Type': "application/json",
             };
             const formData = new FormData();
-            formData.append('id', id);
-            const response = await axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/users/remove-following`,formData, { headers });
-           // const responseData = response.data;
-           console.log(response?.data?.message, 'unfollowrequest');
-            getProfile()
+            formData.append("id", id);
+            const response = await axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/users/remove-following`,{"id":id}, { headers });
+            const responseData = response.data;
+           console.log(responseData, 'unfollowrequest');
+           getProfile()
+           getFollowingList(1)
             Snackbar.show({
                 text: `${response?.data?.message}`,
                 duration: Snackbar.LENGTH_SHORT,
