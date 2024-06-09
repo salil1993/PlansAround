@@ -22,7 +22,7 @@ const App = () => {
     GetFCM();
     GoogleSignin.configure({
       scopes: ['email'], // what API you want to access on behalf of the user, default is email and profile
-      webClientId: '689164288056-t6l7psejv7t4su15941ciancic8nj21l.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+      webClientId: '139290010094-hiubrhda8oohsm859cibk7on6o4ai1mv.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
       offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
     });
   }, [])
@@ -35,10 +35,10 @@ const App = () => {
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       // Alert.alert('A new FCM message arrived in foreground!', JSON.stringify(remoteMessage));
-    console.log(remoteMessage,'notification')
-    DisplayNotification(remoteMessage);
+      console.log(remoteMessage, 'notification')
+      DisplayNotification(remoteMessage);
     });
-    
+
     return unsubscribe;
   }, []);
 

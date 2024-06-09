@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, Pressable,TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, Pressable, TouchableOpacity } from 'react-native';
 import { moderateScale, moderateScaleVertical, scale, textScale } from '../styles/responsiveSize';
 
 import Iconpaid from 'react-native-vector-icons/MaterialIcons'
@@ -31,26 +31,28 @@ const TextInputC = ({
     isrightIcon,
     iconname,
     errorTxt,
+    ref,
     ...props
 }) => {
     return (
         <View style={{ ...styles.container, ...style }}>
-            <Pressable  onPress={onPress} style={[styles.imginput, {
+            <Pressable onPress={onPress} style={[styles.imginput, {
                 height: moderateScale(50),
                 alignItems: 'center',
                 justifyContent: imgright && 'space-between',
                 flexDirection: 'row',
                 paddingHorizontal: moderateScale(10),
                 borderRadius: scale(10),
-                 //elevation: 3, 
-                 borderColor:'#D3D3D3',
-                 borderWidth:1,
-                  ...style
+                //elevation: 3, 
+                borderColor: '#D3D3D3',
+                borderWidth: 1,
+                ...style
             }]}>
                 {imgLeft && <Image source={imgsrc} style={[styles.imgstyling, { marginLeft: moderateScale(5) }]} resizeMode='contain' />}
-               { editable?<TextInput 
-                placeholder={placeholder}
-                 placeholderTextColor={'#828282'}
+                {editable ? <TextInput
+                    ref={ref => ref = ref}
+                    placeholder={placeholder}
+                    placeholderTextColor={'#828282'}
                     style={{ ...style, flex: 1, color: '#333', fontFamily: 'Roboto', fontSize: textScale(16), }}
                     keyboardType={keyBoardType}
                     value={value}
@@ -63,23 +65,24 @@ const TextInputC = ({
                     maxLength={200}
                     onBlur={onBlur}
                     textContentType={type}
-                />:<View  style={[styles.imginput, {
-                     height: moderateScale(50),
+                /> : <View style={[styles.imginput, {
+                    height: moderateScale(50),
                     alignItems: 'center',
                     justifyContent: imgright && 'space-between',
                     flexDirection: 'row',
                     paddingHorizontal: moderateScale(10),
-                      ...style}]}>
-                    <Text style={{color: '#333', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500'}}>{value? value:placeholder}</Text>
-                    </View>}
-                   
+                    ...style
+                }]}>
+                    <Text style={{ color: '#333', fontFamily: 'Roboto', fontSize: textScale(14), fontWeight: '500' }}>{value ? value : placeholder}</Text>
+                </View>}
+
                 {imgright && <TouchableOpacity onPress={onPressSecure} ><Image source={imgsrc} style={[styles.imgstyling]} /></TouchableOpacity>}
-                {isrightIcon && <TouchableOpacity onPress={onPressComment}> 
-                <Iconpaid name={iconname} size={30} color={'#005BD4'} />
-                </TouchableOpacity> 
+                {isrightIcon && <TouchableOpacity onPress={onPressComment}>
+                    <Iconpaid name={iconname} size={30} color={'#005BD4'} />
+                </TouchableOpacity>
                 }
             </Pressable>
-            {errorTxt && <Text style={{color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14)}}>{errorTxt}</Text>}
+            {errorTxt && <Text style={{ color: '#FF0000', fontFamily: 'Roboto', fontSize: textScale(14) }}>{errorTxt}</Text>}
         </View>
     );
 };
@@ -87,17 +90,17 @@ const TextInputC = ({
 // define your styles
 const styles = StyleSheet.create({
     container: {
-      
+
     },
 
     imginput: {
         paddingHorizontal: moderateScale(10),
-       flex:1
+        flex: 1
     },
     imgstyling: {
-         height: moderateScale(20),
-         width: moderateScale(20),
-         resizeMode:'contain'
+        height: moderateScale(20),
+        width: moderateScale(20),
+        resizeMode: 'contain'
     },
     textStyling: {
         color: 'white',

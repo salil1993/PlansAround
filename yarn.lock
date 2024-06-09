@@ -1830,10 +1830,10 @@
   "resolved" "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-14.12.0.tgz"
   "version" "14.12.0"
 
-"@react-native-google-signin/google-signin@^10.0.1":
-  "integrity" "sha512-oZoU2lfKyn0s0GqqdFsi4v2FSENrxQYQU9DD/RSkxDdkIQ49Wwo6p5LKlgXY04GwZEVdYMuvZN3G89gQW0ig2g=="
-  "resolved" "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-10.0.1.tgz"
-  "version" "10.0.1"
+"@react-native-google-signin/google-signin@^11.0.1":
+  "integrity" "sha512-ZRSEd1ME31XZ+azS3Qe6TRb8NRicGmtRdD1vT4Tz2birnlTfNfRgy4qLrEKNZyMUTodA6+J2UvA2JWwT8ZQ/dw=="
+  "resolved" "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-11.0.1.tgz"
+  "version" "11.0.1"
 
 "@react-native/assets-registry@^0.72.0":
   "integrity" "sha512-Im93xRJuHHxb1wniGhBMsxLwcfzdYreSZVQGDoMJgkd6+Iky61LInGEHnQCTN0fKNYF1Dvcofb4uMmE1RQHXHQ=="
