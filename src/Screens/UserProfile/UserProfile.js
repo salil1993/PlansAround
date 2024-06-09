@@ -1,6 +1,6 @@
 //import liraries
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, SafeAreaView, ScrollView, StatusBar, TouchableOpacity, ActivityIndicator, FlatList, Dimensions } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Image, SafeAreaView, ScrollView, StatusBar, TouchableOpacity, ActivityIndicator, FlatList, Dimensions, PermissionsAndroid } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 
 import { moderateScale, moderateScaleVertical, scale, height, width, textScale } from '../../styles/responsiveSize';
@@ -19,7 +19,10 @@ import { getData } from '../../utils/helperFunctions';
 import IconsettingClose from 'react-native-vector-icons/MaterialCommunityIcons'
 import ButtonComp from '../../Components/ButtonComp';
 import Snackbar from 'react-native-snackbar';
-
+import {
+    launchCamera,
+    launchImageLibrary
+  } from 'react-native-image-picker';
 
 
 const category = [{
@@ -40,6 +43,7 @@ const category = [{
 // create a component
 const UserProfile = ({ navigation }) => {
     const isFocused = useIsFocused();
+    const scrollViewRef = useRef();
     const [Gcategory, setGcategory] = useState(1)
     const [menuOpen, setmenuOpen] = useState(false);
     const [followerModal, setfollowerModal] = useState(false);
@@ -48,11 +52,15 @@ const UserProfile = ({ navigation }) => {
     const [followersList, setfollowersList] = useState([]);
     const [followingList, setfollowingList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [offset, setoffset] = useState(null)
    // const user = useSelector((state) => state.persistedReducer.authSlice.userData);
     const [followpage, setFollowPage] = useState(1);
     const [followingpage, setFollowingPage] = useState(1);
     const [hasfollowingMore, setHasFollowingMore] = useState(true);
     const [hasfollowersMore, setHasFollowersMore] = useState(true);
+    const [selectImageModal, setselectImageModal] = useState(false);
+    const [profilePic, setprofilePic] = useState(null)
+    const [imgSelected,setimgSelected] = useState(null)
     const [user, setUser] = useState({})
    // console.log(user, 'profile m')
 
@@ -90,6 +98,16 @@ const UserProfile = ({ navigation }) => {
         getFollowingList(1)
         getProfile()
     }, [])
+
+    const handleOnScroll = event => {
+        setoffset(event.nativeEvent.contentOffset.y)
+    };
+
+    const handleScrollTo = p => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollTo(p);
+        }
+    };
 
 
     const getFollowerList = async (pageNumber) => {
@@ -255,6 +273,158 @@ const UserProfile = ({ navigation }) => {
         // navigation.navigate(navigationStrings.WHERE_STUDY)
     }
 
+    const requestCameraPermission = async () => {
+        if (Platform.OS === 'android') {
+          try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.CAMERA,
+              {
+                title: 'Camera Permission',
+                message: 'App needs camera permission',
+              },
+            );
+            // If CAMERA Permission is granted
+            return granted === PermissionsAndroid.RESULTS.GRANTED;
+          } catch (err) {
+            console.warn(err);
+            return false;
+          }
+        } else return true;
+      };
+    
+      const requestExternalWritePermission = async () => {
+        if (Platform.OS === 'android') {
+          try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+              {
+                title: 'External Storage Write Permission',
+                message: 'App needs write permission',
+              },
+            );
+            // If WRITE_EXTERNAL_STORAGE Permission is granted
+            return granted === PermissionsAndroid.RESULTS.GRANTED;
+          } catch (err) {
+            console.warn(err);
+            alert('Write permission err', err);
+          }
+          return false;
+        } else return true;
+      };
+    
+
+    const captureImage = async (type, id) => {
+        let options = {
+          maxWidth: 300,
+          maxHeight: 550,
+          mediaType: 'photo',
+  includeBase64: false,
+  quality: 0.5,
+  cameraType: 'back',
+        };
+        let isCameraPermitted = await requestCameraPermission();
+        let isStoragePermitted = await requestExternalWritePermission();
+        if (isCameraPermitted) {
+          launchCamera(options, (response) => {
+            console.log('Response = ', response.assets);
+            if (response.didCancel) {
+              alert('User cancelled camera picker');
+              return;
+            } else if (response.errorCode == 'camera_unavailable') {
+              alert('Camera not available on device');
+              return;
+            } else if (response.errorCode == 'permission') {
+              alert('Permission not satisfied');
+              return;
+            } else if (response.errorCode == 'others') {
+              alert(response.errorMessage);
+              return;
+            }
+            let img = response?.assets[0]?.uri
+            setimgSelected(response?.assets);
+            setselectImageModal(false)
+            setprofilePic(img)
+            handleprofSubmit(response?.assets)
+          });
+    
+    
+        }
+      };
+    
+      const chooseFile = (type, id) => {
+        let options = {
+          maxWidth: 300,
+          maxHeight: 550,
+          mediaType: 'photo',
+          includeBase64: false,
+          quality: 0.5,
+        };
+        launchImageLibrary(options, (response) => {
+          console.log('Response = ', response);
+          if (response.didCancel) {
+            alert('User cancelled camera picker');
+            return;
+          } else if (response.errorCode == 'camera_unavailable') {
+            alert('Camera not available on device');
+            return;
+          } else if (response.errorCode == 'permission') {
+            alert('Permission not satisfied');
+            return;
+          } else if (response.errorCode == 'others') {
+            alert(response.errorMessage);
+            return;
+          }
+            let img = response?.assets[0]?.uri
+            setimgSelected(response?.assets);
+            setselectImageModal(false)
+            setprofilePic(img)
+            handleprofSubmit(response?.assets)
+        });
+      };
+
+      const handleprofSubmit = async(img) =>{
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append("image", {
+           uri: img[0]?.uri,
+           type: img[0]?.type, // Modify the type based on your image type
+           name: img[0]?.fileName,
+           fileName: img[0]?.fileName,
+         });
+       let usertoken = await getData('UserToken');
+        console.log(usertoken, 'token')
+        const headers = {
+         'Authorization': `Bearer ${usertoken}`,
+          'Content-Type': 'multipart/form-data',
+       };
+
+        axios.post('https://plansaround-backend.vercel.app/api/mobile/profile/change-profile-picture', formData, { headers })
+        .then((res) => {
+          console.log('uwwhwhwhrurh', res.data);
+          setIsLoading(false);
+          Snackbar.show({
+            text: `${res.data.message}`,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: '#005BD4',
+            textColor: "#fff",
+          });
+ 
+
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+          Snackbar.show({
+            text: `${error?.response?.data?.message}`,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: 'red',
+            textColor: "#fff",
+          });
+        });
+      }
+
+      //api/mobile/profile/change-profile-picture
+
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
@@ -263,9 +433,16 @@ const UserProfile = ({ navigation }) => {
             <ScrollView>
                 <View style={styles.container}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between', }}>
-                        <TouchableOpacity style={{ width: '35%' }}>
-                            {user?.profilePicture ? <Image source={{ uri: user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(50) }} /> :
-                                <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(50) }} />}
+                        <TouchableOpacity style={{ width: '35%' }} onPress={() =>{
+                                setselectImageModal(true)
+                        }}>
+                            {user?.profilePicture? <Image source={{ uri: user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(55), resizeMode:'cover' }} /> :
+                            
+                                <Image source={ profilePic
+                                    ? {
+                                        uri: profilePic,
+                                      }
+                                    : imagePath.Gola}  style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(55), resizeMode:'cover' }} />}
                             <Image source={imagePath.plus} style={{ alignSelf: 'center', height: scale(30), width: scale(30), position: 'absolute', bottom: 10, left: moderateScale(78) }} />
                         </TouchableOpacity>
                         <View style={{ width: '65%', flexDirection: 'row', justifyContent: 'space-between', }}>
@@ -660,6 +837,65 @@ const UserProfile = ({ navigation }) => {
                 </Modal>
             </View>
 
+            <View>
+                <Modal
+                     hasBackdrop={true}
+                     coverScreen={true}
+                     backdropColor="#000"
+                     backdropOpacity={0.5}
+                    // onBackdropPress={() => setLocationModal(false)}
+                    isVisible={selectImageModal}
+                    style={{ justifyContent: 'flex-end', margin: 0 }}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    animationInTiming={800}
+                    animationOutTiming={800}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}
+                    scrollTo={(p) => handleScrollTo(p)}
+                    scrollOffset={offset}
+                    scrollOffsetMax={400 - 300}
+                    propagateSwipe={true}
+                     >
+                    <View style={[styles.modalStyle2]}>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(18),       fontWeight: '800', }]}>Select Images</Text>
+                                </View>
+                                <TouchableOpacity onPress={() => setselectImageModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                            </View>
+                            <View style={{ flex:1, marginTop:moderateScale(30) }}>
+                         
+
+                            <TouchableOpacity onPress={()=>{
+                               // setselectImageModal(false)
+                                chooseFile('photo', 4)
+                                }} 
+                                style={{marginBottom:moderateScale(20), borderBottomColor:'#D3D3D3', borderBottomWidth:1, paddingBottom:moderateScaleVertical(20)}}>
+                              
+                                <Text style={[styles.charlie, { 
+                                    fontSize: textScale(16),
+                                 fontFamily: 'Roboto',
+                                  fontWeight: '600',textTransform:'capitalize'
+                                }]}>Select from Gallery</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={()=>{
+                                   
+                                  captureImage('photo', 3)
+                            }}>
+                              
+                              <Text style={[styles.charlie, {
+                                  fontSize: textScale(16), fontFamily: 'Roboto',
+                                  fontWeight: '600',textTransform:'capitalize'
+                              }]}>Capture Image</Text>
+                          </TouchableOpacity>
+
+                          </View>
+                          </View>
+                </Modal>
+            </View>
+
         </WrapperContainer>
     );
 };
@@ -670,6 +906,14 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: moderateScale(12),
         backgroundColor: '#F2F2F2',
+    },
+    modalStyle2: {
+        // flex:1,
+        backgroundColor: '#F2F2F2',
+        minHeight: moderateScale(height / 4),
+        borderTopLeftRadius: moderateScale(30),
+        borderTopRightRadius: moderateScale(30),
+        padding: moderateScale(12),
     },
     locationmodalStyle: {
         flex: 1,
