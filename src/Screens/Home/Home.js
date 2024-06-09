@@ -60,8 +60,9 @@ const Home = () => {
             var latitude = User?.location?.latitude;
             var longitude = User?.location?.longitude;
             setCurrentLocation({ latitude, longitude })
+            setLoading(false)
         }
-    }, [address])
+    }, [])
 
     const requestLocationPermission = async () => {
         try {
@@ -176,7 +177,6 @@ const Home = () => {
         // console.log(details, 'NewLocationyhaHOme p change')
         const selectedLocation = details.geometry.location;
         const { lat, lng } = selectedLocation;
-        // console.log(lat, '.New..', lng)
         const latitude = lat;
         const longitude = lng;
         setCurrentLocation({ latitude, longitude });
