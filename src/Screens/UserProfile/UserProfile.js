@@ -17,6 +17,8 @@ import Loader from '../../Components/Loader';
 import axios from 'axios';
 import { getData } from '../../utils/helperFunctions';
 import IconsettingClose from 'react-native-vector-icons/MaterialCommunityIcons'
+import ButtonComp from '../../Components/ButtonComp';
+import Snackbar from 'react-native-snackbar';
 
 
 
@@ -197,6 +199,43 @@ const UserProfile = ({ navigation }) => {
             getFollowingList(followingpage + 1);
         }
     };
+
+    const handleUnfollow = async(id) =>{
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userTokenProfile', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+            const formData = new FormData();
+            formData.append('id', id);
+            const response = await axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/users/remove-following`,formData, { headers });
+           // const responseData = response.data;
+           console.log(response?.data?.message, 'unfollowrequest');
+            getProfile()
+            Snackbar.show({
+                text: `${response?.data?.message}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: '#005BD4',
+                textColor: "#fff",
+            });
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            Snackbar.show({
+                text: `${error?.response?.data?.message}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+            console.log(error);
+        }  
+    }
 
 
     const LoaderList = () => (
@@ -537,12 +576,18 @@ const UserProfile = ({ navigation }) => {
                             onEndReachedThreshold={0.1}
                             // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                             renderItem={({ item, index }) => {
+                                console.log('item---', item)
                                 return(
                                     <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                    {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
                                         <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
                                         <Text style={[styles.phoneHeading, {  textAlign: 'center' }]}>{item?.fullName}</Text>
+                                        <ButtonComp text={item?.userIsFollowing ?'Following':'Follow'} isLoading={isLoading}
+                                                style={{ backgroundColor: '#005BD4', width: '30%', height: moderateScale(35), marginLeft:moderateScale(30)}} onPress={() => {
+                                                    handleFollow(item?._id)
+                                                }
+                                                } />
                                     </View>
                                 </View>
                                                                         )
@@ -591,12 +636,18 @@ const UserProfile = ({ navigation }) => {
                                 onEndReachedThreshold={0.1}
                                 //  ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                                 renderItem={({ item, index }) => {
+                                    console.log('item---', item)
                                     return(
                                         <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20),  flex:1}}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                        {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
                                             <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
                                             <Text style={[styles.phoneHeading, {textAlign: 'center' }]}>{item?.fullName}</Text>
+                                            <ButtonComp text={'Unfollow'} isLoading={isLoading}
+                                                style={{ backgroundColor: '#005BD4', width: '30%', height: moderateScale(35), marginLeft:moderateScale(30)}} onPress={() => {
+                                                    handleUnfollow(item?._id)
+                                                }
+                                                } />
                                         </View>
                                     </View>
                                     )

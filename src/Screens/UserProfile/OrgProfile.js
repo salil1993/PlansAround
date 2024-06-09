@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, StatusBar, SafeAreaView, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, StatusBar, SafeAreaView, Dimensions, TouchableOpacity, Image, RefreshControl } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import HeaderBack from '../../Components/HeaderBack';
 import { height, moderateScale, moderateScaleVertical, scale, textScale } from '../../styles/responsiveSize';
@@ -14,6 +14,7 @@ import Modal from 'react-native-modal'
 import IconsettingClose from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment';
 import ButtonComp from '../../Components/ButtonComp';
+import Snackbar from 'react-native-snackbar';
 // create a component
 const OrgProfile = ({ navigation, route }) => {
     const Profile = route.params.Profile;
@@ -207,7 +208,7 @@ const OrgProfile = ({ navigation, route }) => {
             };
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/organiser/${Profile}/events?status=${status}&limit=5&page=${pageNumber}`, { headers });
             const responseData = response.data;
-            console.log(responseData, 'eventList')
+            console.log(JSON.stringify(responseData), 'eventList')
             const eventList = responseData?.events?.docs;
             seteventList((prevEvents) => {
                 if (pageNumber === 1) {
@@ -233,10 +234,75 @@ const OrgProfile = ({ navigation, route }) => {
         }
     };
 
+    const handleFollow = async (id) => {
+        console.log('njnjnjsnj', id)
+        let usertoken = await getData('UserToken');
+        const headers = {
+            'Authorization': `Bearer ${usertoken}`,
+            'Content-Type': "application/json",
+        };
+        const formData = new FormData();
+        formData.append('id', id);
+        axios.post('https://plansaround-backend.vercel.app/api/mobile/homepage/users/follow-request', {"id":id}, { headers })
+            .then((res) => {
+                console.log(res, 'Followrequest');
+                getOrgProfile()
+                Snackbar.show({
+                    text: `${res?.data?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: '#005BD4',
+                    textColor: "#fff",
+                });
+            })
+            .catch((error) => {
+                console.log(error?.response?.data?.message);
+           
+                Snackbar.show({
+                    text: `${error?.response?.data?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: 'red',
+                    textColor: "#fff",
+                });
+            });
+    }
 
+    const handleUnfollow = async(id) =>{
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userTokenProfile', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+            const formData = new FormData();
+            formData.append('id', id);
+            const response = await axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/users/remove-following`,formData, { headers });
+           // const responseData = response.data;
+           getOrgProfile()
+            console.log(response?.data?.message, 'unfollowrequest');
+            Snackbar.show({
+                text: `${response?.data?.message}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: '#005BD4',
+                textColor: "#fff",
+            });
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            Snackbar.show({
+                text: `${error?.response?.data?.message}`,
+                duration: Snackbar.LENGTH_SHORT,
+                backgroundColor: 'red',
+                textColor: "#fff",
+            });
+            console.log(error);
+        }  
+    }
 
-
-    //http://localhost:3000/api/mobile/homepage/events/organiser/6654bb53f576545d9c4a19db/events?status=all&limit=5&page=1
 
 
     return (
@@ -249,6 +315,7 @@ const OrgProfile = ({ navigation, route }) => {
                         <FlatList
                             data={[ProfileN]} // Wrap ProfileN in an array
                             showsVerticalScrollIndicator={false}
+                            
                             renderItem={({ item }) => {
                                 // console.log('item--->>', item)
                                 return (
@@ -263,7 +330,7 @@ const OrgProfile = ({ navigation, route }) => {
                                             </TouchableOpacity>
                                             <View style={{ width: '65%', flexDirection: 'row', justifyContent: 'space-between' }}>
                                                 <View>
-                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{ProfileN?.eventsCount ? ProfileN?.eventsCount : 0}</Text>
+                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{ProfileN?.eventCount ? ProfileN?.eventCount : 0}</Text>
                                                     <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Events</Text>
                                                 </View>
                                                 <TouchableOpacity onPress={() => setfollowerModal(true)}>
@@ -276,20 +343,19 @@ const OrgProfile = ({ navigation, route }) => {
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
-                                        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: moderateScaleVertical(5), marginLeft: moderateScale(3) }}>
-                                            <Text style={{ textAlign: 'center', color: '#333', fontFamily: 'Roboto', fontSize: scale(15), fontWeight: '700' }}>{ProfileN.fullName ? ProfileN.fullName : 'NA'}</Text>
-                                            <Iconpaid name='verified' size={18} color='#005BD4' style={{ marginLeft: moderateScale(3) }} />
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: moderateScaleVertical(5), marginLeft: moderateScale(3) }}>
+                                                <Text style={{ textAlign: 'center', color: '#333', fontFamily: 'Roboto', fontSize: scale(15), fontWeight: '700' }}>{ProfileN.fullName ? ProfileN.fullName : 'NA'}</Text>
+                                                <Iconpaid name='verified' size={18} color='#005BD4' style={{ marginLeft: moderateScale(3) }} />
+                                            </View>
+
+                                            <ButtonComp text={ProfileN?.userIsFollowing ?'Following':'Follow'} isLoading={isLoading}
+                                                style={{ backgroundColor: '#005BD4', width: '40%', height: moderateScale(35), }} onPress={() => {
+                                                    handleFollow(item?._id)
+                                                }
+                                                } />
                                         </View>
 
-                                        <ButtonComp text='Follow' isLoading={isLoading}
-                            style={{ backgroundColor: '#005BD4', width: '40%' , height:moderateScale(35),}} onPress={() => {
-                             
-                               
-                            }
-                            } />
-                                        </View>
-                                        
 
                                         <View style={{ padding: moderateScaleVertical(15), backgroundColor: '#fff', borderRadius: moderateScale(8), marginVertical: moderateScaleVertical(15) }}>
                                             {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', }}>
@@ -393,26 +459,30 @@ const OrgProfile = ({ navigation, route }) => {
 
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
                                                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                                <Image source={imagePath.frame2} />
+                                                                {item?.userId?.profilePicture ? (
+                                                                    <Image source={{ uri: item?.userId?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(35), width: moderateScale(35), borderRadius: moderateScale(17) }} />
+                                                                ) : (
+                                                                    <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(35), width: moderateScale(35), borderRadius: moderateScale(17) }} />
+                                                                )}
                                                                 <Text style={[styles.textone, { marginLeft: moderateScale(10) }]}>{item?.userId?.fullName}</Text>
                                                             </View>
                                                             {/* <Image source={imagePath.dotted}/> */}
                                                         </View>
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5), flex:0.6 }]}>Date</Text>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex:0.4 }]}>{moment(item?.dateOfEvent).format('DD MMM YYYY')}</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5), flex: 0.6 }]}>Date</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex: 0.4 }]}>{moment(item?.dateOfEvent).format('DD MMM YYYY')}</Text>
                                                         </View>
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', flex:0.6 }]}>Event</Text>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex:0.4}]}>{item?.name}</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', flex: 0.6 }]}>Event</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex: 0.4 }]}>{item?.name}</Text>
                                                         </View>
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5), flex:0.6}]}>No. of people attended</Text>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex:0.4 }]}>4</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5), flex: 0.6 }]}>Event Type</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex: 0.4 }]}>{item?.eventType}</Text>
                                                         </View>
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', flex:0.6  }]}>Location</Text>
-                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', paddingBottom: moderateScaleVertical(10),flex:0.4 }]}>{item?.address}</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', flex: 0.6 }]}>Location</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', paddingBottom: moderateScaleVertical(10), flex: 0.4 }]}>{item?.address}</Text>
                                                         </View>
                                                     </View>
                                                 )
@@ -433,110 +503,115 @@ const OrgProfile = ({ navigation, route }) => {
                 </View>
 
                 <View>
-                <Modal
-                    // swipeDirection={'down'}
-                    // onSwipeco={() => setLocationModal(false)}
-                    hasBackdrop={true}
-                    coverScreen={true}
-                    backdropColor="#000"
-                    backdropOpacity={0.8}
-                    // onBackdropPress={() => setLocationModal(false)}
-                    isVisible={followerModal}
-                    style={{ justifyContent: 'flex-end', margin: 0 }}
-                    animationIn="slideInUp"
-                    animationOut="slideOutDown"
-                    animationInTiming={1000}
-                    animationOutTiming={900}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600} >
-                    <SafeAreaView style={styles.locationmodalStyle}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
-                            <TouchableOpacity onPress={() => setfollowerModal(false)}>
-                                <IconsettingClose name='close-thick' size={25} color='#000' />
-                            </TouchableOpacity>
-                            <Text style={[styles.charlie, { marginLeft: moderateScale(20), fontSize: textScale(18), fontFamily: 'Roboto', fontWeight: '800', }]}>Followers</Text>
-                        </View>
-                        <FlatList
-                            data={followersList}
-                            ListEmptyComponent={<View style={{ justifyContent: 'center', alignContent: 'center', height: Dimensions.get('screen').height / 2 }}>
-                                <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
-                            </View>}
-                            keyExtractor={(item, index) => index.toString()}
-                            onEndReached={handleFollowersLoadMore}
-                            onEndReachedThreshold={0.1}
-                            // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
-                            renderItem={({ item, index }) => {
-                                return(
-                                    <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                   {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
-                                        <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
-                                        <Text style={[styles.phoneHeading, {  textAlign: 'center' }]}>{item?.fullName}</Text>
-                                    </View>
-                                </View>
-                                                                        )
-                            }
-                            }
-                        />
-                    </SafeAreaView>
-                </Modal>
-            </View>
-
-            <View>
-                <Modal
-                    // swipeDirection={'down'}
-                    // onSwipeco={() => setLocationModal(false)}
-                    hasBackdrop={true}
-                    coverScreen={true}
-                    backdropColor="#000"
-                    backdropOpacity={0.8}
-                    // onBackdropPress={() => setLocationModal(false)}
-                    isVisible={followlistModal}
-                    style={{ justifyContent: 'flex-end', margin: 0 }}
-                    animationIn="slideInUp"
-                    animationOut="slideOutDown"
-                    animationInTiming={1000}
-                    animationOutTiming={900}
-                    backdropTransitionInTiming={600}
-                    backdropTransitionOutTiming={600} >
-                    <SafeAreaView style={styles.locationmodalStyle}>
+                    <Modal
+                        // swipeDirection={'down'}
+                        // onSwipeco={() => setLocationModal(false)}
+                        hasBackdrop={true}
+                        coverScreen={true}
+                        backdropColor="#000"
+                        backdropOpacity={0.8}
+                        // onBackdropPress={() => setLocationModal(false)}
+                        isVisible={followerModal}
+                        style={{ justifyContent: 'flex-end', margin: 0 }}
+                        animationIn="slideInUp"
+                        animationOut="slideOutDown"
+                        animationInTiming={1000}
+                        animationOutTiming={900}
+                        backdropTransitionInTiming={600}
+                        backdropTransitionOutTiming={600} >
                         <SafeAreaView style={styles.locationmodalStyle}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
-                                <TouchableOpacity onPress={() => setfollowlistModal(false)}>
+                                <TouchableOpacity onPress={() => setfollowerModal(false)}>
                                     <IconsettingClose name='close-thick' size={25} color='#000' />
                                 </TouchableOpacity>
-                                <Text style={[styles.charlie, {
-                                    marginLeft: moderateScale(20), fontSize: textScale(18), fontFamily: 'Roboto',
-                                    fontWeight: '800',
-                                }]}>Following</Text>
+                                <Text style={[styles.charlie, { marginLeft: moderateScale(20), fontSize: textScale(18), fontFamily: 'Roboto', fontWeight: '800', }]}>Followers</Text>
                             </View>
                             <FlatList
-                                data={followingList}
+                                data={followersList}
                                 ListEmptyComponent={<View style={{ justifyContent: 'center', alignContent: 'center', height: Dimensions.get('screen').height / 2 }}>
                                     <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
                                 </View>}
                                 keyExtractor={(item, index) => index.toString()}
-                                onEndReached={handleFollowingLoadMore}
+                                onEndReached={handleFollowersLoadMore}
                                 onEndReachedThreshold={0.1}
-                                //  ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
+                                // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                                 renderItem={({ item, index }) => {
-                                    return(
-                                        <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20),  flex:1}}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                       {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
-                                            <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
-                                            <Text style={[styles.phoneHeading, {textAlign: 'center' }]}>{item?.fullName}</Text>
+                                    return (
+                                        <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                {item?.profilePicture ? <Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} /> :
+                                                    <Image source={imagePath.Gola} style={{ height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                                <Text style={[styles.phoneHeading, { textAlign: 'center' }]}>{item?.fullName}</Text>
+                                            </View>
                                         </View>
-                                    </View>
                                     )
-                                    
                                 }
                                 }
                             />
                         </SafeAreaView>
-                    </SafeAreaView>
-                </Modal>
-            </View>
+                    </Modal>
+                </View>
+
+                <View>
+                    <Modal
+                        // swipeDirection={'down'}
+                        // onSwipeco={() => setLocationModal(false)}
+                        hasBackdrop={true}
+                        coverScreen={true}
+                        backdropColor="#000"
+                        backdropOpacity={0.8}
+                        // onBackdropPress={() => setLocationModal(false)}
+                        isVisible={followlistModal}
+                        style={{ justifyContent: 'flex-end', margin: 0 }}
+                        animationIn="slideInUp"
+                        animationOut="slideOutDown"
+                        animationInTiming={1000}
+                        animationOutTiming={900}
+                        backdropTransitionInTiming={600}
+                        backdropTransitionOutTiming={600} >
+                        <SafeAreaView style={styles.locationmodalStyle}>
+                            <SafeAreaView style={styles.locationmodalStyle}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
+                                    <TouchableOpacity onPress={() => setfollowlistModal(false)}>
+                                        <IconsettingClose name='close-thick' size={25} color='#000' />
+                                    </TouchableOpacity>
+                                    <Text style={[styles.charlie, {
+                                        marginLeft: moderateScale(20), fontSize: textScale(18), fontFamily: 'Roboto',
+                                        fontWeight: '800',
+                                    }]}>Following</Text>
+                                </View>
+                                <FlatList
+                                    data={followingList}
+                                    ListEmptyComponent={<View style={{ justifyContent: 'center', alignContent: 'center', height: Dimensions.get('screen').height / 2 }}>
+                                        <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
+                                    </View>}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    onEndReached={handleFollowingLoadMore}
+                                    onEndReachedThreshold={0.1}
+                                    //  ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), flex: 1 }}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    {item?.profilePicture ? <Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} /> :
+                                                        <Image source={imagePath.Gola} style={{ height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                                    <Text style={[styles.phoneHeading, { textAlign: 'center' }]}>{item?.fullName}</Text>
+                                                    <ButtonComp text={'Unfollow'} isLoading={isLoading}
+                                                style={{ backgroundColor: '#005BD4', width: '30%', height: moderateScale(35), marginLeft:moderateScale(30)}} onPress={() => {
+                                                    handleUnfollow(item?._id)
+                                                }
+                                                } />
+                                                </View>
+                                            </View>
+                                        )
+
+                                    }
+                                    }
+                                />
+                            </SafeAreaView>
+                        </SafeAreaView>
+                    </Modal>
+                </View>
             </View>
 
 
@@ -552,10 +627,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#F2F2F2',
     },
     phoneHeading: {
-        fontSize: scale(24),
+        fontSize: scale(14),
         fontFamily: 'Roboto',
-        fontWeight: '800',
-        color: '#333'
+        fontWeight: '600',
+        color: '#333',
+        marginLeft:scale(10)
     },
     locationmodalStyle: {
         flex: 1,
