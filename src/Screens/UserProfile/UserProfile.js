@@ -46,14 +46,15 @@ const UserProfile = ({ navigation }) => {
     const [followersList, setfollowersList] = useState([]);
     const [followingList, setfollowingList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const user = useSelector((state) => state.persistedReducer.authSlice.userData);
+   // const user = useSelector((state) => state.persistedReducer.authSlice.userData);
     const [followpage, setFollowPage] = useState(1);
     const [followingpage, setFollowingPage] = useState(1);
     const [hasfollowingMore, setHasFollowingMore] = useState(true);
     const [hasfollowersMore, setHasFollowersMore] = useState(true);
+    const [user, setUser] = useState({})
    // console.log(user, 'profile m')
 
-    const UserKYCstatus = user.kyc.isVerified;
+    const UserKYCstatus = user?.kyc?.isVerified;
     // const UserKYCstatus = false;
     // console.log(user, 'profile m')
     let DOB = user?.dateOfBirth?.split('T');
@@ -85,6 +86,7 @@ const UserProfile = ({ navigation }) => {
     useEffect(() => {
         getFollowerList(1)
         getFollowingList(1)
+        getProfile()
     }, [])
 
 
@@ -113,6 +115,7 @@ const UserProfile = ({ navigation }) => {
                 return [...prevEvents, ...followerList];
             }
         });
+        setFollowPage(pageNumber); 
            setHasFollowersMore(followerList?.length > 0);
            setIsLoading(false);
         } catch (error) {
@@ -137,18 +140,19 @@ const UserProfile = ({ navigation }) => {
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/profile/following?page=${pageNumber}&limit=10`, { headers });
             const responseData = response.data;
             console.log(responseData, 'following')
-            const followingList = responseData?.following;
+            const followingsList = responseData?.following;
            // setfollowingList(packageList)
             setfollowingList((prevEvents) => {
                 if (pageNumber === 1) {
                     // If it's the first page, replace existing events
-                    return followingList;
+                    return followingsList;
                 } else {
                     // If it's not the first page, append new events to the existing list
-                    return [...prevEvents, ...followingList];
+                    return [...prevEvents, ...followingsList];
                 }
             });
-            setHasFollowingMore(followingList?.length > 0);
+            setFollowingPage(pageNumber)
+            setHasFollowingMore(followingsList?.length > 0);
             setIsLoading(false);
 
         } catch (error) {
@@ -164,7 +168,7 @@ const UserProfile = ({ navigation }) => {
         setIsLoading(true);
         try {
             let usertoken = await getData('UserToken');
-            console.log('userToken', usertoken)
+            console.log('userTokenProfile', usertoken)
             const headers = {
                 'Authorization': `Bearer ${usertoken}`,
                 'Content-Type': "application/json",
@@ -172,8 +176,8 @@ const UserProfile = ({ navigation }) => {
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/profile`, { headers });
             const responseData = response.data;
             console.log(responseData, 'profiledata')
-            // const packageList = responseData?.following;
-            // setfollowingList(packageList)
+            const userData = responseData?.user;
+             setUser(userData)
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
@@ -215,7 +219,7 @@ const UserProfile = ({ navigation }) => {
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
-            <HeaderBack onRightIconClick={() => navigation.navigate(navigationStrings.SETTINGS)} rightIcon={true} isLeftImage={false} onRightImgClick={() => setoptionopenModal3(!openoptionModal3)} rightImage={imagePath.sq} rightImg={true} mainText={user.fullName} maintxtstyle={{ color: '#333', fontFamily: 'Roboto', fontSize: scale(22) }} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(16) }} />
+            <HeaderBack onRightIconClick={() => navigation.navigate(navigationStrings.SETTINGS)} rightIcon={true} isLeftImage={false} onRightImgClick={() => setoptionopenModal3(!openoptionModal3)} rightImage={imagePath.sq} rightImg={true} mainText={user?.fullName} maintxtstyle={{ color: '#333', fontFamily: 'Roboto', fontSize: scale(22) }} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(16) }} />
 
             <ScrollView>
                 <View style={styles.container}>
@@ -227,15 +231,15 @@ const UserProfile = ({ navigation }) => {
                         </TouchableOpacity>
                         <View style={{ width: '65%', flexDirection: 'row', justifyContent: 'space-between', }}>
                             <View>
-                                <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>3</Text>
+                                <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{user?.eventsCount}</Text>
                                 <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Events</Text>
                             </View>
                             <TouchableOpacity onPress={() => setfollowerModal(true)}>
-                                <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>108</Text>
+                                <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{user?.followersCount}</Text>
                                 <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Followers</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setfollowlistModal(true)}>
-                                <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>89</Text>
+                                <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{user?.followingCount}</Text>
                                 <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Following</Text>
                             </TouchableOpacity>
                         </View>
@@ -257,27 +261,27 @@ const UserProfile = ({ navigation }) => {
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'left', }]}>Gender</Text>
-                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user.gender.name}</Text>
+                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user?.gender?.name}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'left', }]}>University</Text>
-                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user.study.university ? user.study.university : 'NA'}</Text>
+                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user?.study?.university ? user?.study?.university : 'NA'}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'left', }]}>Degree</Text>
-                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user.study.degree ? user.study.degree : 'NA'}</Text>
+                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user?.study?.degree ? user?.study?.degree : 'NA'}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'left', }]}>Work</Text>
-                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user.profession.name}</Text>
+                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user?.profession?.name}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'left', }]}>Political Belief</Text>
-                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user.politicalBelief.name ? user.politicalBelief.name : 'NA'}</Text>
+                            <Text style={[styles.txt, { fontWeight: '500', flex: 0.5, textAlign: 'right' }]}>{user?.politicalBelief?.name ? user?.politicalBelief?.name : 'NA'}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'left', }]}>Religious Belief</Text>
-                            <Text style={[styles.txt, { flex: 0.5, textAlign: 'right', fontWeight: '500' }]}>{user.religiousBelief.name ? user.religiousBelief.name : 'NA'}</Text>
+                            <Text style={[styles.txt, { flex: 0.5, textAlign: 'right', fontWeight: '500' }]}>{user?.religiousBelief?.name ? user?.religiousBelief?.name : 'NA'}</Text>
                         </View>
                         {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                             <Text style={[styles.txt, { flex: 0.5, textAlign: 'left', }]}>KYC</Text>
@@ -287,7 +291,7 @@ const UserProfile = ({ navigation }) => {
 
                     <View style={{ padding: moderateScaleVertical(15), backgroundColor: '#fff', borderRadius: moderateScale(8), }}>
                         <Text style={[styles.txt, { textAlign: 'left', fontWeight: 'bold' }]}>Bio</Text>
-                        <Text style={[styles.txt, { textAlign: 'left', fontWeight: '500' }]}>{user.bio ? user.bio.description : 'NA'}</Text>
+                        <Text style={[styles.txt, { textAlign: 'left', fontWeight: '500' }]}>{user?.bio ? user?.bio?.description : 'NA'}</Text>
                     </View>
 
                     {/* <View style={{ padding: moderateScaleVertical(15), backgroundColor: '#fff', borderRadius: moderateScale(8), marginVertical: moderateScaleVertical(15) }}>
@@ -463,7 +467,7 @@ const UserProfile = ({ navigation }) => {
                             <TouchableOpacity disabled={UserKYCstatus ? false : true}
                                 onPress={() => {
                                     setoptionopenModal3(false)
-                                    user.packageValidTill !== null ? navigation.navigate(navigationStrings.HOST_EVENT, { isPaid: true, modal: false, EventType: 'PAID' }) : navigation.navigate(navigationStrings.ALLPLANS)
+                                    user?.packageValidTill !== null ? navigation.navigate(navigationStrings.HOST_EVENT, { isPaid: true, modal: false, EventType: 'PAID' }) : navigation.navigate(navigationStrings.ALLPLANS)
                                 }}
                                 style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                                 <Text style={styles.txt}>Paid Event</Text>
@@ -533,13 +537,15 @@ const UserProfile = ({ navigation }) => {
                             onEndReachedThreshold={0.1}
                             // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                             renderItem={({ item, index }) => {
-                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                return(
+                                    <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
-                                        <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
-                                        <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
+                                   {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
+                                        <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                        <Text style={[styles.phoneHeading, {  textAlign: 'center' }]}>{item?.fullName}</Text>
                                     </View>
                                 </View>
+                                                                        )
                             }
                             }
                         />
@@ -586,11 +592,11 @@ const UserProfile = ({ navigation }) => {
                                 //  ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                                 renderItem={({ item, index }) => {
                                     return(
-<View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                        <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20),  flex:1}}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                       {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(50), width: moderateScale(90), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
-                                            <Image source={imagePath.Gola} style={{ height: moderateScaleVertical(150), width: moderateScale(50), borderRadius: moderateScale(50), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
-                                            <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.fullName}</Text>
+                                       {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
+                                            <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                            <Text style={[styles.phoneHeading, {textAlign: 'center' }]}>{item?.fullName}</Text>
                                         </View>
                                     </View>
                                     )
@@ -683,10 +689,11 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     phoneHeading: {
-        fontSize: scale(24),
+        fontSize: scale(14),
         fontFamily: 'Roboto',
-        fontWeight: '800',
-        color: '#333'
+        fontWeight: '600',
+        color: '#333',
+        marginLeft:scale(10)
     },
 
 

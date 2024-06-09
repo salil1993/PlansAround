@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, StatusBar,SafeAreaView,Dimensions, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, StatusBar, SafeAreaView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import HeaderBack from '../../Components/HeaderBack';
 import { height, moderateScale, moderateScaleVertical, scale, textScale } from '../../styles/responsiveSize';
@@ -12,6 +12,8 @@ import Iconpaid from 'react-native-vector-icons/MaterialIcons'
 import Reputation from '../../Components/Reputation';
 import Modal from 'react-native-modal'
 import IconsettingClose from 'react-native-vector-icons/MaterialCommunityIcons'
+import moment from 'moment';
+import ButtonComp from '../../Components/ButtonComp';
 // create a component
 const OrgProfile = ({ navigation, route }) => {
     const Profile = route.params.Profile;
@@ -22,18 +24,23 @@ const OrgProfile = ({ navigation, route }) => {
     let DOB = ProfileN?.dateOfBirth?.split('T');
     const [followpage, setFollowPage] = useState(1);
     const [followingpage, setFollowingPage] = useState(1);
+    const [eventPage, setEventPage] = useState(1);
     const [hasfollowingMore, setHasFollowingMore] = useState(true);
     const [hasfollowersMore, setHasFollowersMore] = useState(true);
+    const [haseventMore, setHasEventMore] = useState(true);
     const [followersList, setfollowersList] = useState([]);
     const [followingList, setfollowingList] = useState([]);
+    const [EventList, seteventList] = useState([]);
     const [followerModal, setfollowerModal] = useState(false);
     const [followlistModal, setfollowlistModal] = useState(false)
+
     //console.log('DOB--->>', DOB)
     const age = DOB != undefined && calculateAge(DOB[0]);
     useEffect(() => {
         getOrgProfile()
         getFollowerList(1)
         getFollowingList(1)
+        getEventList(1, 'all')
     }, [])
 
     function calculateAge(dateOfBirth) {
@@ -118,8 +125,18 @@ const OrgProfile = ({ navigation, route }) => {
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/organiser/${Profile}/followers?page=${pageNumber}&limit=10`, { headers });
             const responseData = response.data;
             console.log(responseData, 'followers')
-            const packageList = responseData?.followers;
-            setfollowersList(packageList)
+            const followerList = responseData?.followers;
+            setfollowersList((prevEvents) => {
+                if (pageNumber === 1) {
+                    // If it's the first page, replace existing events
+                    return followerList;
+                } else {
+                    // If it's not the first page, append new events to the existing list
+                    return [...prevEvents, ...followerList];
+                }
+            });
+            setFollowPage(pageNumber);
+            setHasFollowersMore(followerList?.length > 0);
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
@@ -143,8 +160,18 @@ const OrgProfile = ({ navigation, route }) => {
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/organiser/${Profile}/following?page=${pageNumber}&limit=10`, { headers });
             const responseData = response.data;
             console.log(responseData, 'following')
-            const packageList = responseData?.following;
-            setfollowingList(packageList)
+            const followingsList = responseData?.following;
+            setfollowingList((prevEvents) => {
+                if (pageNumber === 1) {
+                    // If it's the first page, replace existing events
+                    return followingsList;
+                } else {
+                    // If it's not the first page, append new events to the existing list
+                    return [...prevEvents, ...followingsList];
+                }
+            });
+            setFollowingPage(pageNumber)
+            setHasFollowingMore(followingsList?.length > 0);
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
@@ -166,6 +193,52 @@ const OrgProfile = ({ navigation, route }) => {
     };
 
 
+    const getEventList = async (pageNumber, status) => {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userToken', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/organiser/${Profile}/events?status=${status}&limit=5&page=${pageNumber}`, { headers });
+            const responseData = response.data;
+            console.log(responseData, 'eventList')
+            const eventList = responseData?.events?.docs;
+            seteventList((prevEvents) => {
+                if (pageNumber === 1) {
+                    // If it's the first page, replace existing events
+                    return eventList;
+                } else {
+                    // If it's not the first page, append new events to the existing list
+                    return [...prevEvents, ...eventList];
+                }
+            });
+            setEventPage(pageNumber)
+            setHasEventMore(eventList?.length > 0);
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
+        }
+    };
+
+    const handleEventLoadMore = () => {
+        if (!isLoading && haseventMore) {
+            getEventList(eventPage + 1, 'all');
+        }
+    };
+
+
+
+
+    //http://localhost:3000/api/mobile/homepage/events/organiser/6654bb53f576545d9c4a19db/events?status=all&limit=5&page=1
+
+
     return (
         <WrapperContainer>
             <HeaderBack mainText={ProfileN?.fullName ? ProfileN?.fullName : 'User'} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(10) }} />
@@ -175,8 +248,9 @@ const OrgProfile = ({ navigation, route }) => {
                     {ProfileN ? (
                         <FlatList
                             data={[ProfileN]} // Wrap ProfileN in an array
+                            showsVerticalScrollIndicator={false}
                             renderItem={({ item }) => {
-                               // console.log('item--->>', item)
+                                // console.log('item--->>', item)
                                 return (
                                     <>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
@@ -189,23 +263,33 @@ const OrgProfile = ({ navigation, route }) => {
                                             </TouchableOpacity>
                                             <View style={{ width: '65%', flexDirection: 'row', justifyContent: 'space-between' }}>
                                                 <View>
-                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>3</Text>
+                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{ProfileN?.eventsCount ? ProfileN?.eventsCount : 0}</Text>
                                                     <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Events</Text>
                                                 </View>
                                                 <TouchableOpacity onPress={() => setfollowerModal(true)}>
-                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>108</Text>
+                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{ProfileN?.followersCount}</Text>
                                                     <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Followers</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity onPress={() => setfollowlistModal(true)}>
-                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>89</Text>
+                                                    <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{ProfileN?.followingCount}</Text>
                                                     <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Following</Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
+                                        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: moderateScaleVertical(5), marginLeft: moderateScale(3) }}>
                                             <Text style={{ textAlign: 'center', color: '#333', fontFamily: 'Roboto', fontSize: scale(15), fontWeight: '700' }}>{ProfileN.fullName ? ProfileN.fullName : 'NA'}</Text>
                                             <Iconpaid name='verified' size={18} color='#005BD4' style={{ marginLeft: moderateScale(3) }} />
                                         </View>
+
+                                        <ButtonComp text='Follow' isLoading={isLoading}
+                            style={{ backgroundColor: '#005BD4', width: '40%' , height:moderateScale(35),}} onPress={() => {
+                             
+                               
+                            }
+                            } />
+                                        </View>
+                                        
 
                                         <View style={{ padding: moderateScaleVertical(15), backgroundColor: '#fff', borderRadius: moderateScale(8), marginVertical: moderateScaleVertical(15) }}>
                                             {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', }}>
@@ -271,7 +355,7 @@ const OrgProfile = ({ navigation, route }) => {
                                             <Reputation />
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: moderateScale(5), marginVertical: moderateScaleVertical(10) }}>
-                                            <Image source={imagePath.filter} tintColor={'#333'} resizeMode='contain' style={{ height: moderateScale(20), width: moderateScale(20) }} />
+                                            {/* <Image source={imagePath.filter} tintColor={'#333'} resizeMode='contain' style={{ height: moderateScale(20), width: moderateScale(20) }} /> */}
                                             <View>
                                                 <FlatList
                                                     data={category}
@@ -289,68 +373,55 @@ const OrgProfile = ({ navigation, route }) => {
                                                 />
                                             </View>
                                         </View>
-                                        <View
-                                            style={{
-                                                borderRadius: moderateScale(10),
-                                                paddingVertical: moderateScaleVertical(10), backgroundColor: '#fff', paddingHorizontal: moderateScale(10)
-                                            }}
-                                        >
+                                        <FlatList
+                                            data={EventList}
+                                            ListEmptyComponent={<View style={{ justifyContent: 'center', alignContent: 'center', height: Dimensions.get('screen').height / 2 }}>
+                                                <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
+                                            </View>}
+                                            keyExtractor={(item, index) => index.toString()}
+                                            onEndReached={handleEventLoadMore}
+                                            onEndReachedThreshold={0.1}
+                                            // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
+                                            renderItem={({ item, index }) => {
+                                                return (
+                                                    <View
+                                                        style={{
+                                                            borderRadius: moderateScale(10), marginVertical: moderateScaleVertical(10),
+                                                            paddingVertical: moderateScaleVertical(10), backgroundColor: '#fff', paddingHorizontal: moderateScale(10)
+                                                        }}
+                                                    >
 
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Image source={imagePath.frame2} />
-                                                    <Text style={[styles.textone, { marginLeft: moderateScale(10) }]}>Charlie Harper</Text>
-                                                </View>
-                                                {/* <Image source={imagePath.dotted}/> */}
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5) }]}>Date</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>02 March 2023</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500' }]}>Event</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>Badminton</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5) }]}>No. of people attended</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>4</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500' }]}>Location</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700', paddingBottom: moderateScaleVertical(10) }]}>946 Brook Ranch, Italy</Text>
-                                            </View>
-                                        </View>
-                                        <View
-                                            style={{
-                                                borderRadius: moderateScale(10), marginVertical: moderateScaleVertical(10),
-                                                paddingVertical: moderateScaleVertical(10), backgroundColor: '#fff', paddingHorizontal: moderateScale(10)
-                                            }}
-                                        >
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
+                                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                                <Image source={imagePath.frame2} />
+                                                                <Text style={[styles.textone, { marginLeft: moderateScale(10) }]}>{item?.userId?.fullName}</Text>
+                                                            </View>
+                                                            {/* <Image source={imagePath.dotted}/> */}
+                                                        </View>
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5), flex:0.6 }]}>Date</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex:0.4 }]}>{moment(item?.dateOfEvent).format('DD MMM YYYY')}</Text>
+                                                        </View>
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', flex:0.6 }]}>Event</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex:0.4}]}>{item?.name}</Text>
+                                                        </View>
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5), flex:0.6}]}>No. of people attended</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', flex:0.4 }]}>4</Text>
+                                                        </View>
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', flex:0.6  }]}>Location</Text>
+                                                            <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '600', paddingBottom: moderateScaleVertical(10),flex:0.4 }]}>{item?.address}</Text>
+                                                        </View>
+                                                    </View>
+                                                )
+                                            }
+                                            }
+                                        />
 
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(10), justifyContent: 'space-between' }}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Image source={imagePath.frame2} />
-                                                    <Text style={[styles.textone, { marginLeft: moderateScale(10) }]}>Charlie Harper</Text>
-                                                </View>
-                                                {/* <Image source={imagePath.dotted}/> */}
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5) }]}>Date</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>02 March 2023</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500' }]}>Event</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>Badminton</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500', marginVertical: moderateScaleVertical(5) }]}>No. of people attended</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700' }]}>4</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '500' }]}>Location</Text>
-                                                <Text style={[styles.textone, { color: '#4F4F4F', fontSize: scale(14), fontWeight: '700', paddingBottom: moderateScaleVertical(10) }]}>946 Brook Ranch, Italy</Text>
-                                            </View>
-                                        </View>
+
+
                                     </>
                                 );
                             }}
@@ -361,10 +432,7 @@ const OrgProfile = ({ navigation, route }) => {
                     )}
                 </View>
 
-                
-            </View>
-
-            <View>
+                <View>
                 <Modal
                     // swipeDirection={'down'}
                     // onSwipeco={() => setLocationModal(false)}
@@ -398,13 +466,15 @@ const OrgProfile = ({ navigation, route }) => {
                             onEndReachedThreshold={0.1}
                             // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                             renderItem={({ item, index }) => {
-                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                return(
+                                    <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
-                                        <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
-                                        <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
+                                   {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
+                                        <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                        <Text style={[styles.phoneHeading, {  textAlign: 'center' }]}>{item?.fullName}</Text>
                                     </View>
                                 </View>
+                                                                        )
                             }
                             }
                         />
@@ -450,12 +520,16 @@ const OrgProfile = ({ navigation, route }) => {
                                 onEndReachedThreshold={0.1}
                                 //  ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                                 renderItem={({ item, index }) => {
-                                    <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                    return(
+                                        <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20),  flex:1}}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
-                                            <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
+                                       {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
+                                            <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                            <Text style={[styles.phoneHeading, {textAlign: 'center' }]}>{item?.fullName}</Text>
                                         </View>
                                     </View>
+                                    )
+                                    
                                 }
                                 }
                             />
@@ -463,6 +537,9 @@ const OrgProfile = ({ navigation, route }) => {
                     </SafeAreaView>
                 </Modal>
             </View>
+            </View>
+
+
         </WrapperContainer>
     );
 };
