@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux/es/exports';
 import { saveUserData, userStatus } from '../../redux/Slices/UserSlice';
 import Snackbar from 'react-native-snackbar';
 import navigationStrings from '../../Navigation/navigationStrings';
-import { AppleLogin, Login } from '../../API/Api';
+import { AppleLogin, GoogleLogin, Login } from '../../API/Api';
 import appleAuth, {
     AppleButton,
 } from '@invertase/react-native-apple-authentication';
@@ -76,15 +76,27 @@ const LogIN = ({ navigation }) => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            console.error('userInfo sign-in RES:', userInfo);
-            // handleLoginApi(
-            //     userInfo.user.name,
-            //     userInfo.user.email,
-            //     userInfo.serverAuthCode,
-            //     'Google',
-            //     userInfo.user.photo,
-            // );
-
+            console.log('userInfo sign-in RES:', userInfo);
+            const data = {
+                "firstName": userInfo.user.givenName,
+                "lastName": userInfo.user.familyName,
+                "email": userInfo.user.email,
+                "providerId": userInfo.user.id,
+            }
+            GoogleLogin(data)
+                .then((res) => {
+                    handleLoginResponse(res)
+                })
+                .catch((res) => {
+                    console.log(res)
+                    setLoading(false);
+                    Snackbar.show({
+                        text: `${res.response.data.message}`,
+                        duration: Snackbar.LENGTH_SHORT,
+                        backgroundColor: 'red',
+                        textColor: "#fff",
+                    });
+                })
             // You're now signed in with Google!
         } catch (error) {
             console.error('Google sign-in error:', error);

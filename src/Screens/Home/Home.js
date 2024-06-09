@@ -101,6 +101,9 @@ const Home = () => {
                 const { latitude, longitude } = position.coords;
                 console.log('Current Location:', { latitude, longitude });
                 setCurrentLocation({ latitude, longitude })
+                dispatch(userCurrentLocation({ latitude, longitude }))
+                reverseGeocode(latitude, longitude);
+
                 setLoading(false);
             },
             error => {

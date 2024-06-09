@@ -44,7 +44,7 @@ const Settings = ({ navigation }) => {
                 <TouchableOpacity
                     onPress={() => {
                         if (User.kyc.isVerified) {
-
+                            alert("KYC already verified.");
                         } else {
                             navigation.navigate(navigationStrings.REKYC)
                         }

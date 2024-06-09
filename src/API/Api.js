@@ -15,6 +15,9 @@ export function Login(email, password) {
 export function AppleLogin(data) {
   return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/apple-login', data).then(res => res.data)
 }
+export function GoogleLogin(data) {
+  return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/google-login', data).then(res => res.data)
+}
 
 export async function EmailRegister(email, password) {
   let usertoken = await getData('UserToken');
