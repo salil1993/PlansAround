@@ -268,6 +268,23 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
             })
     }
 
+    const postUnlikes = async (event_id) => {
+        let usertoken = await getData('UserToken');
+        const headers = {
+            'Authorization': `Bearer ${usertoken}`,
+        };
+
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/unlike`,null, { headers })
+            .then((res) => {
+                console.log('LikesRes', res)
+                getLikesList(event_id, 1);
+                handleRefresh()
+            }).
+            catch((err) => {
+                console.log('LikesErr', err)
+            })
+    }
+
 
     return (
         <>
@@ -374,7 +391,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                         <View style={{ width: '50%', }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <TouchableOpacity onPress={() => handleLikes(item?._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                   <TouchableOpacity onPress={() =>postLikes(item?._id)}>
+                                   <TouchableOpacity onPress={() =>item?.userHasLiked ?postUnlikes(item?._id):postLikes(item?._id)}>
                                     <IconsLike name='like2' size={20} color={item?.userHasLiked ?'red':'#333'} /> 
                                     </TouchableOpacity> 
                                     <Text style={[styles.eventtxt, { marginLeft: moderateScale(5) }]}>{item?.likesCount}</Text>

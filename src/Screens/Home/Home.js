@@ -62,8 +62,9 @@ const Home = () => {
             var longitude = User?.location?.longitude;
             dispatch(userCurrentLocation({ latitude, longitude }))
             setCurrentLocation({ latitude, longitude })
+            setLoading(false)
         }
-    }, [address])
+    }, [])
 
     const requestLocationPermission = async () => {
         try {
@@ -178,7 +179,6 @@ const Home = () => {
         // console.log(details, 'NewLocationyhaHOme p change')
         const selectedLocation = details.geometry.location;
         const { lat, lng } = selectedLocation;
-        // console.log(lat, '.New..', lng)
         const latitude = lat;
         const longitude = lng;
         setCurrentLocation({ latitude, longitude });
@@ -374,7 +374,7 @@ const Home = () => {
                     backdropTransitionInTiming={600}
                     backdropTransitionOutTiming={600}
                 >
-                    <View style={styles.locationmodalStyle}>
+                    <SafeAreaView style={styles.locationmodalStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', padding: moderateScale(12) }}>
                             <TouchableOpacity onPress={() => setFilterOpen(false)}>
                                 <IconsettingClose name='close-thick' size={25} color='#000' />
@@ -403,7 +403,24 @@ const Home = () => {
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginBottom: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Event Type :</Text>
-
+                                    {/* <RadioForm
+                                        labelStyle={{ marginRight: moderateScale(38), color: '#828282' }}
+                                        formHorizontal={true}
+                                        labelHorizontal={true}
+                                        radio_props={radioButtons}
+                                        initial={value}
+                                        buttonColor={'#828282'}
+                                        animation={true}
+                                        onPress={(label) => {
+                                            if (label === 'Other') {
+                                                handleSelect(label)
+                                            } else {
+                                                handleSelect(label)
+                                            }
+                                        }}
+                                        labelcolor='#828282'
+                                        buttonSize={12}
+                                    /> */}
 
 
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -411,9 +428,11 @@ const Home = () => {
                                             return (
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
                                                     <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
-
-                                                        handleSelect(item.label)
-
+                                                        if (item.label === 'Other') {
+                                                            handleSelect(item.label)
+                                                        } else {
+                                                            handleSelect(item.label)
+                                                        }
                                                     }}>
                                                         <Image style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: '#828282' }} source={item.value == selected ? imagePath.radio_select : imagePath.radio_unselect} />
                                                     </TouchableOpacity>
@@ -423,10 +442,6 @@ const Home = () => {
                                         })
                                         }
                                     </View>
-
-
-
-
                                 </View>
                                 {/* <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} /> */}
                                 {/* <View style={{ marginBottom: moderateScaleVertical(10) }}>
@@ -502,7 +517,7 @@ const Home = () => {
                             </View>
                         </ScrollView>
 
-                    </View>
+                    </SafeAreaView>
                 </Modal>
             </View>
             <View>
