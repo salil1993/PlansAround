@@ -18,6 +18,7 @@ import { RequestBooking } from '../API/Api';
 import Snackbar from 'react-native-snackbar';
 import { getData } from '../utils/helperFunctions';
 import axios from 'axios';
+import Share from 'react-native-share';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Loader from './Loader';
 // create a component
@@ -142,6 +143,17 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
 
     const handleProfile = () => {
         setopenModal(true)
+    }
+
+    const handleShare =(id) =>{
+        Share.open({
+            message: `${id}`,
+            // url: imageList[0],
+          }).then(res => {
+              console.log(res);
+            }).catch(err => {
+              err && console.log(err);
+            });
     }
 
     const getCommentList = async (eventId, pageNumber) => {
@@ -285,6 +297,40 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
             })
     }
 
+    const handleFollow = async (id) => {
+        let usertoken = await getData('UserToken');
+        const headers = {
+            'Authorization': `Bearer ${usertoken}`,
+            'Content-Type': "application/json",
+        };
+        const formData = new FormData();
+        formData.append('id', id);
+        axios.post('https://plansaround-backend.vercel.app/api/mobile/homepage/users/follow-request', {"id":id}, { headers })
+            .then((res) => {
+                console.log(res, 'Followrequest');
+                setopenModal(false)
+              //  getOrgProfile()
+                Snackbar.show({
+                    text: `${res?.data?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: '#005BD4',
+                    textColor: "#fff",
+                });
+            })
+            .catch((error) => {
+                console.log(error?.response?.data?.message);
+                setopenModal(false)
+                Snackbar.show({
+                    text: `${error?.response?.data?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: 'red',
+                    textColor: "#fff",
+                });
+            });
+    }
+
+    
+
 
     return (
         <>
@@ -301,7 +347,6 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleProfile}>
                         <IconsettingClose name='dots-vertical' size={30} color='#333' />
-
                     </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
@@ -402,7 +447,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                     <Text style={[styles.eventtxt, { marginLeft: moderateScale(10) }]}>{item?.commentCount}</Text>
 
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ marginRight: moderateScale(15) }}>
+                                <TouchableOpacity onPress={() => handleShare(item?._id)} style={{ marginRight: moderateScale(15) }}>
                                     <IconsLike name='sharealt' size={20} color='#333' />
                                 </TouchableOpacity>
                             </View>
@@ -419,7 +464,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                 </View>
                 <Modal
                     swipeDirection={'down'}
-                    onSwipeStart={() => setopenModal(false)}
+                   // onSwipeStart={() => setopenModal(false)}
                     hasBackdrop={true}
                     coverScreen={true}
                     backdropColor="#000"
@@ -440,7 +485,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                 <Image source={imagePath.frame2} />
                                 <Text style={[styles.hometxt, { marginLeft: moderateScale(5) }]}>Charlie Harper</Text>
                             </View>
-                            <TouchableOpacity onPress={() => setopenModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                            {/* <TouchableOpacity onPress={() => setopenModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity> */}
                         </View>
                         <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
@@ -471,10 +516,10 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                             <View style={{
                                 borderWidth: 0.2, borderBottomColor: '#BDBDBD'
                             }} />
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
+                            <TouchableOpacity onPress={()=> handleFollow(item?._id)} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
                                 <Text style={styles.txt}>Follow</Text>
                                 <IconsLike name='adduser' size={20} color='#4F4F4F' />
-                            </View>
+                            </TouchableOpacity>
                             <View style={{
                                 borderWidth: 0.2, borderBottomColor: '#BDBDBD'
                             }} />

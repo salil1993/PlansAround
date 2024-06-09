@@ -388,7 +388,7 @@ const Home = () => {
                             </View>
                             <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), margin: moderateScale(10), elevation: 2, padding: moderateScale(15) }}>
                                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
-                                    <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Events (Enter event name...) :</Text>
+                                    <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}> (Enter event name...) :</Text>
                                     <TextInputC
                                         // ref={searchRef}
                                         // autoFocus={true}
