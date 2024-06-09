@@ -8,11 +8,13 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Iconsetting from 'react-native-vector-icons/MaterialIcons'
 import navigationStrings from '../../Navigation/navigationStrings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { userStatus } from '../../redux/Slices/UserSlice';
 // create a component
 const Settings = ({ navigation }) => {
     const dispatch = useDispatch();
+    const User = useSelector((state) => state.persistedReducer.authSlice.userData);
+
     return (
         <WrapperContainer style={{ backgroundColor: '#fff' }}>
             <HeaderBack style={{ marginLeft: moderateScale(10) }} mainText='Settings' maintxtstyle={{ fontSize: textScale(18) }} />
@@ -25,7 +27,7 @@ const Settings = ({ navigation }) => {
                     </View>
                     <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.BASIC_INFO,{isFrom:'Main'})} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: moderateScaleVertical(20) }}>
+                <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.BASIC_INFO, { isFrom: 'Main' })} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: moderateScaleVertical(20) }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='account-circle' size={20} color='#4F4F4F' />
                         <Text style={styles.settingsText}>Edit Profile</Text>
@@ -39,14 +41,28 @@ const Settings = ({ navigation }) => {
                     </View>
                     <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <TouchableOpacity
+                    onPress={() => {
+                        if (User.kyc.isVerified) {
+
+                        } else {
+                            navigation.navigate(navigationStrings.REKYC)
+                        }
+                    }}
+                    style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='verified' size={20} color='#4F4F4F' />
-                        <Text style={styles.settingsText}>KYC Verification</Text>
+                        <Text style={styles.settingsText}>
+                            {User.kyc.isVerified ? "KYC Verified" :
+                                "KYC Verification"}</Text>
                     </View>
                     <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ marginVertical: moderateScaleVertical(20), flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate(navigationStrings.NOTIFICATION_LIST)
+                    }}
+                    style={{ marginVertical: moderateScaleVertical(20), flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='notifications-on' size={20} color='#4F4F4F' />
 

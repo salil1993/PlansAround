@@ -131,7 +131,7 @@ const Interests = ({ navigation, route }) => {
                     if (route?.params?.isFrom == 'Main') {
                         navigation.navigate(navigationStrings.SETTINGS)
                     } else {
-                        navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                        navigation.navigate(navigationStrings.REKYC)
                     }
 
                     // }, 2000)
@@ -350,10 +350,11 @@ const Interests = ({ navigation, route }) => {
                                     <Pressable
                                         android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
                                         onPress={() => {
+                                            console.log("route=======", route?.params?.isFrom);
                                             if (route?.params?.isFrom == 'Main') {
                                                 navigation.navigate(navigationStrings.SETTINGS)
                                             } else {
-                                                navigation.navigate(navigationStrings.KYC_VERIFICATION)
+                                                navigation.navigate(navigationStrings.REKYC)
                                             }
                                         }}>
                                         <Text style={styles.skip}>Skip</Text>

@@ -32,6 +32,7 @@ const TextInputC = ({
     iconname,
     errorTxt,
     ref,
+    autoCapitalize,
     ...props
 }) => {
     return (
@@ -57,6 +58,7 @@ const TextInputC = ({
                     keyboardType={keyBoardType}
                     value={value}
                     secureTextEntry={secureText}
+                    autoCapitalize={autoCapitalize}
                     onChangeText={onChangeText}
                     editable={editable}
                     autoFocus={autoFocus}

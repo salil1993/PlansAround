@@ -39,11 +39,13 @@ const BasicInfo = ({ navigation, route }) => {
     if (user) {
       setFirstName(user?.firstName)
       setLastName(user?.lastName)
-      const dt = new Date(user?.dateOfBirth);
-      const x = dt.toISOString().split('T');
-      const x1 = x[0].split('-');
-      const FDate = x1[0] + '-' + x1[1] + '-' + x1[2]
-      setDOB(FDate)
+      if (user?.dateOfBirth) {
+        const dt = new Date(user?.dateOfBirth);
+        const x = dt.toISOString().split('T');
+        const x1 = x[0].split('-');
+        const FDate = x1[0] + '-' + x1[1] + '-' + x1[2]
+        setDOB(FDate)
+      }
     }
   }, [])
 
@@ -124,7 +126,7 @@ const BasicInfo = ({ navigation, route }) => {
   };
 
   const handleSumbit = async () => {
-    if (DOB, FirstName, LastName) {
+    if (DOB && FirstName && LastName) {
       setLoading(true);
       const formData = new FormData();
       formData.append('firstName', FirstName)
@@ -140,6 +142,7 @@ const BasicInfo = ({ navigation, route }) => {
       }
       console.log(formData, 'formdata')
       let usertoken = await getData('UserToken');
+      console.log('usertoken====', usertoken);
       const headers = {
         'Authorization': `Bearer ${usertoken}`,
         'Content-Type': 'multipart/form-data',

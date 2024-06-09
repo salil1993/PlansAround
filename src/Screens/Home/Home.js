@@ -20,6 +20,7 @@ import { userCurrentLocation } from '../../redux/Slices/UserSlice';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import HomeEvent from '../../Components/HomeEvent';
+import navigationStrings from '../../Navigation/navigationStrings';
 
 
 // create a component
@@ -285,18 +286,18 @@ const Home = () => {
                         <Text style={styles.address}>{address}</Text>
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', flex: 0.2, justifyContent: 'space-between' }}>
-                        <TouchableOpacity>
-                            <Icon name='notifications-none' size={30} color={'white'} />
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(navigationStrings.NOTIFICATION_LIST)
+                            }}>
+                            <Icon name='notifications-none' size={30} color={'#4F4F4F'} />
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
                                 setFilterOpen(true)
-                                // setTimeout(() => {
-                                //     // searchRef.current.focus()
-                                // }, 2000);
                             }}
                         >
-                            <Icons name='search' size={28} color={'gray'} />
+                            <Icons name='search' size={28} color={'#4F4F4F'} />
                         </TouchableOpacity>
                     </View>
                 </View>

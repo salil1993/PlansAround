@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux/es/exports';
 import { saveUserData, userStatus } from '../../redux/Slices/UserSlice';
 import Snackbar from 'react-native-snackbar';
 import navigationStrings from '../../Navigation/navigationStrings';
-import { Login } from '../../API/Api';
+import { AppleLogin, Login } from '../../API/Api';
 import appleAuth, {
     AppleButton,
 } from '@invertase/react-native-apple-authentication';
@@ -36,25 +36,8 @@ const LogIN = ({ navigation }) => {
         console.log(Password)
         Login(email.trim(), Password.trim())
             .then((res) => {
-                console.log(res)
-                console.log(res.token)
-                setLoading(false)
-                storeData('UserToken', res.token);
-                Snackbar.show({
-                    text: `${res.message}`,
-                    duration: Snackbar.LENGTH_SHORT,
-                    backgroundColor: '#005BD4',
-                    textColor: "#fff",
-                });
-                setTimeout(() => {
-                    dispatch(userStatus(true))
-                    dispatch(saveUserData(res.user))
-                    console.log('Data gya')
-                    Snackbar.dismiss();
-                    // navigation.navigate(navigationStrings.TABROUTES)
-                    // navigation.navigate(navigationStrings.EMAIL_VERIFY)
-                }, 1000)
 
+                handleLoginResponse(res)
 
             })
             .catch((res) => {
@@ -67,9 +50,26 @@ const LogIN = ({ navigation }) => {
                     textColor: "#fff",
                 });
             })
-
-
-
+    }
+    const handleLoginResponse = (res) => {
+        console.log(res)
+        console.log(res.token)
+        setLoading(false)
+        storeData('UserToken', res.token);
+        Snackbar.show({
+            text: `${res.message}`,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: '#005BD4',
+            textColor: "#fff",
+        });
+        setTimeout(() => {
+            dispatch(userStatus(true))
+            dispatch(saveUserData(res.user))
+            console.log('Data gya')
+            Snackbar.dismiss();
+            // navigation.navigate(navigationStrings.TABROUTES)
+            // navigation.navigate(navigationStrings.EMAIL_VERIFY)
+        }, 1000)
     }
 
     async function handleGoogleSignIn() {
@@ -77,13 +77,13 @@ const LogIN = ({ navigation }) => {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             console.error('userInfo sign-in RES:', userInfo);
-            handleLoginApi(
-                userInfo.user.name,
-                userInfo.user.email,
-                userInfo.serverAuthCode,
-                'Google',
-                userInfo.user.photo,
-            );
+            // handleLoginApi(
+            //     userInfo.user.name,
+            //     userInfo.user.email,
+            //     userInfo.serverAuthCode,
+            //     'Google',
+            //     userInfo.user.photo,
+            // );
 
             // You're now signed in with Google!
         } catch (error) {
@@ -106,14 +106,32 @@ const LogIN = ({ navigation }) => {
             );
             // use credentialState response to ensure the user is authenticated
             if (credentialState === appleAuth.State.AUTHORIZED) {
+                let data = {
+                    providerId: appleAuthRequestResponse.user,
+                };
                 if (appleAuthRequestResponse.email) {
-                    const data = {
-                        name: `${appleAuthRequestResponse.fullName.givenName} ${appleAuthRequestResponse.fullName.familyName}`,
-                        email: appleAuthRequestResponse.email,
-                        providerId: appleAuthRequestResponse.user,
-                    };
-                } else {
+                    data = {
+                        ...data, email: appleAuthRequestResponse.email,
+                        firstName: `${appleAuthRequestResponse.fullName.givenName}`,
+                        lastName: `${appleAuthRequestResponse.fullName.familyName}`,
+                    }
                 }
+
+                AppleLogin(data)
+                    .then((res) => {
+                        handleLoginResponse(res)
+                    })
+                    .catch((res) => {
+                        console.log(res)
+                        setLoading(false);
+                        Snackbar.show({
+                            text: `${res.response.data.message}`,
+                            duration: Snackbar.LENGTH_SHORT,
+                            backgroundColor: 'red',
+                            textColor: "#fff",
+                        });
+                    })
+
             } else {
                 Alert.alert('PlansAround', 'Failed to login with Apple');
             }

@@ -12,6 +12,9 @@ export function MobileOTPVERIFY(number, otpInput) {
 export function Login(email, password) {
   return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/signin', { "email": email, "password": password }).then(res => res.data)
 }
+export function AppleLogin(data) {
+  return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/apple-login', data).then(res => res.data)
+}
 
 export async function EmailRegister(email, password) {
   let usertoken = await getData('UserToken');

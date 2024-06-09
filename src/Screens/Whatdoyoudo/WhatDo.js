@@ -442,9 +442,9 @@ const WhatDo = ({ navigation, route }) => {
                                 />
                                 <TextInputC style={{ marginVertical: moderateScale(3) }}
                                     placeholder={'Years of Experience'}
-                                    value={CompanyName}
+                                    value={Yexp}
                                     editable={true}
-                                    onChangeText={(text) => setCompanyName(text)}
+                                    onChangeText={(text) => setYexp(text)}
                                 />
                             </View>
                         }

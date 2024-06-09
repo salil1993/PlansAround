@@ -16,7 +16,7 @@ export default function (Stack) {
                 component={Screens.BasicInfo}
                 options={{ headerShown: false }}
             />
-              <Stack.Screen
+            <Stack.Screen
                 name={navigationStrings.SET_LOCATION}
                 component={Screens.SetLocation}
                 options={{ headerShown: false }}
@@ -31,13 +31,13 @@ export default function (Stack) {
                 component={Screens.EventHosting}
                 options={{ headerShown: false }}
             />
-                <Stack.Screen
+            <Stack.Screen
                 name={navigationStrings.SELECT_GENDER}
                 component={Screens.SelectGender}
                 options={{ headerShown: false }}
             />
 
-<Stack.Screen
+            <Stack.Screen
                 name={navigationStrings.WRITE_BIO}
                 component={Screens.WriteBio}
                 options={{ headerShown: false }}
@@ -175,6 +175,11 @@ export default function (Stack) {
             <Stack.Screen
                 name={navigationStrings.PENIDNGREQUEST}
                 component={Screens.PendingRequest}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.NOTIFICATION_LIST}
+                component={Screens.NotificationList}
                 options={{ headerShown: false }}
             />
             {/* <Stack.Screen

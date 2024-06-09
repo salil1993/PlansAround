@@ -83,7 +83,7 @@ const Register = ({ navigation, route }) => {
                         <View style={{ flex: 1, justifyContent: 'flex-start' }}>
                             <Image source={imagePath.Login} style={{ alignSelf: 'center', height: scale(96), width: scale(96) }} />
                             <Text style={styles.phoneHeading}>Sign Up</Text>
-                            <Text style={[styles.phoneHeading2, { marginVertical: moderateScaleVertical(15) }]}>Lorem ipsum dolor sit amet, consect etur adi piscing </Text>
+                            <Text style={[styles.phoneHeading2, { marginVertical: moderateScaleVertical(15) }]}>It only takes a minute to create your account. </Text>
                             <View style={{ marginVertical: moderateScaleVertical(15), }}>
                                 <Formik validationSchema={SignupSchema} initialValues={{ email: '', Password: '', CPasord: '', }}
                                     onSubmit={(values, { resetForm },) => {
@@ -141,6 +141,7 @@ const Register = ({ navigation, route }) => {
                                                 onChangeText={handleChange('email')}
                                                 onBlur={handleBlur('email')}
                                                 value={values.email}
+                                                autoCapitalize={"none"}
                                             />
                                             {(errors.email && touched.email) && <Text style={{ fontSize: 14, color: 'red', marginLeft: moderateScale(2), marginVertical: moderateScaleVertical(5) }}>{errors.email}</Text>}
 
@@ -198,7 +199,7 @@ const Register = ({ navigation, route }) => {
                                                     }}
                                                 />
                                             </View>
-                                            <ButtonComp  onPress={handleSubmit} isLoading={Loading} text='Submit' style={{ backgroundColor: '#005BD4', marginVertical: moderateScaleVertical(10) }} />
+                                            <ButtonComp onPress={handleSubmit} isLoading={Loading} text='Submit' style={{ backgroundColor: '#005BD4', marginVertical: moderateScaleVertical(10) }} />
                                         </>
                                     )}
                                 </Formik>
