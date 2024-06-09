@@ -182,6 +182,16 @@ export default function (Stack) {
                 component={Screens.NotificationList}
                 options={{ headerShown: false }}
             />
+            <Stack.Screen
+                name={navigationStrings.ACCOUNT_INFO}
+                component={Screens.AccountInfo}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.HELP_SUPPORT}
+                component={Screens.HelpSupport}
+                options={{ headerShown: false }}
+            />
             {/* <Stack.Screen
                 name={navigationStrings.PORFILE_EDIT}
                 component={Screens.ProfileEdit}

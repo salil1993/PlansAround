@@ -24,12 +24,13 @@ import Loader from './Loader';
 // create a component
 const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) => {
 
+    console.log("item------", JSON.stringify(item));
     const dispatch = useDispatch();
     const scrollViewRef = useRef();
     const navigation = useNavigation();
     const [openModal, setopenModal] = useState(false);
     const [openCommentModal, setopenCommentModal] = useState(false);
-    const [openLikesModal,setopenLikesModal] = useState(false)
+    const [openLikesModal, setopenLikesModal] = useState(false)
     const [offset, setoffset] = useState(null)
     const [askPermission, setaskPermission] = useState(false);
     const [Loading, setLoading] = useState(false)
@@ -145,15 +146,15 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
         setopenModal(true)
     }
 
-    const handleShare =(id) =>{
+    const handleShare = (id) => {
         Share.open({
             message: `${id}`,
             // url: imageList[0],
-          }).then(res => {
-              console.log(res);
-            }).catch(err => {
-              err && console.log(err);
-            });
+        }).then(res => {
+            console.log(res);
+        }).catch(err => {
+            err && console.log(err);
+        });
     }
 
     const getCommentList = async (eventId, pageNumber) => {
@@ -185,12 +186,12 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
             });
             setPage(pageNumber); // Update the current page number
             setLoading(false);
-            if(comments?.length <= responseData?.totalDocs ){
+            if (comments?.length <= responseData?.totalDocs) {
                 setHasMore(true);
-            }else{
+            } else {
                 setHasMore(false);
             }
-           // Update hasMore based on whether new events were fetched
+            // Update hasMore based on whether new events were fetched
         } catch (error) {
             setLoading(false);
             console.log(error);
@@ -226,12 +227,12 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
             });
             setPage(pageNumber); // Update the current page number
             setLoading(false);
-            if(likes?.length <= responseData?.totalDocs ){
+            if (likes?.length <= responseData?.totalDocs) {
                 setHasMore(true);
-            }else{
+            } else {
                 setHasMore(false);
             }
-           // Update hasMore based on whether new events were fetched
+            // Update hasMore based on whether new events were fetched
         } catch (error) {
             setLoading(false);
             console.log(error);
@@ -255,11 +256,11 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                 console.log('PostComment', res)
                 getCommentList(event_id, 1);
                 setComment('')
-               handleRefresh()
+                handleRefresh()
             }).
             catch((err) => {
                 console.log('PostComment', err)
-                
+
             })
     }
 
@@ -269,7 +270,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
             'Authorization': `Bearer ${usertoken}`,
         };
         console.log(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/likes`)
-        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/likes`,null, { headers })
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/likes`, null, { headers })
             .then((res) => {
                 console.log('LikesRes', res)
                 getLikesList(event_id, 1);
@@ -286,7 +287,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
             'Authorization': `Bearer ${usertoken}`,
         };
 
-        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/unlike`,null, { headers })
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${event_id}/unlike`, null, { headers })
             .then((res) => {
                 console.log('LikesRes', res)
                 getLikesList(event_id, 1);
@@ -305,11 +306,11 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
         };
         const formData = new FormData();
         formData.append('id', id);
-        axios.post('https://plansaround-backend.vercel.app/api/mobile/homepage/users/follow-request', {"id":id}, { headers })
+        axios.post('https://plansaround-backend.vercel.app/api/mobile/homepage/users/follow-request', { "id": id }, { headers })
             .then((res) => {
                 console.log(res, 'Followrequest');
                 setopenModal(false)
-              //  getOrgProfile()
+                //  getOrgProfile()
                 Snackbar.show({
                     text: `${res?.data?.message}`,
                     duration: Snackbar.LENGTH_SHORT,
@@ -329,7 +330,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
             });
     }
 
-    
+
 
 
     return (
@@ -436,9 +437,9 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                         <View style={{ width: '50%', }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <TouchableOpacity onPress={() => handleLikes(item?._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                   <TouchableOpacity onPress={() =>item?.userHasLiked ?postUnlikes(item?._id):postLikes(item?._id)}>
-                                    <IconsLike name='like2' size={20} color={item?.userHasLiked ?'red':'#333'} /> 
-                                    </TouchableOpacity> 
+                                    <TouchableOpacity onPress={() => item?.userHasLiked ? postUnlikes(item?._id) : postLikes(item?._id)}>
+                                        <IconsLike name='like2' size={20} color={item?.userHasLiked ? 'red' : '#333'} />
+                                    </TouchableOpacity>
                                     <Text style={[styles.eventtxt, { marginLeft: moderateScale(5) }]}>{item?.likesCount}</Text>
 
                                 </TouchableOpacity>
@@ -464,7 +465,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                 </View>
                 <Modal
                     swipeDirection={'down'}
-                   // onSwipeStart={() => setopenModal(false)}
+                    // onSwipeStart={() => setopenModal(false)}
                     hasBackdrop={true}
                     coverScreen={true}
                     backdropColor="#000"
@@ -482,51 +483,75 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     <View style={styles.modalStyle}>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Image source={imagePath.frame2} />
-                                <Text style={[styles.hometxt, { marginLeft: moderateScale(5) }]}>Charlie Harper</Text>
+                                {
+                                    item?.user?.profilePicture ?
+                                        <Image source={{ uri: item?.user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
+                                        :
+                                        <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
+                                }
+                                <Text style={[styles.hometxt, { marginLeft: moderateScale(5) }]}>{item.user.fullName || 'NA'}</Text>
                             </View>
                             {/* <TouchableOpacity onPress={() => setopenModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity> */}
                         </View>
                         <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setopenModal(false)
+                                    setTimeout(() => {
+                                        navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.userId })
+                                    }, 100);
+                                }}
+                                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
                                 <Text style={styles.txt}>Visit Organiser Profile</Text>
                                 <IconsLike name='user' size={20} color='#4F4F4F' />
-                            </View>
-                            <View style={{
-                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
-                            }} />
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
-                                <Text style={styles.txt}>Share</Text>
-                                <IconsLike name='sharealt' size={20} color='#4F4F4F' />
-                            </View>
-                            <View style={{
-                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
-                            }} />
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
-                                <Text style={styles.txt}>Mark as Favourite</Text>
-                                <IconsLike name='hearto' size={20} color='#4F4F4F' />
-                            </View>
-                            <View style={{
-                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
-                            }} />
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
-                                <Text style={styles.txt}>Save the Event Post</Text>
-                                <Icons name='save' size={20} color='#4F4F4F' />
-                            </View>
-                            <View style={{
-                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
-                            }} />
-                            <TouchableOpacity onPress={()=> handleFollow(item?._id)} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
-                                <Text style={styles.txt}>Follow</Text>
-                                <IconsLike name='adduser' size={20} color='#4F4F4F' />
                             </TouchableOpacity>
                             <View style={{
                                 borderWidth: 0.2, borderBottomColor: '#BDBDBD'
                             }} />
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
+                            <TouchableOpacity
+                                onPress={() => { handleShare(item?._id) }}
+                                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
+                                <Text style={styles.txt}>Share</Text>
+                                <IconsLike name='sharealt' size={20} color='#4F4F4F' />
+                            </TouchableOpacity>
+                            <View style={{
+                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
+                            }} />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    alert("Coming soon!")
+                                }}
+                                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
+                                <Text style={styles.txt}>Mark as Favourite</Text>
+                                <IconsLike name='hearto' size={20} color='#4F4F4F' />
+                            </TouchableOpacity>
+                            <View style={{
+                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
+                            }} />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    alert("Coming soon!")
+                                }} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
+                                <Text style={styles.txt}>Save the Event Post</Text>
+                                <Icons name='save' size={20} color='#4F4F4F' />
+                            </TouchableOpacity>
+                            <View style={{
+                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
+                            }} />
+                            {/* <TouchableOpacity onPress={() => handleFollow(item?._id)} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
+                                <Text style={styles.txt}>Follow</Text>
+                                <IconsLike name='adduser' size={20} color='#4F4F4F' />
+                            </TouchableOpacity> */}
+                            <View style={{
+                                borderWidth: 0.2, borderBottomColor: '#BDBDBD'
+                            }} />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    alert("Coming soon!")
+                                }} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(10) }}>
                                 <Text style={styles.txt}>Report a Problem</Text>
                                 <IconsLike name='exclamationcircleo' size={20} color='#EB5757' />
-                            </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
@@ -551,18 +576,18 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     propagateSwipe={true}
                 >
                     <SafeAreaView style={[styles.modalStyle, { height: 500 }]}>
-                    
 
-                            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop:moderateScale(20),  marginHorizontal: moderateScale(5), }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' , }}>
-                                    <Text style={[styles.hometxt, { fontSize: moderateScale(16) }]}>Comments</Text>
 
-                                </View>
-                                <TouchableOpacity onPress={() => setopenCommentModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: moderateScale(20), marginHorizontal: moderateScale(5), }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                <Text style={[styles.hometxt, { fontSize: moderateScale(16) }]}>Comments</Text>
+
                             </View>
-                                 <KeyboardAwareScrollView
+                            <TouchableOpacity onPress={() => setopenCommentModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                        </View>
+                        <KeyboardAwareScrollView
                             keyboardShouldPersistTaps={'handled'}
-                            style={{ flex: 1}}
+                            style={{ flex: 1 }}
                             showsVerticalScrollIndicator={false}
                         >
                             <View style={{ height: 370 }}>
@@ -571,18 +596,18 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                         style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
                                         ListEmptyComponent={<View style={{ flex: 1, height: height / 3.5, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no comments.</Text></View>}
                                         data={CommentList}
-                                        contentContainerStyle={{paddingBottom:20}}
+                                        contentContainerStyle={{ paddingBottom: 20 }}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) => {
                                             return (
                                                 <>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                         {item?.user?.profilePicture != null ?
-                                                         <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={{ url: item?.user?.profilePicture }} />
-                                                          : <Image source={imagePath.Gola} style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} />}
+                                                            <Image style={{ resizeMode: 'contain', height: moderateScale(30), width: moderateScale(30) }} source={{ url: item?.user?.profilePicture }} />
+                                                            : <Image source={imagePath.Gola} style={{ resizeMode: 'contain', height: moderateScale(30), width: moderateScale(30) }} />}
 
                                                         <View>
-                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform:'capitalize' }]}>{item?.user?.fullName}</Text>
+                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform: 'capitalize' }]}>{item?.user?.fullName}</Text>
                                                             <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(14), fontWeight: '400' }]}>{item?.comment}</Text>
                                                         </View>
                                                     </View>
@@ -594,9 +619,9 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                 }
                             </View>
 
-                       
-                            <View style={{ flexDirection: 'row', alignSelf: 'flex-end',marginHorizontal:moderateScale(10)  }}>
-                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(500), padding: moderateScale(10), marginRight:moderateScale(10), alignItems:'center' }}>
+
+                            <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginHorizontal: moderateScale(10) }}>
+                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(500), padding: moderateScale(10), marginRight: moderateScale(10), alignItems: 'center' }}>
                                     <IconsLike name='tag' color='#005BD4' size={25} />
                                 </View>
                                 <View style={{ flex: 1 }}>
@@ -609,7 +634,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                                         value={Comment}
                                         onPressComment={() => postComment(item?._id)}
                                         onChangeText={(text) => { setComment(text) }}
-                                        style={{ height:moderateScale(50) }} 
+                                        style={{ height: moderateScale(50) }}
                                     />
                                 </View>
 
@@ -617,7 +642,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                         </KeyboardAwareScrollView>
                     </SafeAreaView>
                 </Modal>
-{/*------------------ Likes List----------------- */}
+                {/*------------------ Likes List----------------- */}
                 <Modal
                     hasBackdrop={true}
                     coverScreen={true}
@@ -638,40 +663,40 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     propagateSwipe={true}
                 >
                     <View style={[styles.modalStyle, { height: 500 }]}>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(16) }]}>Likes</Text>
+                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(16) }]}>Likes</Text>
 
-                                </View>
-                                <TouchableOpacity onPress={() => setopenLikesModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
                             </View>
-                            <View style={{ flex:1 }}>
-                                {Loading ? <Loader /> :
-                                    <FlatList
-                                        style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
-                                        ListEmptyComponent={<View style={{ flex: 1, height: height / 3.5, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no Likes on this event.</Text></View>}
-                                        data={LikesList}
-                                        contentContainerStyle={{paddingBottom:20}}
-                                        keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item, index }) => {
-                                            return (
-                                                <>
-                                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                                                        {item?.user?.profilePicture != null ? <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={{ url: item?.user?.profilePicture }} /> : <Image style={{resizeMode:'contain', height:moderateScale(30), width:moderateScale(30)}} source={imagePath.Gola} />}
+                            <TouchableOpacity onPress={() => setopenLikesModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            {Loading ? <Loader /> :
+                                <FlatList
+                                    style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(10), marginVertical: moderateScaleVertical(15) }}
+                                    ListEmptyComponent={<View style={{ flex: 1, height: height / 3.5, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no Likes on this event.</Text></View>}
+                                    data={LikesList}
+                                    contentContainerStyle={{ paddingBottom: 20 }}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
+                                                    {item?.user?.profilePicture != null ? <Image style={{ resizeMode: 'contain', height: moderateScale(30), width: moderateScale(30) }} source={{ url: item?.user?.profilePicture }} /> : <Image style={{ resizeMode: 'contain', height: moderateScale(30), width: moderateScale(30) }} source={imagePath.Gola} />}
 
-                                                        <View>
-                                                            <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform:'capitalize' }]}>{item?.fullName}</Text>
-                                                        </View>
+                                                    <View>
+                                                        <Text style={[styles.hometxt, { marginLeft: moderateScale(8), fontSize: textScale(18), textTransform: 'capitalize' }]}>{item?.fullName}</Text>
                                                     </View>
-                                                </>
-                                            )
-                                        }
-                                        }
-                                    />
-                                }
-                            </View>
+                                                </View>
+                                            </>
+                                        )
+                                    }
+                                    }
+                                />
+                            }
+                        </View>
 
-                           
+
                     </View>
                 </Modal>
             </View>

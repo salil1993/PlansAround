@@ -21,10 +21,14 @@ const Settings = ({ navigation }) => {
             <View style={{ borderWidth: 0.5, borderColor: '#fffafa', marginTop: moderateScaleVertical(10) }} />
             <View style={styles.container}>
                 <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(20) }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate(navigationStrings.ACCOUNT_INFO)
+                        }}
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='account-circle' size={20} color='#4F4F4F' />
                         <Text style={styles.settingsText}>Account information</Text>
-                    </View>
+                    </TouchableOpacity>
                     <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.BASIC_INFO, { isFrom: 'Main' })} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: moderateScaleVertical(20) }}>
@@ -70,7 +74,11 @@ const Settings = ({ navigation }) => {
                     </View>
                     <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate(navigationStrings.HELP_SUPPORT)
+                    }}
+                    style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='help' size={20} color='#4F4F4F' />
 

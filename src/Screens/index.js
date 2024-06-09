@@ -47,6 +47,8 @@ export { default as ApprovedParticipants } from '../Screens/EvetsHosting/Apporve
 export { default as RejectedParticipants } from '../Screens/EvetsHosting/RejectedParticipants'
 export { default as PendingRequest } from '../Screens/EvetsHosting/PendingRequest'
 export { default as NotificationList } from '../Screens/Notifications/NotificationList'
+export { default as AccountInfo } from '../Screens/AccountInfo/AccountInfo'
+export { default as HelpSupport } from '../Screens/HelpSupport/HelpSupport'
 
 // export {default as Login} from './Login/Login';
 // export {default as Signup} from './Signup/Signup';
