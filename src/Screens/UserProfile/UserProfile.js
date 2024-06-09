@@ -533,13 +533,15 @@ const UserProfile = ({ navigation }) => {
                             onEndReachedThreshold={0.1}
                             // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                             renderItem={({ item, index }) => {
-                                <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
-                                        <Image source={{ uri: item?.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
-                                        <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.title}</Text>
-                                    </View>
-                                </View>
+                                return(
+                                    <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
+                                                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                                           {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(50), width: moderateScale(90), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
+                                                                                <Image source={imagePath.Gola} style={{  height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(50), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                                                                <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.fullName}</Text>
+                                                                            </View>
+                                                                        </View>
+                                                                        )
                             }
                             }
                         />
@@ -589,7 +591,7 @@ const UserProfile = ({ navigation }) => {
 <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), width: '100%' }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                        {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(50), width: moderateScale(90), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
-                                            <Image source={imagePath.Gola} style={{ height: moderateScaleVertical(150), width: moderateScale(50), borderRadius: moderateScale(50), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                            <Image source={imagePath.Gola} style={{  height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(50), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
                                             <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{item?.fullName}</Text>
                                         </View>
                                     </View>
