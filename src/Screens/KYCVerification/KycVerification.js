@@ -228,7 +228,7 @@ const KycVerification = ({ navigation }) => {
         console.log(res);
         const data = res.data.user;
         setmainData(data);
-
+        dispatch(userStatus(true))
         setLoading(false);
         Snackbar.show({
           text: `${res.data.message}`,
@@ -285,7 +285,7 @@ const KycVerification = ({ navigation }) => {
             <Text style={styles.phoneHeading2}>Upload 2 sides of your proof of identity and selfie with it for verification purpose</Text>
             <Text style={[styles.phoneHeading2, { color: '#005BD4', fontWeight: '700', textAlign: 'center' }]}>A Verified Profile gets accepted 5 times more easily, Do your verification Now!</Text>
             <KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-              <View style={{ marginVertical: moderateScaleVertical(5), backgroundColor: 'white',borderColor:'#D3D3D3',borderWidth:1, padding: moderateScale(8), borderRadius: scale(5) }}>
+              <View style={{ marginVertical: moderateScaleVertical(5), backgroundColor: 'white', borderColor: '#D3D3D3', borderWidth: 1, padding: moderateScale(8), borderRadius: scale(5) }}>
                 <Dropdown
                   style={[styles.dropdown]}
                   placeholderStyle={styles.placeholderStyle}

@@ -131,7 +131,7 @@ const Interests = ({ navigation, route }) => {
                     if (route?.params?.isFrom == 'Main') {
                         navigation.navigate(navigationStrings.SETTINGS)
                     } else {
-                        navigation.navigate(navigationStrings.REKYC)
+                        navigation.navigate(navigationStrings.KYC_VERIFICATION)
                     }
 
                     // }, 2000)
@@ -354,7 +354,7 @@ const Interests = ({ navigation, route }) => {
                                             if (route?.params?.isFrom == 'Main') {
                                                 navigation.navigate(navigationStrings.SETTINGS)
                                             } else {
-                                                navigation.navigate(navigationStrings.REKYC)
+                                                navigation.navigate(navigationStrings.KYC_VERIFICATION)
                                             }
                                         }}>
                                         <Text style={styles.skip}>Skip</Text>

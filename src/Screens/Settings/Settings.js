@@ -93,6 +93,7 @@ const Settings = ({ navigation }) => {
                 <TouchableOpacity onPress={async () => {
                     await AsyncStorage.removeItem('UserToken');
                     dispatch(userStatus(false))
+                    navigation.navigate(navigationStrings.LOG_IN)
                 }} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='logout' size={23} color='#005BD4' />
