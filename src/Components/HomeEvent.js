@@ -99,7 +99,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
 
     const HanldeCheckParticipate = () => {
         setLoadingP(false)
-        if (User.kyc.isVerified) {
+        if (User.kyc?.isVerified) {
             setaskPermission(true)
         }
         else {

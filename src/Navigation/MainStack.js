@@ -7,8 +7,45 @@ export default function (Stack) {
     return (
         <>
             <Stack.Screen
-                name={navigationStrings.TABROUTES}
-                component={TabRoutes}
+                name={navigationStrings.SPLASH_SCREEN}
+                component={Screens.SplashScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.INITIAL_SCREEN}
+                component={Screens.InitialScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.LOG_IN}
+                component={Screens.Login}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.PHONE_NUMBERINPUT}
+                component={Screens.PhoneNumberinput}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.OTP_INPUT}
+                component={Screens.OtpInput}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.REGISTER}
+                component={Screens.Register}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name={navigationStrings.EMAIL_VERIFY}
+                component={Screens.OtpEmail}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name={navigationStrings.SETUP_ACCOUNT}
+                component={Screens.SetUpaccount}
                 options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -21,22 +58,16 @@ export default function (Stack) {
                 component={Screens.SetLocation}
                 options={{ headerShown: false }}
             />
-            <Stack.Screen
-                name={navigationStrings.EVENTS_ATTTENDING}
-                component={Screens.EventsAttending}
+            {/* <Stack.Screen
+                name={navigationStrings.SET_LOCATIONTWO}
+                component={Screens.SetLocationTwo}
                 options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name={navigationStrings.EVENTS_HOSTING}
-                component={Screens.EventHosting}
-                options={{ headerShown: false }}
-            />
+            /> */}
             <Stack.Screen
                 name={navigationStrings.SELECT_GENDER}
                 component={Screens.SelectGender}
                 options={{ headerShown: false }}
             />
-
             <Stack.Screen
                 name={navigationStrings.WRITE_BIO}
                 component={Screens.WriteBio}
@@ -67,6 +98,36 @@ export default function (Stack) {
                 component={Screens.Interests}
                 options={{ headerShown: false }}
             />
+            <Stack.Screen
+                name={navigationStrings.KYC_VERIFICATION}
+                component={Screens.KycVerification}
+                options={{ headerShown: false }}
+            />
+
+
+
+
+
+            <Stack.Screen
+                name={navigationStrings.TABROUTES}
+                component={TabRoutes}
+                options={{ headerShown: false }}
+            />
+
+
+            <Stack.Screen
+                name={navigationStrings.EVENTS_ATTTENDING}
+                component={Screens.EventsAttending}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.EVENTS_HOSTING}
+                component={Screens.EventHosting}
+                options={{ headerShown: false }}
+            />
+
+
+
             <Stack.Screen
                 name={navigationStrings.EVENTS_ATTENDED}
                 component={Screens.EventAttended}

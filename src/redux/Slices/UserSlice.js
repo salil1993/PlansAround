@@ -16,9 +16,12 @@ export const authSlice = createSlice({
     },
     userStatus: (state, action) => {
       console.log('userstatus aaya', action.payload)
+      if (!action.payload) {
+        state.userData = {}
+        state.userCurrentLocation = {}
+      }
       state.isLogin = action.payload
-      state.userData = {}
-      state.userCurrentLocation = {}
+
     },
     userCurrentLocation: (state, action) => {
       console.log('currentLocation aayi', action.payload)

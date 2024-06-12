@@ -29,17 +29,19 @@ const App = () => {
   const GetFCM = async () => {
     messaging().registerDeviceForRemoteMessages();
     const token = await messaging().getToken();
-    console.log(token, 'fcm token')
+    console.log('fcm token', token,)
   }
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       // Alert.alert('A new FCM message arrived in foreground!', JSON.stringify(remoteMessage));
-      console.log(remoteMessage, 'notification')
+      console.log("remoteMessage", remoteMessage,)
       DisplayNotification(remoteMessage);
     });
 
-    return unsubscribe;
+    return (() => {
+
+    });
   }, []);
 
 

@@ -67,8 +67,11 @@ const LogIN = ({ navigation }) => {
             dispatch(saveUserData(res.user))
             console.log('Data gya')
             Snackbar.dismiss();
-            // navigation.navigate(navigationStrings.TABROUTES)
-            // navigation.navigate(navigationStrings.EMAIL_VERIFY)
+            navigation.reset({
+                index: 0,
+                routes: [{ name: navigationStrings.TABROUTES }]
+            })
+
         }, 1000)
     }
 

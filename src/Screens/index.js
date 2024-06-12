@@ -1,4 +1,5 @@
 export { default as InitialScreen } from './IntialScreen/InitialScreen';
+export { default as SplashScreen } from './IntialScreen/SplashScreen';
 export { default as PhoneNumberinput } from './PhoneNumber/PhoneNumberInput.';
 export { default as OtpInput } from './OtpInput/OtpInput';
 export { default as OtpEmail } from './MailVerification/OtpEmail';

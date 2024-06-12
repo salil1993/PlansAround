@@ -18,6 +18,7 @@ import { AUTH_CONFIG } from '../../constants/Path';
 import { useDispatch } from 'react-redux/es/exports';
 import { saveUserData, userStatus } from '../../redux/Slices/UserSlice';
 import { useSelector } from 'react-redux'
+import navigationStrings from '../../Navigation/navigationStrings';
 // create a component
 const KycVerification = ({ navigation }) => {
   const [mainData, setmainData] = useState();
@@ -242,6 +243,10 @@ const KycVerification = ({ navigation }) => {
         dispatch(saveUserData(data))
         console.log('Data gya')
         Snackbar.dismiss();
+        navigation.reset({
+          index: 0,
+          routes: [{ name: navigationStrings.TABROUTES }]
+        })
         // navigation.navigate(navigationStrings.TABROUTES)
         // navigation.navigate(navigationStrings.EMAIL_VERIFY)
         // }, 2000)
@@ -441,6 +446,10 @@ const KycVerification = ({ navigation }) => {
                     android_ripple={{ color: 'red', borderless: true, radius: moderateScale(25), }}
                     onPress={() => {
                       dispatch(userStatus(true))
+                      navigation.reset({
+                        index: 0,
+                        routes: [{ name: navigationStrings.TABROUTES }]
+                      })
                       // dispatch(saveUserData(mainData))
                       // console.log('Data gya')
                       // dispatch(saveUserData(data))

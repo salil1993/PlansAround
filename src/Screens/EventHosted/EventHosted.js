@@ -8,6 +8,7 @@ import HeaderBack from '../../Components/HeaderBack';
 import axios from 'axios';
 import { getData } from '../../utils/helperFunctions';
 import Loader from '../../Components/Loader';
+import { useSelector } from 'react-redux';
 
 
 
@@ -15,6 +16,7 @@ import Loader from '../../Components/Loader';
 const EventHosted = ({ navigation }) => {
     const [eventData, setEventData] = useState([])
     const [LoadEvent, setLoadEvent] = useState(false)
+    const user = useSelector((state) => state.persistedReducer.authSlice.userData);
 
     useEffect(() => {
         getCurrentEvents();
@@ -82,12 +84,12 @@ const EventHosted = ({ navigation }) => {
                                         <View style={styles.container2}>
                                             <View style={{ flexDirection: 'row', alignItems: 'center' }} >
                                                 {
-                                                    item?.event?.user?.profilePicture ?
-                                                        <Image source={{ uri: item?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
+                                                    user?.profilePicture ?
+                                                        <Image source={{ uri: user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                                                         :
                                                         <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                                                 }
-                                                <Text style={styles.charlie}>{item?.fullName ? item?.fullName : 'NA'}</Text>
+                                                <Text style={styles.charlie}>{user?.fullName || 'NA'}</Text>
                                             </View>
                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                 <View style={{ flexDirection: 'row' }}>

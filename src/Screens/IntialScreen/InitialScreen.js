@@ -16,20 +16,10 @@ import { userCurrentLocation, userStatus } from '../../redux/Slices/UserSlice';
 const InitialScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     useEffect(() => {
-        // requestLocationPermission();
-        checkUser();
+
     },
         []);
 
-    const checkUser = async () => {
-        const token = await getData('UserToken');
-        console.log(token, 'tokken')
-        if (token) {
-            dispatch(userStatus(true))
-        } else {
-            console.log('SignUpfirst')
-        }
-    }
     return (
         <ImageBackground source={imagePath.Splash} style={styles.backgroundImage}>
             <SafeAreaView style={{ flex: 1 }}>

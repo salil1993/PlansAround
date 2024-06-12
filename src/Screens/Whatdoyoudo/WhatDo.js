@@ -178,7 +178,7 @@ const WhatDo = ({ navigation, route }) => {
 
 
     const handleSumbit = () => {
-        if (JobProfile && CompanyName) {
+        if (label) {
             console.log("=======", JobProfile, CompanyName, Yexp);
             setLoading(true)
 

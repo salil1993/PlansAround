@@ -47,7 +47,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        if (User.kyc.isVerified) {
+                        if (User?.kyc?.isVerified) {
                             alert("KYC already verified.");
                         } else {
                             navigation.navigate(navigationStrings.REKYC)
@@ -57,7 +57,7 @@ const Settings = ({ navigation }) => {
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='verified' size={20} color='#4F4F4F' />
                         <Text style={styles.settingsText}>
-                            {User.kyc.isVerified ? "KYC Verified" :
+                            {User?.kyc?.isVerified ? "KYC Verified" :
                                 "KYC Verification"}</Text>
                     </View>
                     <MIcon name='arrow-right-circle-outline' size={23} color={'#4F4F4F'} />
@@ -91,7 +91,7 @@ const Settings = ({ navigation }) => {
             <View style={{ borderWidth: 0.5, borderColor: '#fffafa', marginVertical: moderateScaleVertical(20) }} />
             <View style={styles.container}>
                 <TouchableOpacity onPress={async () => {
-                    await AsyncStorage.removeItem('UserToken');
+                    await AsyncStorage.clear();
                     dispatch(userStatus(false))
                     navigation.navigate(navigationStrings.LOG_IN)
                 }} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

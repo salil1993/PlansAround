@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useState } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import ButtonComp from '../../Components/ButtonComp';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
@@ -8,8 +8,9 @@ import { moderateScale, moderateScaleVertical, scale } from '../../styles/respon
 import imagePath from '../../constants/imagePath';
 import Snackbar from 'react-native-snackbar';
 import { useNavigation } from '@react-navigation/native';
+import navigationStrings from '../../Navigation/navigationStrings';
 // create a component
-const PendingRequestComponent = ({ item, index,getPendingRequests }) => {
+const PendingRequestComponent = ({ item, index, getPendingRequests }) => {
     const navigation = useNavigation();
     const [Loading, setLoading] = useState(false);
     const [LoadingR, setLoadingR] = useState(false);
@@ -94,12 +95,16 @@ const PendingRequestComponent = ({ item, index,getPendingRequests }) => {
                     textColor: "#fff",
                 });
             })
-
-
     }
+
+
     return (
         <View style={styles.container2} index={index}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.user?._id })
+                }}
+                style={{ flexDirection: 'row', alignItems: 'center' }} >
                 {
                     item?.user?.profilePicture ?
                         <Image source={{ uri: item?.user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
@@ -107,7 +112,7 @@ const PendingRequestComponent = ({ item, index,getPendingRequests }) => {
                         <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
                 }
                 <Text style={styles.charlie}>{item?.user?.fullName ? item?.user?.fullName : 'NA'}</Text>
-            </View>
+            </TouchableOpacity>
             <View style={{ flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', marginVertical: moderateScaleVertical(15) }}>
                 <View style={{ flex: 3 }}>
                     <ButtonComp isLoading={Loading} onPress={() => handleAccept(item.eventId, item._id)} text='Accept' style={{ height: moderateScale(45), backgroundColor: '#93dc5c', }} />

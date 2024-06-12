@@ -76,14 +76,13 @@ const linking = {
 
 
 export default function Routes() {
-  const userStatus = useSelector((state) => state.persistedReducer.authSlice);
-  console.log('yha to ye hai====', userStatus);
 
   return (
     <NavigationContainer linking={linking}  >
       <Stack.Navigator>
         {/* {AuthStack(Stack)} */}
-        {userStatus?.isLogin ? MainStack(Stack) : AuthStack(Stack)}
+        {/* {userStatus?.isLogin ? MainStack(Stack) : AuthStack(Stack)} */}
+        {MainStack(Stack)}
       </Stack.Navigator>
     </NavigationContainer>
   );
