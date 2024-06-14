@@ -1,9 +1,9 @@
 //import liraries
 import React, { Component, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar, Image, TouchableOpacity, ScrollView, FlatList, Modal } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, Image, TouchableOpacity, ScrollView, FlatList, SafeAreaView } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import HeaderBack from '../../Components/HeaderBack';
-import { moderateScale, moderateScaleVertical, textScale, scale } from '../../styles/responsiveSize';
+import { moderateScale, moderateScaleVertical, textScale, scale, height } from '../../styles/responsiveSize';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import Loader from '../../Components/Loader';
@@ -12,13 +12,19 @@ import imagePath from '../../constants/imagePath';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useSelector } from 'react-redux';
 import navigationStrings from '../../Navigation/navigationStrings';
+import Snackbar from 'react-native-snackbar';
+import Modal from 'react-native-modal'
+import { RequestBooking } from '../../API/Api';
 // create a component
 const HomeEventDetails = ({ navigation, route }) => {
     const CurrentUserLocation = useSelector((state) => state.persistedReducer.authSlice.userCurrentLocation);
+     const User = useSelector((state) => state.persistedReducer.authSlice.userData);
     const [Event, setEvent] = useState();
+    const [EventId, setEventId] = useState(null);
     const [LoadEvent, setLoadEvent] = useState(false)
     const [Loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [askPermission, setaskPermission] = useState(false);
 
     const openImage = (image) => {
         setSelectedImage(image);
@@ -45,7 +51,7 @@ const HomeEventDetails = ({ navigation, route }) => {
         axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${Id}`, { headers })
             .then((res) => {
                 console.log(res, 'eventDetail on homese')
-                setEvent(res.data.events)
+                setEvent(res.data.eventDetail)
                 setLoadEvent(false)
 
                 // setEventData(res.data.events)
@@ -69,18 +75,84 @@ const HomeEventDetails = ({ navigation, route }) => {
         return distance;
     }
 
+
+    const HanldeCheckParticipate = () => {
+
+        if (User.kyc?.isVerified) {
+            setaskPermission(true)
+        }
+        else {
+            console.log('kyc not verified')
+            Snackbar.show({
+                text: 'Please update your KYC',
+                duration: Snackbar.LENGTH_LONG,
+                backgroundColor: 'red',
+                textColor: "#fff",
+                numberOfLines: 3,
+                action: {
+                    text: 'KYC',
+                    textColor: '#ffff',
+                    onPress: () => { navigation.navigate(navigationStrings.REKYC) },
+                },
+            });
+
+        }
+    }
+
+    const HandleParticpate = (eventId) => {
+      //  setLoading(true)
+        console.log('kyc verified')
+        console.log(eventId, 'eventId')
+        RequestBooking(eventId)
+            .then((res) => {
+                console.log(res, 'eventBooking')
+                setLoading(false)
+                setaskPermission(false);
+                setTimeout(() => {
+                    Snackbar.show({
+                        text: `${res.message}`,
+                        duration: Snackbar.LENGTH_INDEFINITE,
+                        backgroundColor: '#005BD4',
+                        action: {
+                            text: 'Ok',
+                            textColor: "#fff",
+                            onPress: () => { Snackbar.dismiss() },
+                        },
+                    });
+                    getEvent();
+                }, 1000);
+
+            })
+            .catch((err) => {
+                console.log(err, 'eventBooking')
+                setLoading(false);
+                setaskPermission(false);
+                setTimeout(() => {
+                    Snackbar.show({
+                        text: `${err.response.data.message}`,
+                        duration: Snackbar.LENGTH_INDEFINITE,
+                        backgroundColor: 'red',
+                        action: {
+                            text: 'Ok',
+                            textColor: "#fff",
+                            onPress: () => { Snackbar.dismiss() },
+                        },
+                    });
+                }, 2000);
+            })
+    }
+
     return (
         <WrapperContainer>
             <HeaderBack mainText='Event Details' style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(10) }} />
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
 
             {LoadEvent ? <Loader /> :
-                <View style={styles.container}>
+                <SafeAreaView style={styles.container}>
                     {Event &&
                         <FlatList
                             data={[Event]}
                             renderItem={({ item, index }) => {
-                                // console.log(item, 'event flatlist')
                                 const UserLocation = CurrentUserLocation;
                                 const Eventlocation = item.location;
                                 const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.latitude, Eventlocation.longitude)
@@ -91,12 +163,12 @@ const HomeEventDetails = ({ navigation, route }) => {
                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: moderateScaleVertical(5) }}>
                                                 <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.ORGPROFILE, { Profile: item?.userId })} style={{ flexDirection: 'row', alignItems: 'center' }} >
                                                     {
-                                                        item?.userId?.profilePicture ?
-                                                            <Image source={{ uri: item?.userId?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
+                                                        item?.user?.profilePicture ?
+                                                            <Image source={{ uri: item?.user?.profilePicture }} style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25), resizeMode: 'contain' }} />
                                                             :
-                                                            <Image source={imagePath.Gola} resizeMode='contain' style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25) }} />
+                                                            <Image source={imagePath.Gola} style={{ height: moderateScale(50), width: moderateScale(50), borderRadius: moderateScale(25), resizeMode: 'contain' }} />
                                                     }
-                                                    <Text style={styles.charlie}>{item.userId.fullName ? item.userId.fullName : 'NA'}</Text>
+                                                    <Text style={styles.charlie}>{item.user.fullName ? item.user.fullName : 'NA'}</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
@@ -197,7 +269,13 @@ const HomeEventDetails = ({ navigation, route }) => {
                                             </View>
 
                                             <ButtonComp text='Participate'
-                                                style={{ backgroundColor: '#005BD4', width: '100%' }} />
+                                                style={{ backgroundColor: '#005BD4', width: '100%' }} onPress={() => {
+                                                    setEventId(item?._id)
+                                                    setTimeout(() => {
+                                                        HanldeCheckParticipate();
+                                                    }, 1000);
+                                                }
+                                                } />
                                             {/* <Modal
                                         swipeDirection={'down'}
                                         onSwipeStart={() => setopenModal(false)}
@@ -370,16 +448,49 @@ const HomeEventDetails = ({ navigation, route }) => {
 
                     }
                     <View>
-                        <Modal visible={selectedImage !== null} transparent={true}>
-                            <View style={styles.modalContainer}>
+                        <Modal isVisible={selectedImage !== null}    backdropColor="#000"
+                         backdropOpacity={0.8}
+                         hasBackdrop={true}
+                         animationOutTiming={900}>
+                            <SafeAreaView style={styles.modalContainer}>
                                 <TouchableOpacity style={styles.closeButton} onPress={closeImage}>
                                     <Text style={styles.closeButtonText}>Close</Text>
                                 </TouchableOpacity>
-                                <Image source={{ uri: selectedImage }} style={styles.fullScreenImage} resizeMode="contain" />
+                                <Image source={{ uri: selectedImage }} style={styles.fullScreenImage} />
+                            </SafeAreaView>
+                        </Modal>
+                    </View>
+                    <View>
+                        <Modal
+                         isVisible={askPermission}
+                         backdropColor="#000"
+                         backdropOpacity={0.8}
+                         hasBackdrop={true}
+                         animationOutTiming={900}
+                        >
+                            <View style={styles.PermissionmodalStyle}>
+                                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    {/* <Text style={styles.qrCode}>Delete Event</Text> */}<View />
+                                    <TouchableOpacity onPress={() => setaskPermission(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                                </View>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Image source={imagePath.demand} style={{ height: moderateScale(100), width: moderateScale(100) }} />
+                                </View>
+                                <View>
+                                    <Text style={[styles.qrCode, { color: '#4F4F4F', fontSize: scale(15), fontWeight: '600', lineHeight: scale(20), textAlign: 'center' }]}>Are you sure you want to send Request to admin for participation in this event. </Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between' }}>
+                                    <View style={{ flex: 3 }}>
+                                        <ButtonComp text='Cancel' onPress={() => setaskPermission(false)} style={{ height: moderateScale(45), borderColor: '#005BD4', borderWidth: 1 }} textStyle={{ color: '#005BD4' }} />
+                                    </View>
+                                    <View style={{ flex: 3, marginLeft: moderateScale(5) }}>
+                                        <ButtonComp isLoading={Loading} onPress={() => HandleParticpate(EventId)} text='Continue' style={{ height: moderateScale(45), backgroundColor: '#005BD4' }} />
+                                    </View>
+                                </View>
                             </View>
                         </Modal>
                     </View>
-                </View>
+                </SafeAreaView>
             }
         </WrapperContainer>
     );
@@ -438,25 +549,31 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1,
-        justifyContent: 'center',
+        //justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
     },
     fullScreenImage: {
-        width: '80%',
         height: '80%',
+        width: '80%',
+        resizeMode: 'contain',
     },
     closeButton: {
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        zIndex: 1,
+        alignSelf: 'flex-end',
+        marginRight: moderateScale(20)
     },
     closeButtonText: {
         color: 'white',
         fontSize: textScale(16),
         fontFamily: 'Roboto',
         fontWeight: '700',
+    },
+    PermissionmodalStyle: {
+        backgroundColor: '#FFF',
+        minHeight: moderateScale(height / 2.5),
+        borderRadius: moderateScale(15),
+        justifyContent: 'space-between',
+        padding: moderateScale(16)
     },
 });
 

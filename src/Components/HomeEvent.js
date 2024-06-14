@@ -22,7 +22,7 @@ import Share from 'react-native-share';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Loader from './Loader';
 // create a component
-const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) => {
+const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) => {
 
     console.log("item------", JSON.stringify(item));
     const dispatch = useDispatch();
@@ -706,12 +706,7 @@ const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) 
                     backdropColor="#000"
                     backdropOpacity={0.8}
                     hasBackdrop={true}
-                    // animationIn="zoomInDown"
-                    // animationOut="zoomOutUp"
-                    // animationInTiming={600}
                     animationOutTiming={900}
-                // backdropTransitionInTiming={600}
-                // backdropTransitionOutTiming={600}
                 >
                     <View style={styles.PermissionmodalStyle}>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

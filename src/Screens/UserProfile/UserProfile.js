@@ -22,7 +22,7 @@ import Snackbar from 'react-native-snackbar';
 import {
     launchCamera,
     launchImageLibrary
-  } from 'react-native-image-picker';
+} from 'react-native-image-picker';
 
 
 const category = [{
@@ -53,22 +53,16 @@ const UserProfile = ({ navigation }) => {
     const [followingList, setfollowingList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setoffset] = useState(null)
-   // const user = useSelector((state) => state.persistedReducer.authSlice.userData);
     const [followpage, setFollowPage] = useState(1);
     const [followingpage, setFollowingPage] = useState(1);
     const [hasfollowingMore, setHasFollowingMore] = useState(true);
     const [hasfollowersMore, setHasFollowersMore] = useState(true);
     const [selectImageModal, setselectImageModal] = useState(false);
     const [profilePic, setprofilePic] = useState(null)
-    const [imgSelected,setimgSelected] = useState(null)
+    const [imgSelected, setimgSelected] = useState(null)
     const [user, setUser] = useState({})
-   // console.log(user, 'profile m')
-
     const UserKYCstatus = user?.kyc?.isVerified;
-    // const UserKYCstatus = false;
-    // console.log(user, 'profile m')
     let DOB = user?.dateOfBirth?.split('T');
-    // console.log('DOB--->>', DOB)
     const age = DOB != undefined && calculateAge(DOB[0]);
 
     function calculateAge(dateOfBirth) {
@@ -99,6 +93,7 @@ const UserProfile = ({ navigation }) => {
         getProfile()
     }, [])
 
+
     const handleOnScroll = event => {
         setoffset(event.nativeEvent.contentOffset.y)
     };
@@ -126,18 +121,18 @@ const UserProfile = ({ navigation }) => {
             const responseData = response.data;
             console.log(responseData, 'followers')
             const followerList = responseData?.followers;
-           setfollowersList((prevEvents) => {
-            if (pageNumber === 1) {
-                // If it's the first page, replace existing events
-                return followerList;
-            } else {
-                // If it's not the first page, append new events to the existing list
-                return [...prevEvents, ...followerList];
-            }
-        });
-        setFollowPage(pageNumber); 
-           setHasFollowersMore(followerList?.length > 0);
-           setIsLoading(false);
+            setfollowersList((prevEvents) => {
+                if (pageNumber === 1) {
+                    // If it's the first page, replace existing events
+                    return followerList;
+                } else {
+                    // If it's not the first page, append new events to the existing list
+                    return [...prevEvents, ...followerList];
+                }
+            });
+            setFollowPage(pageNumber);
+            setHasFollowersMore(followerList?.length > 0);
+            setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
             console.log(error);
@@ -161,7 +156,7 @@ const UserProfile = ({ navigation }) => {
             const responseData = response.data;
             console.log(responseData, 'following')
             const followingsList = responseData?.following;
-           // setfollowingList(packageList)
+            // setfollowingList(packageList)
             setfollowingList((prevEvents) => {
                 if (pageNumber === 1) {
                     // If it's the first page, replace existing events
@@ -197,7 +192,7 @@ const UserProfile = ({ navigation }) => {
             const responseData = response.data;
             console.log(responseData, 'profiledata')
             const userData = responseData?.user;
-             setUser(userData)
+            setUser(userData)
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
@@ -205,7 +200,7 @@ const UserProfile = ({ navigation }) => {
         }
     };
 
-    // Define your function for handling load more
+
     const handleFollowersLoadMore = () => {
         if (!isLoading && hasfollowersMore) {
             getFollowerList(followpage + 1);
@@ -218,8 +213,7 @@ const UserProfile = ({ navigation }) => {
         }
     };
 
-    const handleUnfollow = async(id) =>{
-        console.log('handleUnfollowiddddd', id)
+    const handleUnfollow = async (id) => {
         if (isLoading) {
             return;
         }
@@ -233,11 +227,11 @@ const UserProfile = ({ navigation }) => {
             };
             const formData = new FormData();
             formData.append("id", id);
-            const response = await axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/users/remove-following`,{"id":id}, { headers });
+            const response = await axios.post(`https://plansaround-backend.vercel.app/api/mobile/homepage/users/remove-following`, { "id": id }, { headers });
             const responseData = response.data;
-           console.log(responseData, 'unfollowrequest');
-           getProfile()
-           getFollowingList(1)
+            console.log(responseData, 'unfollowrequest');
+            getProfile()
+            getFollowingList(1)
             Snackbar.show({
                 text: `${response?.data?.message}`,
                 duration: Snackbar.LENGTH_SHORT,
@@ -254,7 +248,38 @@ const UserProfile = ({ navigation }) => {
                 textColor: "#fff",
             });
             console.log(error);
-        }  
+        }
+    }
+
+    const handleFollow = async (id) => {
+        let usertoken = await getData('UserToken');
+        const headers = {
+            'Authorization': `Bearer ${usertoken}`,
+            'Content-Type': "application/json",
+        };
+        const formData = new FormData();
+        formData.append('id', id);
+        axios.post('https://plansaround-backend.vercel.app/api/mobile/homepage/users/follow-request', { "id": id }, { headers })
+            .then((res) => {
+                console.log(res, 'Followrequest');
+                getProfile()
+                getFollowingList(1)
+                Snackbar.show({
+                    text: `${res?.data?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: '#005BD4',
+                    textColor: "#fff",
+                });
+            })
+            .catch((error) => {
+                console.log(error?.response?.data?.message);
+                Snackbar.show({
+                    text: `${error?.response?.data?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: 'red',
+                    textColor: "#fff",
+                });
+            });
     }
 
 
@@ -267,184 +292,177 @@ const UserProfile = ({ navigation }) => {
 
 
 
-    const handleCategory = (id) => {
-        setGcategory(id)
-    }
-
-    const handleSumbit = () => {
-        // navigation.navigate(navigationStrings.WHERE_STUDY)
-    }
 
     const requestCameraPermission = async () => {
         if (Platform.OS === 'android') {
-          try {
-            const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.CAMERA,
-              {
-                title: 'Camera Permission',
-                message: 'App needs camera permission',
-              },
-            );
-            // If CAMERA Permission is granted
-            return granted === PermissionsAndroid.RESULTS.GRANTED;
-          } catch (err) {
-            console.warn(err);
-            return false;
-          }
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message: 'App needs camera permission',
+                    },
+                );
+                // If CAMERA Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                return false;
+            }
         } else return true;
-      };
-    
-      const requestExternalWritePermission = async () => {
+    };
+
+    const requestExternalWritePermission = async () => {
         if (Platform.OS === 'android') {
-          try {
-            const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-              {
-                title: 'External Storage Write Permission',
-                message: 'App needs write permission',
-              },
-            );
-            // If WRITE_EXTERNAL_STORAGE Permission is granted
-            return granted === PermissionsAndroid.RESULTS.GRANTED;
-          } catch (err) {
-            console.warn(err);
-            alert('Write permission err', err);
-          }
-          return false;
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'External Storage Write Permission',
+                        message: 'App needs write permission',
+                    },
+                );
+                // If WRITE_EXTERNAL_STORAGE Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                alert('Write permission err', err);
+            }
+            return false;
         } else return true;
-      };
-    
+    };
+
 
     const captureImage = async (type, id) => {
         let options = {
-          maxWidth: 300,
-          maxHeight: 550,
-          mediaType: 'photo',
-  includeBase64: false,
-  quality: 0.5,
-  cameraType: 'back',
+            maxWidth: 300,
+            maxHeight: 550,
+            mediaType: 'photo',
+            includeBase64: false,
+            quality: 0.5,
+            cameraType: 'back',
         };
         let isCameraPermitted = await requestCameraPermission();
         let isStoragePermitted = await requestExternalWritePermission();
         if (isCameraPermitted) {
-          launchCamera(options, (response) => {
-            console.log('Response = ', response.assets);
+            launchCamera(options, (response) => {
+                console.log('Response = ', response.assets);
+                if (response.didCancel) {
+                    alert('User cancelled camera picker');
+                    return;
+                } else if (response.errorCode == 'camera_unavailable') {
+                    alert('Camera not available on device');
+                    return;
+                } else if (response.errorCode == 'permission') {
+                    alert('Permission not satisfied');
+                    return;
+                } else if (response.errorCode == 'others') {
+                    alert(response.errorMessage);
+                    return;
+                }
+                let img = response?.assets[0]?.uri
+                setimgSelected(response?.assets);
+                setselectImageModal(false)
+                setprofilePic(img)
+                handleprofSubmit(response?.assets)
+            });
+
+
+        }
+    };
+
+    const chooseFile = (type, id) => {
+        let options = {
+            maxWidth: 300,
+            maxHeight: 550,
+            mediaType: 'photo',
+            includeBase64: false,
+            quality: 0.5,
+        };
+        launchImageLibrary(options, (response) => {
+            console.log('Response = ', response);
             if (response.didCancel) {
-              alert('User cancelled camera picker');
-              return;
+                alert('User cancelled camera picker');
+                return;
             } else if (response.errorCode == 'camera_unavailable') {
-              alert('Camera not available on device');
-              return;
+                alert('Camera not available on device');
+                return;
             } else if (response.errorCode == 'permission') {
-              alert('Permission not satisfied');
-              return;
+                alert('Permission not satisfied');
+                return;
             } else if (response.errorCode == 'others') {
-              alert(response.errorMessage);
-              return;
+                alert(response.errorMessage);
+                return;
             }
             let img = response?.assets[0]?.uri
             setimgSelected(response?.assets);
             setselectImageModal(false)
             setprofilePic(img)
             handleprofSubmit(response?.assets)
-          });
-    
-    
-        }
-      };
-    
-      const chooseFile = (type, id) => {
-        let options = {
-          maxWidth: 300,
-          maxHeight: 550,
-          mediaType: 'photo',
-          includeBase64: false,
-          quality: 0.5,
-        };
-        launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
-          if (response.didCancel) {
-            alert('User cancelled camera picker');
-            return;
-          } else if (response.errorCode == 'camera_unavailable') {
-            alert('Camera not available on device');
-            return;
-          } else if (response.errorCode == 'permission') {
-            alert('Permission not satisfied');
-            return;
-          } else if (response.errorCode == 'others') {
-            alert(response.errorMessage);
-            return;
-          }
-            let img = response?.assets[0]?.uri
-            setimgSelected(response?.assets);
-            setselectImageModal(false)
-            setprofilePic(img)
-            handleprofSubmit(response?.assets)
         });
-      };
+    };
 
-      const handleprofSubmit = async(img) =>{
+    const handleprofSubmit = async (img) => {
         setIsLoading(true);
         const formData = new FormData();
         formData.append("image", {
-           uri: img[0]?.uri,
-           type: img[0]?.type, // Modify the type based on your image type
-           name: img[0]?.fileName,
-           fileName: img[0]?.fileName,
-         });
-       let usertoken = await getData('UserToken');
+            uri: img[0]?.uri,
+            type: img[0]?.type, // Modify the type based on your image type
+            name: img[0]?.fileName,
+            fileName: img[0]?.fileName,
+        });
+        let usertoken = await getData('UserToken');
         console.log(usertoken, 'token')
         const headers = {
-         'Authorization': `Bearer ${usertoken}`,
-          'Content-Type': 'multipart/form-data',
-       };
+            'Authorization': `Bearer ${usertoken}`,
+            'Content-Type': 'multipart/form-data',
+        };
 
         axios.post('https://plansaround-backend.vercel.app/api/mobile/profile/change-profile-picture', formData, { headers })
-        .then((res) => {
-          console.log('uwwhwhwhrurh', res.data);
-          setIsLoading(false);
-          Snackbar.show({
-            text: `${res.data.message}`,
-            duration: Snackbar.LENGTH_SHORT,
-            backgroundColor: '#005BD4',
-            textColor: "#fff",
-          });
- 
+            .then((res) => {
+                console.log('uwwhwhwhrurh', res.data);
+                setIsLoading(false);
+                Snackbar.show({
+                    text: `${res.data.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: '#005BD4',
+                    textColor: "#fff",
+                });
 
-        })
-        .catch((error) => {
-          console.log(error);
-          setIsLoading(false);
-          Snackbar.show({
-            text: `${error?.response?.data?.message}`,
-            duration: Snackbar.LENGTH_SHORT,
-            backgroundColor: 'red',
-            textColor: "#fff",
-          });
-        });
-      }
 
-      //api/mobile/profile/change-profile-picture
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsLoading(false);
+                Snackbar.show({
+                    text: `${error?.response?.data?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: 'red',
+                    textColor: "#fff",
+                });
+            });
+    }
+
+
 
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
             <HeaderBack onRightIconClick={() => navigation.navigate(navigationStrings.SETTINGS)} rightIcon={true} isLeftImage={false} onRightImgClick={() => setoptionopenModal3(!openoptionModal3)} rightImage={imagePath.sq} rightImg={true} mainText={user?.fullName} maintxtstyle={{ color: '#333', fontFamily: 'Roboto', fontSize: scale(22) }} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(16) }} />
-
+            {isLoading ? <LoaderList/>:
             <ScrollView>
                 <View style={styles.container}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between', }}>
-                        <TouchableOpacity style={{ width: '35%' }} onPress={() =>{
-                                setselectImageModal(true)
+                        <TouchableOpacity style={{ width: '35%' }} onPress={() => {
+                            setselectImageModal(true)
                         }}>
-                            {user?.profilePicture? <Image source={{ uri: user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(55), resizeMode:'cover' }} /> :
-                            
-                                <Image source={ profilePic
+                            {user?.profilePicture ? <Image source={{ uri: user?.profilePicture }} resizeMode='contain' style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(55), resizeMode: 'cover' }} /> :
+
+                                <Image source={profilePic
                                     ? {
                                         uri: profilePic,
-                                      }
-                                    : imagePath.Gola}  style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(55), resizeMode:'cover' }} />}
+                                    }
+                                    : imagePath.Gola} style={{ height: moderateScale(100), width: moderateScale(100), borderRadius: moderateScale(55), resizeMode: 'cover' }} />}
                             <Image source={imagePath.plus} style={{ alignSelf: 'center', height: scale(30), width: scale(30), position: 'absolute', bottom: 10, left: moderateScale(78) }} />
                         </TouchableOpacity>
                         <View style={{ width: '65%', flexDirection: 'row', justifyContent: 'space-between', }}>
@@ -452,11 +470,11 @@ const UserProfile = ({ navigation }) => {
                                 <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{user?.eventsCount}</Text>
                                 <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Events</Text>
                             </View>
-                            <TouchableOpacity onPress={() => setfollowerModal(true)}>
+                            <TouchableOpacity onPress={() => {setfollowerModal(true), getFollowerList(1)}}>
                                 <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{user?.followersCount}</Text>
                                 <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Followers</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setfollowlistModal(true)}>
+                            <TouchableOpacity onPress={() => {setfollowlistModal(true), getFollowingList(1)}}>
                                 <Text style={[styles.hometxt, { textAlign: 'center', fontSize: textScale(20) }]}>{user?.followingCount}</Text>
                                 <Text style={[styles.textone, { fontWeight: '500', fontSize: textScale(18) }]}>Following</Text>
                             </TouchableOpacity>
@@ -613,8 +631,7 @@ const UserProfile = ({ navigation }) => {
                     {/* </View> */}
                 </View>
             </ScrollView>
-
-            <View>
+}
                 <Modal
                     style={{ position: 'absolute', right: 0, top: moderateScaleVertical(25) }}
                     isVisible={menuOpen}
@@ -627,9 +644,6 @@ const UserProfile = ({ navigation }) => {
                     backdropTransitionOutTiming={800}
                 >
                     <View style={[styles.modalStyle, {}]}>
-                        {/* <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={() => setmenuOpen(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
-                        </View> */}
                         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginVertical: moderateScaleVertical(2) }}>
                             <Iconsetting name='supervised-user-circle' size={25} color='#4F4F4F' />
                             <Text style={{ color: '#4F4F4F', fontSize: scale(15), fontWeight: '600', lineHeight: scale(20), marginLeft: moderateScale(5) }}>Followers </Text>
@@ -657,9 +671,6 @@ const UserProfile = ({ navigation }) => {
                         <View style={{ borderWidth: 0.5, borderColor: '#C0C0C0', marginVertical: moderateScaleVertical(2) }} />
                     </View>
                 </Modal>
-            </View>
-
-            <View>
                 <Modal
                     coverScreen={true}
                     isVisible={openoptionModal3}
@@ -717,19 +728,11 @@ const UserProfile = ({ navigation }) => {
                         }
                     </View>
                 </Modal>
-            </View>
-
-
-
-            <View>
                 <Modal
-                    // swipeDirection={'down'}
-                    // onSwipeco={() => setLocationModal(false)}
                     hasBackdrop={true}
                     coverScreen={true}
                     backdropColor="#000"
                     backdropOpacity={0.8}
-                    // onBackdropPress={() => setLocationModal(false)}
                     isVisible={followerModal}
                     style={{ justifyContent: 'flex-end', margin: 0 }}
                     animationIn="slideInUp"
@@ -748,44 +751,37 @@ const UserProfile = ({ navigation }) => {
                         <FlatList
                             data={followersList}
                             ListEmptyComponent={<View style={{ justifyContent: 'center', alignContent: 'center', height: Dimensions.get('screen').height / 2 }}>
-                                <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
+                             { isLoading ? <LoaderList />:  <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>}
                             </View>}
                             keyExtractor={(item, index) => index.toString()}
                             onEndReached={handleFollowersLoadMore}
                             onEndReachedThreshold={0.1}
-                            // ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                             renderItem={({ item, index }) => {
                                 console.log('item---', item)
-                                return(
+                                return (
                                     <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                   {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
-                                        <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
-                                        <Text style={[styles.phoneHeading, {  textAlign: 'center' }]}>{item?.fullName}</Text>
-                                        <ButtonComp text={item?.userIsFollowing ?'Following':'Follow'} isLoading={isLoading}
-                                                style={{ backgroundColor: '#005BD4', width: '30%', height: moderateScale(35), marginLeft:moderateScale(30)}} onPress={() => {
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            {item?.profilePicture ? <Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} /> :
+                                                <Image source={imagePath.Gola} style={{ height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                            <Text style={[styles.phoneHeading, { textAlign: 'center' }]}>{item?.fullName}</Text>
+                                            <ButtonComp text={item?.userIsFollowing ? 'Following' : 'Follow'} 
+                                                style={{ backgroundColor: '#005BD4', width: '30%', height: moderateScale(35), marginLeft: moderateScale(30) }} onPress={() => {
                                                     handleFollow(item?._id)
                                                 }
                                                 } />
+                                        </View>
                                     </View>
-                                </View>
-                                                                        )
+                                )
                             }
                             }
                         />
                     </SafeAreaView>
                 </Modal>
-            </View>
-
-            <View>
                 <Modal
-                    // swipeDirection={'down'}
-                    // onSwipeco={() => setLocationModal(false)}
                     hasBackdrop={true}
                     coverScreen={true}
                     backdropColor="#000"
                     backdropOpacity={0.8}
-                    // onBackdropPress={() => setLocationModal(false)}
                     isVisible={followlistModal}
                     style={{ justifyContent: 'flex-end', margin: 0 }}
                     animationIn="slideInUp"
@@ -808,43 +804,39 @@ const UserProfile = ({ navigation }) => {
                             <FlatList
                                 data={followingList}
                                 ListEmptyComponent={<View style={{ justifyContent: 'center', alignContent: 'center', height: Dimensions.get('screen').height / 2 }}>
-                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>
+                                 { isLoading ? <LoaderList />:  <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>}
                                 </View>}
                                 keyExtractor={(item, index) => index.toString()}
                                 onEndReached={handleFollowingLoadMore}
                                 onEndReachedThreshold={0.1}
-                                //  ListFooterComponent={hasfollowingMore ? <LoaderList /> : null}
                                 renderItem={({ item, index }) => {
                                     console.log('item---', item)
-                                    return(
-                                        <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20),  flex:1}}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                       {item?.profilePicture ?<Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />:
-                                            <Image source={imagePath.Gola} style={{  height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
-                                            <Text style={[styles.phoneHeading, {textAlign: 'center' }]}>{item?.fullName}</Text>
-                                            <ButtonComp text={'Unfollow'} isLoading={isLoading}
-                                                style={{ backgroundColor: '#005BD4', width: '30%', height: moderateScale(35), marginLeft:moderateScale(30)}} onPress={() => {
-                                                    handleUnfollow(item?._id)
-                                                }
-                                                } />
+                                    return (
+                                        <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), padding: moderateScale(20), flex: 1 }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                {item?.profilePicture ? <Image source={{ uri: item?.profilePicture }} style={{ height: moderateScaleVertical(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} /> :
+                                                    <Image source={imagePath.Gola} style={{ height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />}
+                                                <Text style={[styles.phoneHeading, { textAlign: 'center' }]}>{item?.fullName}</Text>
+                                                <ButtonComp text={'Unfollow'} 
+                                                    style={{ backgroundColor: '#005BD4', width: '30%', height: moderateScale(35), marginLeft: moderateScale(30) }} onPress={() => {
+                                                        handleUnfollow(item?._id)
+                                                    }
+                                                    } />
+                                            </View>
                                         </View>
-                                    </View>
                                     )
-                                    
+
                                 }
                                 }
                             />
                         </SafeAreaView>
                     </SafeAreaView>
                 </Modal>
-            </View>
-
-            <View>
                 <Modal
-                     hasBackdrop={true}
-                     coverScreen={true}
-                     backdropColor="#000"
-                     backdropOpacity={0.5}
+                    hasBackdrop={true}
+                    coverScreen={true}
+                    backdropColor="#000"
+                    backdropOpacity={0.5}
                     // onBackdropPress={() => setLocationModal(false)}
                     isVisible={selectImageModal}
                     style={{ justifyContent: 'flex-end', margin: 0 }}
@@ -858,46 +850,44 @@ const UserProfile = ({ navigation }) => {
                     scrollOffset={offset}
                     scrollOffsetMax={400 - 300}
                     propagateSwipe={true}
-                     >
+                >
                     <View style={[styles.modalStyle2]}>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(18),       fontWeight: '800', }]}>Select Images</Text>
-                                </View>
-                                <TouchableOpacity onPress={() => setselectImageModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                                <Text style={[styles.hometxt, { marginLeft: moderateScale(5), fontSize: moderateScale(18), fontWeight: '800', }]}>Select Images</Text>
                             </View>
-                            <View style={{ flex:1, marginTop:moderateScale(30) }}>
-                         
+                            <TouchableOpacity onPress={() => setselectImageModal(false)}><Image source={imagePath.Close} tintColor={'#000'} /></TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1, marginTop: moderateScale(30) }}>
 
-                            <TouchableOpacity onPress={()=>{
-                               // setselectImageModal(false)
+
+                            <TouchableOpacity onPress={() => {
+                                // setselectImageModal(false)
                                 chooseFile('photo', 4)
-                                }} 
-                                style={{marginBottom:moderateScale(20), borderBottomColor:'#D3D3D3', borderBottomWidth:1, paddingBottom:moderateScaleVertical(20)}}>
-                              
-                                <Text style={[styles.charlie, { 
+                            }}
+                                style={{ marginBottom: moderateScale(20), borderBottomColor: '#D3D3D3', borderBottomWidth: 1, paddingBottom: moderateScaleVertical(20) }}>
+
+                                <Text style={[styles.charlie, {
                                     fontSize: textScale(16),
-                                 fontFamily: 'Roboto',
-                                  fontWeight: '600',textTransform:'capitalize'
+                                    fontFamily: 'Roboto',
+                                    fontWeight: '600', textTransform: 'capitalize'
                                 }]}>Select from Gallery</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={()=>{
-                                   
-                                  captureImage('photo', 3)
+                            <TouchableOpacity onPress={() => {
+
+                                captureImage('photo', 3)
                             }}>
-                              
-                              <Text style={[styles.charlie, {
-                                  fontSize: textScale(16), fontFamily: 'Roboto',
-                                  fontWeight: '600',textTransform:'capitalize'
-                              }]}>Capture Image</Text>
-                          </TouchableOpacity>
 
-                          </View>
-                          </View>
+                                <Text style={[styles.charlie, {
+                                    fontSize: textScale(16), fontFamily: 'Roboto',
+                                    fontWeight: '600', textTransform: 'capitalize'
+                                }]}>Capture Image</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
                 </Modal>
-            </View>
-
         </WrapperContainer>
     );
 };
@@ -954,15 +944,10 @@ const styles = StyleSheet.create({
         fontWeight: '800'
     },
     modalStyle: {
-        // position:'absolute',
         backgroundColor: '#FFF',
         minHeight: moderateScale(height / 6),
         borderRadius: moderateScale(15),
         width: moderateScale(width / 2),
-        // borderTopLeftRadius: moderateScale(20),
-        // borderTopRightRadius: moderateScale(20),
-        // flex: 1,
-        // flexDirection: 'column',
         justifyContent: 'space-between',
         padding: moderateScale(16)
     },
@@ -990,11 +975,10 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto',
         fontWeight: '600',
         color: '#333',
-        marginLeft:scale(10)
+        marginLeft: scale(10)
     },
 
 
 });
 
-//make this component available to the app
 export default UserProfile;

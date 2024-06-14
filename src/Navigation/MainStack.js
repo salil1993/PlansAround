@@ -11,6 +11,12 @@ export default function (Stack) {
                 component={Screens.SplashScreen}
                 options={{ headerShown: false }}
             />
+
+         <Stack.Screen
+                name={navigationStrings.FORGOT_PASSWoRD}
+                component={Screens.ForgotPassword}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
                 name={navigationStrings.INITIAL_SCREEN}
                 component={Screens.InitialScreen}

@@ -32,6 +32,7 @@ const LiveEvents = ({ navigation }) => {
     useEffect(() => {
         getCurrentEvents();
     }, [])
+
     const getCurrentEvents = async () => {
         setLoadEvent(true)
         let usertoken = await getData('UserToken');
@@ -77,8 +78,7 @@ const LiveEvents = ({ navigation }) => {
                         {
                             LoadEvent ? <Loader /> :
                                 <FlatList
-                                    ListEmptyComponent={<View style={{ flex: 1, height: height, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no live events.</Text></View>}
-                                    // data={[112]}
+                                    ListEmptyComponent={<View style={{ flex: 1, height: height/1.7, width: width, justifyContent: 'center', alignItems: 'center', }}><Text style={{ fontSize: scale(15), color: '#4F4F4F', fontWeight: '700' }}>There is no live events.</Text></View>}
                                     data={LiveEventData}
                                     renderItem={({ item, index }) => {
                                         console.log(item, 'ye aaya...')
@@ -121,8 +121,6 @@ const LiveEvents = ({ navigation }) => {
                 </View>
             </WrapperContainer>
         </>
-
-
 
     );
 };

@@ -1,5 +1,6 @@
 export default {
     SPLASH_SCREEN: "SplashScreen",
+    FORGOT_PASSWoRD:"ForgotPassword",
     INITIAL_SCREEN: "initialScreen",
     PHONE_NUMBERINPUT: "phonenumberinput",
     OTP_INPUT: "otpinput",

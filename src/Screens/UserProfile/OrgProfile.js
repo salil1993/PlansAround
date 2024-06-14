@@ -34,6 +34,20 @@ const OrgProfile = ({ navigation, route }) => {
     const [EventList, seteventList] = useState([]);
     const [followerModal, setfollowerModal] = useState(false);
     const [followlistModal, setfollowlistModal] = useState(false)
+    const category = [{
+        id: 1,
+        cat: 'All Event’s'
+    },
+    {
+        id: 2,
+        cat: 'Past Events'
+    },
+    {
+        id: 3,
+        cat: 'Upcoming Events'
+    },
+    ]
+
 
     //console.log('DOB--->>', DOB)
     const age = DOB != undefined && calculateAge(DOB[0]);
@@ -64,19 +78,7 @@ const OrgProfile = ({ navigation, route }) => {
 
         return age;
     }
-    const category = [{
-        id: 1,
-        cat: 'All Event’s'
-    },
-    {
-        id: 2,
-        cat: 'Past Events'
-    },
-    {
-        id: 3,
-        cat: 'Upcoming Events'
-    },
-    ]
+   
     const handleCategory = (id) => {
         setGcategory(id)
     }
@@ -180,7 +182,6 @@ const OrgProfile = ({ navigation, route }) => {
         }
     };
 
-    // Define your function for handling load more
     const handleFollowersLoadMore = () => {
         if (!isLoading && hasfollowersMore) {
             getFollowerList(followpage + 1);
@@ -235,7 +236,10 @@ const OrgProfile = ({ navigation, route }) => {
     };
 
     const handleFollow = async (id) => {
-        console.log('njnjnjsnj', id)
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
         let usertoken = await getData('UserToken');
         const headers = {
             'Authorization': `Bearer ${usertoken}`,
@@ -247,16 +251,18 @@ const OrgProfile = ({ navigation, route }) => {
             .then((res) => {
                 console.log(res, 'Followrequest');
                 getOrgProfile()
+                getFollowingList(1)
                 Snackbar.show({
                     text: `${res?.data?.message}`,
                     duration: Snackbar.LENGTH_SHORT,
                     backgroundColor: '#005BD4',
                     textColor: "#fff",
                 });
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.log(error?.response?.data?.message);
-           
+                setIsLoading(false);
                 Snackbar.show({
                     text: `${error?.response?.data?.message}`,
                     duration: Snackbar.LENGTH_SHORT,
@@ -315,7 +321,6 @@ const OrgProfile = ({ navigation, route }) => {
                         <FlatList
                             data={[ProfileN]} // Wrap ProfileN in an array
                             showsVerticalScrollIndicator={false}
-                            
                             renderItem={({ item }) => {
                                 // console.log('item--->>', item)
                                 return (

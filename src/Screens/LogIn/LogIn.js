@@ -36,9 +36,7 @@ const LogIN = ({ navigation }) => {
         console.log(Password)
         Login(email.trim(), Password.trim())
             .then((res) => {
-
                 handleLoginResponse(res)
-
             })
             .catch((res) => {
                 console.log(res)
@@ -227,16 +225,21 @@ const LogIN = ({ navigation }) => {
                             <ButtonComp onPress={handleSubmit} isLoading={Loading} text='Submit' style={{ backgroundColor: '#005BD4', marginVertical: moderateScaleVertical(10) }} />
                         </View>
                         <View style={{
-                            flex: 0.4,
                             flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'flex-end',
-                            // marginBottom:moderateScale(10)
+                            justifyContent: 'space-between',
+                            alignItems:'center',
+                             margin:moderateScale(10)
                         }}>
+                            <View style={{ flexDirection: 'row',alignItems:'center'}}>
                             <Text style={styles.contactText}>New User?</Text>
                             <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.PHONE_NUMBERINPUT)}>
                                 <Text style={styles.contactText2}>Sign Up</Text>
                             </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.FORGOT_PASSWoRD)}>
+                                <Text style={styles.contactText2}>Forgot Password?</Text>
+                            </TouchableOpacity>
+                           
                         </View>
                     </View>
                 </KeyboardAwareScrollView>

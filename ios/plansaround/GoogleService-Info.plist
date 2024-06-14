@@ -2,18 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>139290010094-3n0pci6cvsp8t15b4q638hu0aivvv215.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.139290010094-3n0pci6cvsp8t15b4q638hu0aivvv215</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>139290010094-bhe13ptp4mu5rhtfodmgm7pi72uaf4sf.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBlPA8xYdzM2F2hTaft2v7RlfaauIO97W8</string>
+	<string>AIzaSyBarOFJmOFIyalHbRKeWtf4jnpbqIlT2aQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>248858145670</string>
+	<string>139290010094</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.plansaround</string>
 	<key>PROJECT_ID</key>
-	<string>plansaround-55fee</string>
+	<string>plansaround-422716</string>
 	<key>STORAGE_BUCKET</key>
-	<string>plansaround-55fee.appspot.com</string>
+	<string>plansaround-422716.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:248858145670:ios:91a934bd238275ad647207</string>
+	<string>1:139290010094:ios:e8d01f2ec2b3b317816eff</string>
 </dict>
 </plist>
