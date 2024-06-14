@@ -13,7 +13,7 @@ import { ForgotPasswordApi } from '../../API/Api';
 import Snackbar from 'react-native-snackbar';
 import navigationStrings from '../../Navigation/navigationStrings';
 // create a component
-const ForgotPassword = () => {
+const ForgotPassword = ({navigation}) => {
     const dispatch = useDispatch();
     const [Loading, setLoading] = useState(false);
     const [email, setemail] = useState('')
@@ -23,13 +23,20 @@ const ForgotPassword = () => {
         console.log(email)
         ForgotPasswordApi(email.trim())
             .then((res) => {
-                navigation.navigate(navigationStrings.EMAIL_VERIFY)
-            })
-            .catch((res) => {
-                console.log(res)
                 setLoading(false);
                 Snackbar.show({
-                    text: `${res.response.data.message}`,
+                    text: `${res?.message}`,
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: '#005BD4',
+            textColor: "#fff",
+                });
+              //  navigation.navigate(navigationStrings.EMAIL_VERIFY)
+            })
+            .catch((err) => {
+                console.log('erroodkodoed', err)
+                setLoading(false);
+                Snackbar.show({
+                    text: `${err?.response?.data?.message}`,
                     duration: Snackbar.LENGTH_SHORT,
                     backgroundColor: 'red',
                     textColor: "#fff",

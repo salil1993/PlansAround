@@ -20,7 +20,7 @@ export function GoogleLogin(data) {
 }
 
 export function ForgotPasswordApi(email) {
-  return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/forgot-password', { "email": email }).then(res => res.data)
+  return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/forgot-password', { "email": email }).then(res => res?.data)
 }
 
 export async function EmailRegister(email, password) {
