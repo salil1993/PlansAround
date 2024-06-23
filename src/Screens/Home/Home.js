@@ -240,7 +240,7 @@ const Home = () => {
             const response = await axios.get(url, { headers });
             const responseData = response.data;
             console.log(responseData, 'totalevents')
-            const newEvents = responseData?.events;
+            const newEvents = responseData?.events?.docs;
             setEventsList((prevEvents) => {
                 if (pageNumber === 1) {
                     // If it's the first page, replace existing events
@@ -286,7 +286,7 @@ const Home = () => {
 
 
 
-    console.log("searchRef====", searchRef);
+
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />

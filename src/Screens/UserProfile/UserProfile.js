@@ -60,7 +60,7 @@ const UserProfile = ({ navigation }) => {
     const [selectImageModal, setselectImageModal] = useState(false);
     const [profilePic, setprofilePic] = useState(null)
     const [imgSelected, setimgSelected] = useState(null)
-    const [attendence,setAttendence] = useState([])
+    const [attendence,setAttendence] = useState(null)
     const [user, setUser] = useState({})
     const UserKYCstatus = user?.kyc?.isVerified;
     let DOB = user?.dateOfBirth?.split('T');
@@ -194,9 +194,9 @@ const UserProfile = ({ navigation }) => {
             const responseData = response.data;
             console.log(JSON.stringify(responseData), 'profiledata')
             const userData = responseData?.user;
-            const attendance = responseData?.eventAttendance[0]?.percentage;
-            setAttendence(attendance)
             setUser(userData)
+            const attendance = responseData?.user?.eventAttendance[0]?.percentage;
+            setAttendence(attendance)  
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
@@ -288,7 +288,7 @@ const UserProfile = ({ navigation }) => {
 
 
     const LoaderList = () => (
-        <View style={{ height: 50, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex:1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="small" color="#005BD4" />
             <Text style={[styles.eventtxt, { color: '#005BD4' }]}>Loading</Text>
         </View>
@@ -453,7 +453,7 @@ const UserProfile = ({ navigation }) => {
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
             <HeaderBack onRightIconClick={() => navigation.navigate(navigationStrings.SETTINGS)} rightIcon={true} isLeftImage={false} onRightImgClick={() => setoptionopenModal3(!openoptionModal3)} rightImage={imagePath.sq} rightImg={true} mainText={user?.fullName} maintxtstyle={{ color: '#333', fontFamily: 'Roboto', fontSize: scale(22) }} style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(16) }} />
-            {isLoading ? <LoaderList/>:
+           
             <ScrollView>
                 <View style={styles.container}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between', }}>
@@ -635,7 +635,7 @@ const UserProfile = ({ navigation }) => {
                     {/* </View> */}
                 </View>
             </ScrollView>
-}
+            {isLoading && <LoaderList/>}
                 <Modal
                     style={{ position: 'absolute', right: 0, top: moderateScaleVertical(25) }}
                     isVisible={menuOpen}
