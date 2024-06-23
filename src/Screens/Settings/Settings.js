@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import HeaderBack from '../../Components/HeaderBack';
 import { moderateScale, moderateScaleVertical, textScale, scale } from '../../styles/responsiveSize';
@@ -10,11 +10,17 @@ import navigationStrings from '../../Navigation/navigationStrings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { userStatus } from '../../redux/Slices/UserSlice';
+import { userSignOut } from '../../API/Api';
 // create a component
 const Settings = ({ navigation }) => {
     const dispatch = useDispatch();
     const User = useSelector((state) => state.persistedReducer.authSlice.userData);
 
+    const logoutUser = async () => {
+        await AsyncStorage.clear();
+        dispatch(userStatus(false))
+        navigation.navigate(navigationStrings.LOG_IN)
+    }
     return (
         <WrapperContainer style={{ backgroundColor: '#fff' }}>
             <HeaderBack style={{ marginLeft: moderateScale(10) }} mainText='Settings' maintxtstyle={{ fontSize: textScale(18) }} />
@@ -91,9 +97,32 @@ const Settings = ({ navigation }) => {
             <View style={{ borderWidth: 0.5, borderColor: '#fffafa', marginVertical: moderateScaleVertical(20) }} />
             <View style={styles.container}>
                 <TouchableOpacity onPress={async () => {
-                    await AsyncStorage.clear();
-                    dispatch(userStatus(false))
-                    navigation.navigate(navigationStrings.LOG_IN)
+
+                    Alert.alert(
+                        'Logout',
+                        'Are you sure you want to logout?',
+                        [
+                            {
+                                text: 'Cancel',
+                                onPress: () => console.log('Logout canceled'),
+                                style: 'cancel'
+                            },
+                            {
+                                text: 'Logout',
+                                onPress: () => {
+                                    userSignOut()
+                                        .then(res => {
+                                            console.log("res===", res);
+                                            logoutUser()
+                                        }).catch(err => {
+                                            console.log("err===", err);
+                                            logoutUser()
+                                        })
+                                }
+                            }
+                        ],
+                        { cancelable: false }
+                    );
                 }} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='logout' size={23} color='#005BD4' />
