@@ -60,7 +60,8 @@ const UserProfile = ({ navigation }) => {
     const [selectImageModal, setselectImageModal] = useState(false);
     const [profilePic, setprofilePic] = useState(null)
     const [imgSelected, setimgSelected] = useState(null)
-    const [attendence, setAttendence] = useState([])
+    const [attendence,setAttendence] = useState([])
+    const [reviewDetail, setReviewDetail] = useState([])
     const [user, setUser] = useState({})
     const UserKYCstatus = user?.kyc?.isVerified;
     let DOB = user?.dateOfBirth?.split('T');
@@ -195,9 +196,10 @@ const UserProfile = ({ navigation }) => {
             console.log(JSON.stringify(responseData), 'profiledata')
             const userData = responseData?.user;
             setUser(userData)
-            const attendance = responseData?.user?.eventAttendance[0]?.percentage;
-            setAttendence(attendance)
-
+            const attendance = responseData?.user?.eventAttendance;
+            setAttendence(attendance)  
+            const reviewList = responseData?.user?.userReviews;
+            setReviewDetail(reviewList)
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
@@ -289,7 +291,7 @@ const UserProfile = ({ navigation }) => {
 
 
     const LoaderList = () => (
-        <View style={{ height: 50, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex:1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="small" color="#005BD4" />
             <Text style={[styles.eventtxt, { color: '#005BD4' }]}>Loading</Text>
         </View>
@@ -557,7 +559,7 @@ const UserProfile = ({ navigation }) => {
                     </View> */}
 
                         <View>
-                            <Reputation attendence={attendence} />
+                            <Reputation attendence={attendence} reviewDetail={reviewDetail}/>
                         </View>
                         {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: moderateScale(5), marginVertical: moderateScaleVertical(10) }}>
                         <Image source={imagePath.filter} tintColor={'#333'} resizeMode='contain' style={{ height: moderateScale(20), width: moderateScale(20) }} />

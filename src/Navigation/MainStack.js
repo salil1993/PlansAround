@@ -17,6 +17,12 @@ export default function (Stack) {
                 component={Screens.ForgotPassword}
                 options={{ headerShown: false }}
             />
+
+          <Stack.Screen
+                name={navigationStrings.FORGOT_EMAIL_VERIFY}
+                component={Screens.ForgotEmailVerify}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
                 name={navigationStrings.INITIAL_SCREEN}
                 component={Screens.InitialScreen}

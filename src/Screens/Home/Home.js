@@ -286,7 +286,7 @@ const Home = () => {
 
 
 
-    console.log("searchRef====", searchRef);
+
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />

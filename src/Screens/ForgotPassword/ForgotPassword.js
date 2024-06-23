@@ -30,7 +30,7 @@ const ForgotPassword = ({navigation}) => {
                     backgroundColor: '#005BD4',
                     textColor: "#fff",
                 });
-                navigation.navigate(navigationStrings.FORGOT_EMAIL_VERIFY)
+                navigation.navigate(navigationStrings.FORGOT_EMAIL_VERIFY, {email:email})
             })
             .catch((err) => {
                 console.log('erroodkodoed', err)
