@@ -21,6 +21,9 @@ import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import HomeEvent from '../../Components/HomeEvent';
 import navigationStrings from '../../Navigation/navigationStrings';
+import Geolocation from '@react-native-community/geolocation';
+import { addDeviceToken, getDeviceToken } from '../../API/Api';
+import DeviceInfo from 'react-native-device-info';
 
 
 // create a component
@@ -59,7 +62,7 @@ const Home = () => {
         getEventList(1);
         if (User) {
             console.log('User=====', User)
-            User?.location?.coordinates?.length > 0  && reverseGeocode(User?.location?.coordinates[0], User?.location?.coordinates[1]);
+            User?.location?.coordinates?.length > 0 && reverseGeocode(User?.location?.coordinates[0], User?.location?.coordinates[1]);
             console.log('latitude', User?.location?.coordinates[0])
             console.log('longitude', User?.location?.coordinates[1])
             var latitude = User?.location?.coordinates[0];
@@ -68,6 +71,16 @@ const Home = () => {
             setCurrentLocation({ latitude, longitude })
             setLoading(false)
         }
+
+        getDeviceToken()
+            .then(async res => {
+                const deviceId = await DeviceInfo.getUniqueId()
+                const isAdded = res?.user?.firebase.find(res => res.deviceId == deviceId)
+                if (!isAdded) {
+                    addDeviceToken(deviceId)
+                }
+            })
+            .catch(err => { })
     }, [])
 
     const requestLocationPermission = async () => {

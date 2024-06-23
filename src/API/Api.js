@@ -2,6 +2,8 @@ import axios from "axios";
 import { AUTH_CONFIG } from "../constants/Path";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getData } from "../utils/helperFunctions";
+import DeviceInfo from "react-native-device-info";
+import { Platform } from "react-native";
 export const DUMMY_USER_URL = 'https://www.w3schools.com/howto/img_avatar.png';
 
 export function MobileOTP(number, countryCode) {
@@ -47,7 +49,7 @@ export async function EmailOtpverify(otp) {
 
 export async function VerifyForgotPass(email, otp) {
   console.log(otp, 'otp aaya')
-  return axios.post(AUTH_CONFIG.BASE_URL + '/verify-forgot-password', { "email":email,"otp": otp }, { headers }).then(res => res.data)
+  return axios.post(AUTH_CONFIG.BASE_URL + '/verify-forgot-password', { "email": email, "otp": otp }, { headers }).then(res => res.data)
 }
 
 
@@ -179,7 +181,40 @@ export async function RequestBooking(Id) {
   return axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${Id}/request-to-book-event`, { headers }).then(res => res.data)
 }
 
+export async function getDeviceToken() {
+  let usertoken = await getData('UserToken');
+  const headers = {
+    'Authorization': `Bearer ${usertoken}`,
+  };
+  return axios.get(`https://plansaround-backend.vercel.app/api/mobile/auth/firebase`, { headers }).then(res => res.data)
+}
 
+export async function addDeviceToken(deviceId) {
+  let usertoken = await getData('UserToken');
+
+  let fcmToken = await getData('fcmToken');
+  const data = {
+    "deviceId": deviceId,
+    "deviceToken": fcmToken,
+    "deviceType": Platform.OS
+  }
+  console.log("req=", data);
+  const headers = {
+    'Authorization': `Bearer ${usertoken}`,
+    'Content-Type': "application/json",
+  };
+  return axios.post(`https://plansaround-backend.vercel.app/api/mobile/auth/firebase`, data, { headers }).then(res => res.data)
+}
+
+
+export async function userSignOut() {
+  let usertoken = await getData('UserToken');
+  const headers = {
+    'Authorization': `Bearer ${usertoken}`,
+  };
+  const deviceId = await DeviceInfo.getUniqueId()
+  return axios.get(`https://plansaround-backend.vercel.app/api/mobile/auth/signout?deviceId=${deviceId}`, { headers }).then(res => res.data)
+}
 
 
 // export async function BasicInformation(formdata){

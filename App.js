@@ -15,6 +15,7 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // create a component
 const App = () => {
   let persistor = persistStore(myStore)
@@ -30,6 +31,7 @@ const App = () => {
     messaging().registerDeviceForRemoteMessages();
     const token = await messaging().getToken();
     console.log('fcm token', token,)
+    await AsyncStorage.setItem('fcmToken', token);
   }
 
   useEffect(() => {
