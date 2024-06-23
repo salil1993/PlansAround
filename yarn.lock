@@ -2028,6 +2028,11 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
+"@stripe/stripe-react-native@^0.35.1":
+  "integrity" "sha512-F6sewQYO0/wS1LDsjH9mE6qvyhfU3BAfz81oBSzntH8HdGon/TablGYsGTXrpmok+c4qzbXCQcPmVOdisZMQ0A=="
+  "resolved" "https://registry.npmjs.org/@stripe/stripe-react-native/-/stripe-react-native-0.35.1.tgz"
+  "version" "0.35.1"
+
 "@tsconfig/react-native@^3.0.0":
   "integrity" "sha512-F7IoHEqf741lut4Z2K+IkWQRvXAhBiZMeY5L7BysG7Z2Z3MlIyFR+AagD8jQ/CqC1vowGnRwfLjeuwIpaeoJxA=="
   "resolved" "https://registry.npmjs.org/@tsconfig/react-native/-/react-native-3.0.2.tgz"

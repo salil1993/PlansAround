@@ -5,7 +5,7 @@ export default {
     PHONE_NUMBERINPUT: "phonenumberinput",
     OTP_INPUT: "otpinput",
     EMAIL_VERIFY: "emailverify",
-    FORGOT_EMAIL_VERIFY:'forgotemailverify',
+    FORGOT_EMAIL_VERIFY:'ForgotEmailVerify',
     SETUP_ACCOUNT: "setupaccount",
     BASIC_INFO: "basicInfo",
     SET_LOCATION: "setlocation",

@@ -101,10 +101,6 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance, onSh
                     <Text style={[styles.eventtxt, { fontWeight: '800' }]}> Min: {item.minPeople ? item.minPeople : 'NA'}- Max: {item.maxPeople ? item.maxPeople : 'NA'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                    <Text style={styles.eventtxt}>No. of Participant Approved</Text>
-                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event.bookingsApproved}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>Date & Time</Text>
                     <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{date ? date[0] : 'NA'}, {item?.time?.start ? item?.time?.start : 'NA'} - {item?.time?.end ? item?.time?.end : 'NA'}</Text>
                 </View>
@@ -142,7 +138,7 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance, onSh
                             <Text style={styles.eventtxt}>Total Approved Participants</Text>
                         </View>
                         <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.APPROVEDPARTICIPANTS, { EventId: item._id })} style={{ height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15), backgroundColor: '#93dc5c', justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={[styles.eventtxt, { color: '#fff' }]}>{item?.bookingsApproved}</Text>
+                            <Text style={[styles.eventtxt, { color: '#fff' }]}>{item?.bookingsApproved || 0}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: moderateScaleVertical(5) }}>
@@ -171,7 +167,7 @@ const EventhostingComponent = ({ item, index, UserLocation, date, Distance, onSh
                             // setShowOptions(false);
                             // setDelete(!showDelete)
                             setDelete(),
-                             setShowOptions(false)
+                                setShowOptions(false)
                         }}>
 
                             <IconsComment name='delete-outline' size={35} color='#333' style={{ width: '30%', textAlign: 'center' }} />

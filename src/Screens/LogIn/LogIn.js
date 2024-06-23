@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Keyboard, KeyboardAvoidingView, Image, TextInputComponent, Alert } from 'react-native';
 import WrapperContainer from '../../Components/WrapperContainer';
 import imagePath from '../../constants/imagePath';
@@ -22,6 +22,8 @@ import {
     GoogleSignin,
     statusCodes,
 } from '@react-native-google-signin/google-signin';
+import messaging from '@react-native-firebase/messaging'
+
 // create a component
 const LogIN = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -30,6 +32,9 @@ const LogIN = ({ navigation }) => {
     const [email, setemail] = useState('')
     const [Password, setPassword] = useState('')
     const [visible, setvisible] = useState(false)
+    useEffect(() => {
+        GetFCM()
+    }, [])
     const handleSubmit = () => {
         setLoading(true);
         console.log(email)
@@ -49,6 +54,16 @@ const LogIN = ({ navigation }) => {
                 });
             })
     }
+
+
+    const GetFCM = async () => {
+        messaging().registerDeviceForRemoteMessages();
+        const token = await messaging().getToken();
+        console.log('fcm token', token,)
+        await AsyncStorage.setItem('fcmToken', token);
+    }
+
+
     const handleLoginResponse = (res) => {
         console.log(res)
         console.log(res.token)
@@ -227,19 +242,19 @@ const LogIN = ({ navigation }) => {
                         <View style={{
                             flexDirection: 'row',
                             justifyContent: 'space-between',
-                            alignItems:'center',
-                             margin:moderateScale(10)
+                            alignItems: 'center',
+                            margin: moderateScale(10)
                         }}>
-                            <View style={{ flexDirection: 'row',alignItems:'center'}}>
-                            <Text style={styles.contactText}>New User?</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.PHONE_NUMBERINPUT)}>
-                                <Text style={styles.contactText2}>Sign Up</Text>
-                            </TouchableOpacity>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={styles.contactText}>New User?</Text>
+                                <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.PHONE_NUMBERINPUT)}>
+                                    <Text style={styles.contactText2}>Sign Up</Text>
+                                </TouchableOpacity>
                             </View>
                             <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.FORGOT_PASSWoRD)}>
                                 <Text style={styles.contactText2}>Forgot Password?</Text>
                             </TouchableOpacity>
-                           
+
                         </View>
                     </View>
                 </KeyboardAwareScrollView>

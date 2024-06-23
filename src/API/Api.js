@@ -26,6 +26,13 @@ export function ForgotPasswordApi(email) {
   return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/forgot-password', { "email": email }).then(res => res?.data)
 }
 
+export function VerifyForgotPass(email, otp, password) {
+  console.log(otp,password, email, 'VerifyForgotPass')
+  return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/verify-forgot-password', { "email": email, "otp": otp, "password":password }).then(res => res.data)
+}
+
+
+
 export async function EmailRegister(email, password) {
   let usertoken = await getData('UserToken');
   console.log(usertoken);
@@ -47,10 +54,7 @@ export async function EmailOtpverify(otp) {
   return axios.post(AUTH_CONFIG.BASE_URL + '/email-otp-verify', { "otp": otp }, { headers }).then(res => res.data)
 }
 
-export async function VerifyForgotPass(email, otp) {
-  console.log(otp, 'otp aaya')
-  return axios.post(AUTH_CONFIG.BASE_URL + '/verify-forgot-password', { "email": email, "otp": otp }, { headers }).then(res => res.data)
-}
+
 
 
 export async function LocationTwo(latitude, longitude) {

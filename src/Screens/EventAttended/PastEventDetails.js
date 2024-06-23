@@ -70,7 +70,7 @@ const PastEventDetails = ({ navigation, route }) => {
                 console.log("reviewList----", res.data.reviews);
                 setReviewList(res.data.reviews)
                 let rate = []
-                res.data.reviews.map(res=>{
+                res.data.reviews.map(res => {
                     rate.push(0)
                 })
                 setRating(rate)
@@ -96,39 +96,40 @@ const PastEventDetails = ({ navigation, route }) => {
     }
 
     const postReview = async () => {
-        let reviews =  ReviewList.map((res, index)=>{
-            return {id: res?._id, rating: rating[index]}
+        let reviews = ReviewList.map((res, index) => {
+            return { id: res?._id, rating: rating[index] }
         });
         let usertoken = await getData('UserToken');
 
         const headers = {
-            'Authorization':`Bearer ${usertoken}`,
-            'Content-Type':"application/json",
+            'Authorization': `Bearer ${usertoken}`,
+            'Content-Type': "application/json",
         };
-        console.log('datatatatta', {"reviews":reviews, "bookingId":item._id})
-        axios.post(`https://plansaround-backend.vercel.app/api/mobile/review/event-review`, {"reviews":reviews, "bookingId":item._id}, { headers }).then((res) => {
-                console.log('postReviewRes', res)
-                setreviewModal(false)
-                Snackbar.show({
-                    text: `${res.data.message}`,
-                    duration: Snackbar.LENGTH_SHORT,
-                    backgroundColor: '#005BD4',
-                    textColor: "#fff",
-                });
-            }).catch((err) => {
-                console.log('postReviewErr', err.response.data.message)
-                setreviewModal(false)
-                Snackbar.show({
-                    text: `${err.response.data.message}`,
-                    duration: Snackbar.LENGTH_SHORT,
-                    backgroundColor: '#005BD4',
-                    textColor: "#fff",
-                  });
+        console.log('datatatatta', { "reviews": reviews, "bookingId": item._id })
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/review/event-review`, { "reviews": reviews, "bookingId": item._id }, { headers }).then((res) => {
+            console.log('postReviewRes', res)
+            setreviewModal(false)
+            Snackbar.show({
+                text: `${res.data.message}`,
+                duration: Snackbar.LENGTH_LONG,
+                backgroundColor: '#005BD4',
+                textColor: "#fff",
+            });
+        }).catch((err) => {
+            console.log('postReviewErr', err.response.data.message)
+            setreviewModal(false)
+            Snackbar.show({
+                text: `${err.response.data.message}`,
+                duration: Snackbar.LENGTH_LONG,
+                backgroundColor: '#005BD4',
+                textColor: "#fff",
 
-            })
+            });
+
+        })
     }
 
- 
+
     return (
         <WrapperContainer>
             <HeaderBack mainText='Event details' isLeftImage={true} />
@@ -182,7 +183,7 @@ const PastEventDetails = ({ navigation, route }) => {
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                         <Text style={styles.eventtxt}>No. of Participant Approved</Text>
-                        <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event.bookingsApproved}</Text>
+                        <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event?.bookingsApproved || 0}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                         <Text style={styles.eventtxt}>Date & Time</Text>
@@ -296,11 +297,11 @@ const PastEventDetails = ({ navigation, route }) => {
                                         // ratingBackgroundColor={'#FFF'}
                                         tintColor={'#F2F2F2'}
                                         onFinishRating={rateValue => {
-                                            let ratingArr =  rating
+                                            let ratingArr = rating
                                             ratingArr[index] = rateValue
                                             setRating(ratingArr);
                                         }}
-                                 
+
                                         style={{
                                             alignSelf: 'flex-start',
                                             marginTop: 10,
@@ -314,10 +315,10 @@ const PastEventDetails = ({ navigation, route }) => {
                     />
 
                     <ButtonComp
-                        onPress={() => { 
-                            
+                        onPress={() => {
+
                             postReview()
-                   
+
                         }}
                         text="Submit review"
                         style={{ backgroundColor: '#005BD4', marginVertical: moderateScaleVertical(5), marginHorizontal: moderateScale(20) }} />
