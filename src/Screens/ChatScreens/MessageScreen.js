@@ -9,60 +9,36 @@ import { hasDynamicIsland, hasNotch } from 'react-native-device-info'
 import { useKeyboard } from './useKeyboard'
 import imagePath from '../../constants/imagePath'
 import ChatItem from './ChatItem'
-import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
-import { getData } from '../../utils/helperFunctions'
+import { useSelector } from 'react-redux'
+
 
 const MessageScreen = () => {
-  const dispatch = useDispatch();
   const User = useSelector((state) => state.persistedReducer.authSlice.userData);
-  const [isLoading, setIsLoading] = useState(false);
   const { paginationLoader, 
     roomMessageList, 
-    loadMoreRandomData, 
+    handleLoadMore, 
     flatListRef,
     onSend,
     msg,
     setMsg,
-    profileData
+    hasMore,
+    isLoading
   }=useMessage()
   const dynamicHight = hasDynamicIsland() || hasNotch() ? 25 : 0;
   const {keyboardHeight, isKeyboardOpen} = useKeyboard();
-  const [messageData,setMessageData] = useState([])
-  useEffect(() => {
-    getChats()
-}, [])
-
-  const getChats = async () => {
-    if (isLoading) {
-        return;
-    }
-    setIsLoading(true);
-    let usertoken = await getData('UserToken');
-    console.log(usertoken, 'token')
-    const headers = {
-        'Authorization': `Bearer ${'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzAyNTE5MzYzNjZmMjFhMGU5OTljNCIsInBob25lTnVtYmVyIjoiNzY1NDMyMTg5MCIsImVtYWlsIjoicGFydGljaXBhbnRAeW9wbWFpbC5jb20iLCJpYXQiOjE3MTg2MjU1NjEsImV4cCI6MTcyMTIxNzU2MX0.P2TOKJ82Im28c2uUO0rmGWVzqC4_zgFRcBI-jgiIrcM'}`,
-       // 'Content-Type': "application/json",
-    };
-    let EndPoint = `https://plansaround-backend.vercel.app/api/mobile/message/665df61915a633e11adaf987?page=1&limit=10`
-    console.log('EndPoint', EndPoint)
-    axios.get(EndPoint, { headers })
-        .then((res) => {
-            const responseData = res?.data?.messages?.docs;
-            setMessageData(responseData)
-            console.log('responseData', JSON.stringify(responseData))
-            setIsLoading(false);
-        }).
-        catch((err) => {
-            console.log(err.response.data.message)
-            setIsLoading(false);
-        })
-};
 
 
   const renderItem = ({item, index}) => {
     return <ChatItem item={item} senderId={User?._id} />;
   };
+
+  const LoaderList = () => (
+    <View style={{ height: 50, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="small" color="#005BD4" />
+        <Text style={[styles.eventtxt, { color: '#005BD4' }]}>Loading</Text>
+    </View>
+);
+
 
   const emptyList = () => {
     return (
@@ -86,13 +62,14 @@ const MessageScreen = () => {
           <FlatList
             ref={flatListRef}
             contentContainerStyle={styles.flatListCotainer}
-            data={messageData}
+            data={roomMessageList}
             keyExtractor={(item, index) => index + ''}
             renderItem={renderItem}
             inverted
             showsVerticalScrollIndicator={false}
+            onEndReached={handleLoadMore}
             onEndReachedThreshold={0.1}
-            onEndReached={loadMoreRandomData}
+            ListFooterComponent={hasMore ? <LoaderList /> : null}
             // onContentSizeChange={contentSizeChange}
             // ListEmptyComponent= {emptyList}
           />

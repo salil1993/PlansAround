@@ -60,6 +60,7 @@ const UserProfile = ({ navigation }) => {
     const [selectImageModal, setselectImageModal] = useState(false);
     const [profilePic, setprofilePic] = useState(null)
     const [imgSelected, setimgSelected] = useState(null)
+    const [attendence,setAttendence] = useState([])
     const [user, setUser] = useState({})
     const UserKYCstatus = user?.kyc?.isVerified;
     let DOB = user?.dateOfBirth?.split('T');
@@ -88,9 +89,10 @@ const UserProfile = ({ navigation }) => {
 
 
     useEffect(() => {
+        getProfile()
         getFollowerList(1)
         getFollowingList(1)
-        getProfile()
+      
     }, [])
 
 
@@ -190,8 +192,10 @@ const UserProfile = ({ navigation }) => {
             };
             const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/profile`, { headers });
             const responseData = response.data;
-            console.log(responseData, 'profiledata')
+            console.log(JSON.stringify(responseData), 'profiledata')
             const userData = responseData?.user;
+            const attendance = responseData?.eventAttendance[0]?.percentage;
+            setAttendence(attendance)
             setUser(userData)
             setIsLoading(false);
         } catch (error) {
@@ -552,7 +556,7 @@ const UserProfile = ({ navigation }) => {
                     </View> */}
 
                     <View>
-                        <Reputation />
+                        <Reputation attendence={attendence}/>
                     </View>
                     {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: moderateScale(5), marginVertical: moderateScaleVertical(10) }}>
                         <Image source={imagePath.filter} tintColor={'#333'} resizeMode='contain' style={{ height: moderateScale(20), width: moderateScale(20) }} />

@@ -4,7 +4,8 @@ import moment from 'moment';
 import colors from '../../styles/colors';
 import { DUMMY_USER_URL } from '../../API/Api';
 function ChatItemMemo({item, senderId}) {
-  let isRightView = item.senderId == senderId;
+  let isRightView = item.sender?._id == senderId;
+  console.log("SENDER--",  item.sender?._id , senderId);
   return (
     <View style={{marginHorizontal: 10}}>
       <View
