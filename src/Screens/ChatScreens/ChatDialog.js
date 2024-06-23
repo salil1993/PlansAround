@@ -1,5 +1,5 @@
 import { View, Text, StatusBar, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import WrapperContainer from '../../Components/WrapperContainer'
 import HeaderBack from '../../Components/HeaderBack'
 import { height, moderateScale, scale } from '../../styles/responsiveSize'
@@ -8,9 +8,12 @@ import { useDispatch } from 'react-redux'
 import { ListEmptyComponent } from '../../Components/ListEmptyComponent'
 import { RecentMessage } from './RecentMessage'
 import navigationStrings from '../../Navigation/navigationStrings'
+import { getData } from '../../utils/helperFunctions'
+import axios from 'axios'
 
 const ChatDialog = ({navigation}) => {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   // const [recentLoader, setLoadingState] = useState(true);
   const [recentList, setRecentList] = useState([{
     createdAt: "2024-06-09T15:29:27.782Z",
@@ -19,6 +22,41 @@ const ChatDialog = ({navigation}) => {
     to: {name: "salil"},
     content: "ennaskdjnasj",
   }]);
+
+  useEffect(() => {
+    getChatMessage()
+
+}, [])
+
+
+  const getChatMessage = async () => {
+    if (isLoading) {
+        return;
+    }
+    setIsLoading(true);
+
+    let usertoken = await getData('UserToken');
+    console.log(usertoken, 'token')
+    const headers = {
+        'Authorization': `Bearer ${usertoken}`,
+        'Content-Type': "application/json",
+    };
+    let EndPoint = `https://plansaround-backend.vercel.app/api/mobile/message/`
+    console.log('EndPoint', EndPoint)
+    axios.get(EndPoint, { headers })
+        .then((res) => {
+            const responseData = res?.data;
+            console.log('responseData', responseData)
+            setIsLoading(false);
+        }).
+        catch((err) => {
+            console.log(err)
+            setIsLoading(false);
+        })
+};
+
+
+  
 
   const keyExtractorSession = (item, index) => `Key_${index}`;
 

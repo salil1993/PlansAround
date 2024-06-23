@@ -217,6 +217,16 @@ export async function userSignOut() {
 }
 
 
+export async function sendMessageApi(eventId, message) {
+  let usertoken =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzAyNTE5MzYzNjZmMjFhMGU5OTljNCIsInBob25lTnVtYmVyIjoiNzY1NDMyMTg5MCIsImVtYWlsIjoicGFydGljaXBhbnRAeW9wbWFpbC5jb20iLCJpYXQiOjE3MTg2MjU1NjEsImV4cCI6MTcyMTIxNzU2MX0.P2TOKJ82Im28c2uUO0rmGWVzqC4_zgFRcBI-jgiIrcM"//await getData('UserToken');
+  const headers = {
+    'Authorization': `Bearer ${usertoken}`,
+    'Content-Type': "application/json",
+  };
+  console.log("{message}===", {message});
+  return axios.post(`https://plansaround-backend.vercel.app/api/mobile/message/${eventId}`, {message}, { headers }).then(res => res.data)
+}
+
 // export async function BasicInformation(formdata){
 //     let usertoken=await getData('UserToken');
 //     console.log('yha',usertoken);

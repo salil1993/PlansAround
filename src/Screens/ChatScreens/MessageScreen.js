@@ -1,5 +1,5 @@
 import { View, Text, StatusBar, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, Image, TextInput } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import WrapperContainer from '../../Components/WrapperContainer'
 import HeaderBack from '../../Components/HeaderBack'
 import { moderateScale } from '../../styles/responsiveSize'
@@ -9,24 +9,36 @@ import { hasDynamicIsland, hasNotch } from 'react-native-device-info'
 import { useKeyboard } from './useKeyboard'
 import imagePath from '../../constants/imagePath'
 import ChatItem from './ChatItem'
+import { useSelector } from 'react-redux'
+
 
 const MessageScreen = () => {
-
+  const User = useSelector((state) => state.persistedReducer.authSlice.userData);
   const { paginationLoader, 
     roomMessageList, 
-    loadMoreRandomData, 
+    handleLoadMore, 
     flatListRef,
     onSend,
     msg,
     setMsg,
-    profileData
+    hasMore,
+    isLoading
   }=useMessage()
-
   const dynamicHight = hasDynamicIsland() || hasNotch() ? 25 : 0;
   const {keyboardHeight, isKeyboardOpen} = useKeyboard();
+
+
   const renderItem = ({item, index}) => {
-    return <ChatItem item={item} senderId={profileData?.id} />;
+    return <ChatItem item={item} senderId={User?._id} />;
   };
+
+  const LoaderList = () => (
+    <View style={{ height: 50, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="small" color="#005BD4" />
+        <Text style={[styles.eventtxt, { color: '#005BD4' }]}>Loading</Text>
+    </View>
+);
+
 
   const emptyList = () => {
     return (
@@ -41,8 +53,6 @@ const MessageScreen = () => {
     <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
         <HeaderBack mainText='User Name' isLeftImage={true} />
-
-
         <View style={styles.border} />
         <View style={{flex: 1}}>
           {paginationLoader && (
@@ -57,8 +67,9 @@ const MessageScreen = () => {
             renderItem={renderItem}
             inverted
             showsVerticalScrollIndicator={false}
+            onEndReached={handleLoadMore}
             onEndReachedThreshold={0.1}
-            onEndReached={loadMoreRandomData}
+            ListFooterComponent={hasMore ? <LoaderList /> : null}
             // onContentSizeChange={contentSizeChange}
             // ListEmptyComponent= {emptyList}
           />
