@@ -126,7 +126,7 @@ const EventsAttended = ({ navigation }) => {
                                     console.log(item, 'ye aaya aproved event...')
                                     const UserLocation = CurrentUserLocation;
                                     const Eventlocation = item.event.location;
-                                    const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.latitude, Eventlocation.longitude)
+                                    const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.coordinates[0], Eventlocation.coordinates[1])
                                     const date = item.event.dateOfEvent.split('T')
                                     const handleQrGenerate = () => {
                                         setQrLoading(true);

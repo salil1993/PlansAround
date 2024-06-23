@@ -28,9 +28,9 @@ const ForgotPassword = ({navigation}) => {
                     text: `${res?.message}`,
                     duration: Snackbar.LENGTH_SHORT,
                     backgroundColor: '#005BD4',
-            textColor: "#fff",
+                    textColor: "#fff",
                 });
-              //  navigation.navigate(navigationStrings.EMAIL_VERIFY)
+                navigation.navigate(navigationStrings.FORGOT_EMAIL_VERIFY)
             })
             .catch((err) => {
                 console.log('erroodkodoed', err)

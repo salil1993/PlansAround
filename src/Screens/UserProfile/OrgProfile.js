@@ -34,6 +34,7 @@ const OrgProfile = ({ navigation, route }) => {
     const [EventList, seteventList] = useState([]);
     const [followerModal, setfollowerModal] = useState(false);
     const [followlistModal, setfollowlistModal] = useState(false)
+    const [attendence,setAttendence] = useState(null)
     const category = [{
         id: 1,
         cat: 'All Event’s'
@@ -100,9 +101,11 @@ const OrgProfile = ({ navigation, route }) => {
         axios.get(EndPoint, { headers })
             .then((res) => {
                 const responseData = res?.data;
+                console.log(responseData, 'getOrgProfile')
                 const newProfile = responseData?.user;
                 console.log(newProfile, 'profileeeeee')
                 setProfile(newProfile)
+                setAttendence(responseData?.attendance)
 
                 setIsLoading(false);
             }).
@@ -423,7 +426,7 @@ const OrgProfile = ({ navigation, route }) => {
                         </View>
                     </View> */}
                                         <View>
-                                            <Reputation />
+                                            <Reputation attendence={attendence}/>
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: moderateScale(5), marginVertical: moderateScaleVertical(10) }}>
                                             {/* <Image source={imagePath.filter} tintColor={'#333'} resizeMode='contain' style={{ height: moderateScale(20), width: moderateScale(20) }} /> */}

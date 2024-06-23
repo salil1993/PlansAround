@@ -2,6 +2,7 @@ import axios from "axios";
 import { AUTH_CONFIG } from "../constants/Path";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getData } from "../utils/helperFunctions";
+export const DUMMY_USER_URL = 'https://www.w3schools.com/howto/img_avatar.png';
 
 export function MobileOTP(number, countryCode) {
   return axios.post(AUTH_CONFIG.BASE_URL + '/mobile-otp', { "phoneNumber": number, "countryCode": countryCode }).then(res => res.data)

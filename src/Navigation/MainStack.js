@@ -12,7 +12,7 @@ export default function (Stack) {
                 options={{ headerShown: false }}
             />
 
-         <Stack.Screen
+            <Stack.Screen
                 name={navigationStrings.FORGOT_PASSWoRD}
                 component={Screens.ForgotPassword}
                 options={{ headerShown: false }}
@@ -140,8 +140,18 @@ export default function (Stack) {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
+                name={navigationStrings.PAST_EVENTS}
+                component={Screens.PastEvents}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
                 name={navigationStrings.EVENTS_HOSTED}
                 component={Screens.EventHosted}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name={navigationStrings.PAST_EVENTS_DETAILS}
+                component={Screens.PastEventDetails}
                 options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -257,6 +267,18 @@ export default function (Stack) {
             <Stack.Screen
                 name={navigationStrings.HELP_SUPPORT}
                 component={Screens.HelpSupport}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name={navigationStrings.CHAT_DIALOG}
+                component={Screens.ChatDialog}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name={navigationStrings.MESSGAE_SCREEN}
+                component={Screens.MessageScreen}
                 options={{ headerShown: false }}
             />
             {/* <Stack.Screen

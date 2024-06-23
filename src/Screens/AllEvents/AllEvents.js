@@ -189,6 +189,26 @@ const WriteBio = ({ navigation }) => {
                             </View>
                             <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
                         </TouchableOpacity>
+                        
+                        <TouchableOpacity onPress={() => { navigation.navigate(navigationStrings.PAST_EVENTS) }} style={{
+                            marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: moderateScale(16),
+                            borderTopColor: '#005BD4',
+                            borderTopWidth: 3,
+                            borderTopLeftRadius: moderateScale(5),
+                            borderTopRightRadius: moderateScale(5),
+                            borderBottomLeftRadius: moderateScale(15),
+                            borderBottomRightRadius: moderateScale(15),
+                            elevation: 1,
+                            backgroundColor: '#fff',
+                        }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={styles.head1}>{0}</Text>
+                                <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Attended</Text>
+                            </View>
+                            <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
+                        </TouchableOpacity>
                         <Text style={[styles.head2, { marginTop: 10 }]}>As Organiser</Text>
                         <TouchableOpacity
                             onPress={() => {

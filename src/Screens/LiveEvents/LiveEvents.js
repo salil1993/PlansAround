@@ -84,7 +84,7 @@ const LiveEvents = ({ navigation }) => {
                                         console.log(item, 'ye aaya...')
                                         const UserLocation = CurrentUserLocation;
                                         const Eventlocation = item?.location;
-                                        const Distance = calculateDistance(UserLocation?.latitude, UserLocation?.longitude, Eventlocation?.latitude, Eventlocation?.longitude)
+                                        const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.coordinates[0], Eventlocation.coordinates[1])
                                         const date = item?.dateOfEvent?.split('T')
                                         return (
                                             <>

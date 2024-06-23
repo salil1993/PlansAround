@@ -93,9 +93,10 @@ const SetLocation = ({ navigation, route }) => {
     const getCurrentLocation = () => {
         setLoading(true);
         if(user?.location){
-            console.log('user', user)
-            var latitude = user?.location?.latitude;
-            var longitude = user?.location?.longitude;
+            console.log('latitude', user?.location?.coordinates[0])
+            console.log('longitude', user?.location?.coordinates[1])
+            var latitude = user?.location?.coordinates[0];
+            var longitude = user?.location?.coordinates[1];
             reverseGeocode(latitude,longitude)
         }else{
             Geolocation.getCurrentPosition(

@@ -58,9 +58,12 @@ const Home = () => {
         requestLocationPermission()
         getEventList(1);
         if (User) {
-            reverseGeocode(User?.location?.latitude, User?.location?.longitude);
-            var latitude = User?.location?.latitude;
-            var longitude = User?.location?.longitude;
+            console.log('User=====', User)
+            User?.location?.coordinates?.length > 0  && reverseGeocode(User?.location?.coordinates[0], User?.location?.coordinates[1]);
+            console.log('latitude', User?.location?.coordinates[0])
+            console.log('longitude', User?.location?.coordinates[1])
+            var latitude = User?.location?.coordinates[0];
+            var longitude = User?.location?.coordinates[1];
             dispatch(userCurrentLocation({ latitude, longitude }))
             setCurrentLocation({ latitude, longitude })
             setLoading(false)
@@ -281,14 +284,20 @@ const Home = () => {
                             <Icon name='location-pin' size={28} color={'#005BD4'} />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={() => setLocationModal(true)} style={{ flex: 0.8, }}>
+                    <TouchableOpacity onPress={() => setLocationModal(true)} style={{ flex: 0.7, }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={styles.hometxt}>Home</Text>
                             <Icon name='keyboard-arrow-down' size={28} color={'#4F4F4F'} />
                         </View>
                         <Text style={styles.address}>{address}</Text>
                     </TouchableOpacity>
-                    <View style={{ flexDirection: 'row', flex: 0.2, justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', flex: 0.3, justifyContent: 'space-between' }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(navigationStrings.CHAT_DIALOG)
+                            }}>
+                            <Icon name='message' size={30} color={'#4F4F4F'} />
+                        </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
                                 navigation.navigate(navigationStrings.NOTIFICATION_LIST)
@@ -350,7 +359,7 @@ const Home = () => {
                         // console.log(item, 'event')
                         const UserLocation = CurrentUserLocation;
                         const Eventlocation = item.location;
-                        const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.latitude, Eventlocation.longitude)
+                        const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.coordinates[0], Eventlocation.coordinates[1])
                         const date = item.dateOfEvent.split('T')
                         return (
                             <>
@@ -526,13 +535,10 @@ const Home = () => {
             </View>
             <View>
                 <Modal
-                    // swipeDirection={'down'}
-                    // onSwipeco={() => setLocationModal(false)}
                     hasBackdrop={true}
                     coverScreen={true}
                     backdropColor="#000"
                     backdropOpacity={0.8}
-                    // onBackdropPress={() => setLocationModal(false)}
                     isVisible={openLocationModal}
                     style={{ justifyContent: 'flex-end', margin: 0, }}
                     animationIn="slideInUp"

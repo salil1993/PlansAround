@@ -614,6 +614,8 @@ PODS:
     - React-Core
   - RNDateTimePicker (7.6.0):
     - React-Core
+  - RNDeviceInfo (10.14.0):
+    - React-Core
   - RNFBApp (14.12.0):
     - Firebase/CoreOnly (= 8.15.0)
     - React-Core
@@ -730,6 +732,7 @@ DEPENDENCIES:
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNFS (from `../node_modules/react-native-fs`)
@@ -876,6 +879,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
@@ -980,6 +985,7 @@ SPEC CHECKSUMS:
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
   RNCAsyncStorage: f2974eca860c16a3e56eea5771fda8d12e2d2057
   RNDateTimePicker: ccd988deb223cbb2e669e157ec576c2c6217128c
+  RNDeviceInfo: 59344c19152c4b2b32283005f9737c5c64b42fba
   RNFBApp: e4439717c23252458da2b41b81b4b475c86f90c4
   RNFBMessaging: 40dac204b4197a2661dec5be964780c6ec39bf65
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
@@ -996,6 +1002,6 @@ SPEC CHECKSUMS:
   Yoga: 86fed2e4d425ee4c6eab3813ba1791101ee153c6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 25a9e280e1303245172847f0a04829daffa50dea
+PODFILE CHECKSUM: 4ae65f10cb2bee07a051c82a5e9198a4bdcccbec
 
 COCOAPODS: 1.15.2

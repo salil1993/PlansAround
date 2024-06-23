@@ -444,7 +444,7 @@ const UserProfile = ({ navigation }) => {
     }
 
 
-
+    console.log('user', user)
     return (
         <WrapperContainer>
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />

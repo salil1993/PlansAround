@@ -143,6 +143,9 @@ export default {
    demand:require('../assets/images/demand.png'),
    radio_unselect:require('../assets/images/radio_unselect.png'),
    radio_select:require('../assets/images/radio_select.png'),
+   sendButton:require('../assets/images/sendButton.png'),
+
+   
     /********************* BottomTabs  Icons **********************/ 
     // firstActiveIcon: require('../assets/images/ic_red_add.png'),
     // firstInActiveIcon: require('../assets/images/ic_home.png'),

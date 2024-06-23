@@ -80,7 +80,7 @@ const EventRequested = ({ navigation }) => {
                                     console.log(item, 'event')
                                     const UserLocation = CurrentUserLocation;
                                     const Eventlocation = item.event.location;
-                                    const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.latitude, Eventlocation.longitude)
+                                    const Distance = calculateDistance(UserLocation.latitude, UserLocation.longitude, Eventlocation.coordinates[0], Eventlocation.coordinates[1])
                                     const date = item.event.dateOfEvent.split('T')
                                     return (
                                         <>

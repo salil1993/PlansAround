@@ -51,6 +51,11 @@ export { default as PendingRequest } from '../Screens/EvetsHosting/PendingReques
 export { default as NotificationList } from '../Screens/Notifications/NotificationList'
 export { default as AccountInfo } from '../Screens/AccountInfo/AccountInfo'
 export { default as HelpSupport } from '../Screens/HelpSupport/HelpSupport'
+export {default as PastEvents} from '../Screens/EventAttended/PastEvents'
+export {default as PastEventDetails} from '../Screens/EventAttended/PastEventDetails'
+export {default as ChatDialog} from '../Screens/ChatScreens/ChatDialog'
+export {default as MessageScreen} from '../Screens/ChatScreens/MessageScreen'
+
 
 // export {default as Login} from './Login/Login';
 // export {default as Signup} from './Signup/Signup';

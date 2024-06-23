@@ -5,6 +5,7 @@ export default {
     PHONE_NUMBERINPUT: "phonenumberinput",
     OTP_INPUT: "otpinput",
     EMAIL_VERIFY: "emailverify",
+    FORGOT_EMAIL_VERIFY:'forgotemailverify',
     SETUP_ACCOUNT: "setupaccount",
     BASIC_INFO: "basicInfo",
     SET_LOCATION: "setlocation",
@@ -26,6 +27,8 @@ export default {
     EVENTS_ATTTENDING: 'eventsAttending',
     EVENTS_HOSTING: 'eventHosting',
     EVENTS_ATTENDED: 'eventAttended',
+    PAST_EVENTS: 'pastEvents',
+    PAST_EVENTS_DETAILS: 'pastEventsDetails',
     EVENTS_HOSTED: 'eventHosted',
     HOST_EVENT: 'hostevent',
     LOG_IN: 'login',
@@ -53,4 +56,6 @@ export default {
     NOTIFICATION_LIST: 'NOTIFICATIONLIST',
     HELP_SUPPORT: 'HELPSUPPORT',
     ACCOUNT_INFO: 'ACCOUNTINFO',
+    CHAT_DIALOG: 'CHAT_DIALOG',
+    MESSGAE_SCREEN: 'MESSGAE_SCREEN',
 }

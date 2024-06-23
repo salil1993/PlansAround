@@ -6,7 +6,7 @@ import imagePath from '../constants/imagePath';
 import * as Progress from 'react-native-progress';
 
 // create a component
-const Reputation = () => {
+const Reputation = ({attendence}) => {
     const [RepuProgress, setRepuProgress] = useState(0.7)
     const [AttProgress, setAttProgress] = useState(0.9)
     return (
@@ -18,11 +18,11 @@ const Reputation = () => {
                 <View style={{ borderWidth: 0.5, borderColor: '#C0C0C0', marginVertical: moderateScaleVertical(10) }} />
                 <View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
-                        <Text style={[styles.txt,{fontWeight:'500'}]}>Attendances (131)</Text>
-                        <Text style={[styles.txt,{fontWeight:'500'}]}>{AttProgress * 100}%</Text>
+                        <Text style={[styles.txt,{fontWeight:'500'}]}>Attendances ({attendence == null ?0:attendence })</Text>
+                        <Text style={[styles.txt,{fontWeight:'500'}]}>{attendence == null ?0:attendence * 100}%</Text>
                     </View>
                     <Progress.Bar
-                        progress={AttProgress}
+                        progress={attendence == null ?0:attendence }
                         width={null}
                         height={moderateScaleVertical(25)}
                         borderRadius={moderateScale(8)}
