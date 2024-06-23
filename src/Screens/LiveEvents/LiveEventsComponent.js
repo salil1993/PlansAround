@@ -77,7 +77,7 @@ const LiveEventsComponent = ({ item, index, date, Distance, onMarkComplete }) =>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>No. of Participant Approved</Text>
-                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>2</Text>
+                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event.bookingsApproved}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>Date & Time</Text>

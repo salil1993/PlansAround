@@ -34,7 +34,7 @@ const OrgProfile = ({ navigation, route }) => {
     const [EventList, seteventList] = useState([]);
     const [followerModal, setfollowerModal] = useState(false);
     const [followlistModal, setfollowlistModal] = useState(false)
-    const [attendence,setAttendence] = useState(null)
+    const [attendence,setAttendence] = useState([])
     const category = [{
         id: 1,
         cat: 'All Event’s'
@@ -103,10 +103,10 @@ const OrgProfile = ({ navigation, route }) => {
                 const responseData = res?.data;
                 console.log(responseData, 'getOrgProfile')
                 const newProfile = responseData?.user;
-                console.log(newProfile, 'profileeeeee')
                 setProfile(newProfile)
-                setAttendence(responseData?.attendance)
-
+                console.log('jnjsjsncjn', responseData?.attendance)
+                const attend = responseData?.attendance[0].percentage;
+                setAttendence(attend)
                 setIsLoading(false);
             }).
             catch((err) => {
