@@ -166,7 +166,7 @@ const EventsAttended = ({ navigation }) => {
                                                         <Text style={[styles.eventtxt, { color: 'red' }]}>{Distance.toLocaleString().substring(0, 4)} km away </Text>
                                                     </View>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.event.location, Ulocation: UserLocation, type:'EventAttended' })} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                        <TouchableOpacity onPress={() => navigation.navigate(navigationStrings.SHOWONMAP, { Elocation: item.event.location, Ulocation: UserLocation, type: 'EventAttended' })} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                             <Image source={imagePath.Gmap} style={{ height: moderateScaleVertical(30), width: moderateScale(30) }} />
                                                         </TouchableOpacity>
                                                     </View>
@@ -188,7 +188,7 @@ const EventsAttended = ({ navigation }) => {
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                     <Text style={styles.eventtxt}>No. of Participant Approved</Text>
-                                                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event.bookingsApproved}</Text>
+                                                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event?.bookingsApproved || 0}</Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                     <Text style={styles.eventtxt}>Date & Time</Text>

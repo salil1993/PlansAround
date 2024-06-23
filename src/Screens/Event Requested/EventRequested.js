@@ -133,7 +133,7 @@ const EventRequested = ({ navigation }) => {
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                     <Text style={styles.eventtxt}>No. of Participant Approved</Text>
-                                                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event.bookingsApproved}</Text>
+                                                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.event?.bookingsApproved || 0}</Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                                                     <Text style={styles.eventtxt}>Date & Time</Text>

@@ -55,6 +55,7 @@ const WriteBio = ({ navigation }) => {
                 hostings: responseData.hostings || 0,
                 hosted: responseData.hosted || 0,
                 cancelled: responseData.cancelled || 0,
+                attended: responseData.attended || 0,
             };
 
             const statusCounts = bookingStatus.reduce((acc, status) => {
@@ -189,7 +190,7 @@ const WriteBio = ({ navigation }) => {
                             </View>
                             <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
                         </TouchableOpacity>
-                        
+
                         <TouchableOpacity onPress={() => { navigation.navigate(navigationStrings.PAST_EVENTS) }} style={{
                             marginVertical: moderateScaleVertical(10), flexDirection: 'row', justifyContent: 'space-between',
                             alignItems: 'center',
@@ -204,7 +205,7 @@ const WriteBio = ({ navigation }) => {
                             backgroundColor: '#fff',
                         }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={styles.head1}>{0}</Text>
+                                <Text style={styles.head1}>{statusCounts?.attended}</Text>
                                 <Text style={[styles.head2, { marginLeft: moderateScale(20) }]}>Event’s Attended</Text>
                             </View>
                             <Image source={imagePath.arright} tintColor={'#4F4F4F'} />
