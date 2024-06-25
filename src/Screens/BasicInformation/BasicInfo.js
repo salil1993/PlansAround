@@ -23,6 +23,8 @@ import { saveUserData } from '../../redux/Slices/UserSlice';
 // create a component
 const BasicInfo = ({ navigation, route }) => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
+
   const [FirstName, setFirstName] = useState('')
   const [LastName, setLastName] = useState('')
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -31,10 +33,10 @@ const BasicInfo = ({ navigation, route }) => {
   const [UserPic, setUserpic] = useState([])
   const [Loading, setLoading] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date())
-  const user = useSelector((state) => state?.persistedReducer?.authSlice?.userData);
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
+  console.log("user==", user);
   useEffect(() => {
     if (user) {
       setFirstName(user?.firstName)

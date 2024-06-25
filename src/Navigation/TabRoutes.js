@@ -91,7 +91,7 @@ const TabRoutes = (props) => {
                     tabBarIcon: ({ focused }) => {
                         return (
                             <>
-                                {user.profilePicture ? <Image source={{ uri: user.profilePicture }} style={{ height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15) }} />
+                                {user?.profilePicture ? <Image source={{ uri: user?.profilePicture }} style={{ height: moderateScale(30), width: moderateScale(30), borderRadius: moderateScale(15) }} />
                                     :
                                     <User name='user' size={25} color={focused ? '#fff' : 'gray'} />
                                 }

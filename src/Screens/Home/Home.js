@@ -16,14 +16,15 @@ import SearchPlaces from '../../Components/SearchPlaces';
 import IconsettingClose from 'react-native-vector-icons/MaterialCommunityIcons'
 import Slider from '@react-native-community/slider';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { userCurrentLocation } from '../../redux/Slices/UserSlice';
+import { saveUserData, userCurrentLocation } from '../../redux/Slices/UserSlice';
 import { getData } from '../../utils/helperFunctions';
 import axios from 'axios';
 import HomeEvent from '../../Components/HomeEvent';
 import navigationStrings from '../../Navigation/navigationStrings';
 import Geolocation from '@react-native-community/geolocation';
-import { addDeviceToken, getDeviceToken } from '../../API/Api';
+import { STRIPE_KEY_TEST, addDeviceToken, createStripeUserId, getDeviceToken } from '../../API/Api';
 import DeviceInfo from 'react-native-device-info';
+import { initStripe } from '@stripe/stripe-react-native';
 
 
 // create a component
@@ -58,6 +59,7 @@ const Home = () => {
 
 
     useEffect(() => {
+        initStripeFun()
         requestLocationPermission()
         getEventList(1);
         if (User) {
@@ -70,8 +72,9 @@ const Home = () => {
             dispatch(userCurrentLocation({ latitude, longitude }))
             setCurrentLocation({ latitude, longitude })
             setLoading(false)
-        }
 
+        }
+        getProfile()
         getDeviceToken()
             .then(async res => {
                 const deviceId = await DeviceInfo.getUniqueId()
@@ -83,6 +86,45 @@ const Home = () => {
             .catch(err => { })
     }, [])
 
+    const initStripeFun = () => {
+        initStripe({
+            publishableKey: STRIPE_KEY_TEST,
+            urlScheme: 'myapp',
+        }).then(res => {
+            console.log('ds===', res);
+        })
+            .catch(err => {
+                console.log('error===', error);
+            })
+    }
+
+    const getProfile = async () => {
+        try {
+            let usertoken = await getData('UserToken');
+            console.log('userTokenProfile', usertoken)
+            const headers = {
+                'Authorization': `Bearer ${usertoken}`,
+                'Content-Type': "application/json",
+            };
+            const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/profile`, { headers });
+            const responseData = response.data?.user;
+            console.log("responseData===", responseData?.stripeId);
+            if (!responseData?.stripeId) {
+                createStripeUserId()
+                    .then(res => {
+                        console.log("res===", res);
+
+                    }).catch(err => {
+                        console.log("err===", err);
+
+                    })
+            }
+            dispatch(saveUserData(responseData))
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const requestLocationPermission = async () => {
         try {
             if (Platform.OS === 'ios') {

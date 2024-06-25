@@ -73,7 +73,13 @@ const AllPlans = ({ navigation }) => {
                                                     <ButtonComp onPress={() =>
                                                         navigation.navigate(navigationStrings.PLANSDETAILS, { id: item._id })
                                                     } text='View Package' style={{ backgroundColor: '#005BD4', width: '46%', height: moderateScale(35) }} />
-                                                    <ButtonComp text='Pay Now' style={{ backgroundColor: '#005BD4', width: '46%', height: moderateScale(35) }} />
+                                                    <ButtonComp
+
+                                                        text='Pay Now'
+                                                        onPress={() =>
+                                                            navigation.navigate(navigationStrings.PLANSDETAILS, { id: item._id })
+                                                        }
+                                                        style={{ backgroundColor: '#005BD4', width: '46%', height: moderateScale(35) }} />
                                                 </View>
                                             </View>
                                         </View>

@@ -4,6 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getData } from "../utils/helperFunctions";
 import DeviceInfo from "react-native-device-info";
 import { Platform } from "react-native";
+
+export const STRIPE_KEY_TEST = "pk_test_51PTPUrAMQSsL63NIdFCMACL8k7nmhbEIuUQjGNE9oCPxGUCDOF5RRVHZ5bGmD4dFSHLQhZ7AYAJn0VTvgcNGo8fa00YEJSGpSI"
+export const STRIPE_KEY = "pk_live_51PTPUrAMQSsL63NIxtlGIp3I9IdGkhOV7JBnPGS4WXbNhXm4k1mw7athFA2mAd51B8pgvJgr3G9nnFDgTKoxum8F00yJEeNGSh"
 export const DUMMY_USER_URL = 'https://www.w3schools.com/howto/img_avatar.png';
 
 export function MobileOTP(number, countryCode) {
@@ -27,8 +30,8 @@ export function ForgotPasswordApi(email) {
 }
 
 export function VerifyForgotPass(email, otp, password) {
-  console.log(otp,password, email, 'VerifyForgotPass')
-  return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/verify-forgot-password', { "email": email, "otp": otp, "password":password }).then(res => res.data)
+  console.log(otp, password, email, 'VerifyForgotPass')
+  return axios.post('https://plansaround-backend.vercel.app/api/mobile/auth/verify-forgot-password', { "email": email, "otp": otp, "password": password }).then(res => res.data)
 }
 
 
@@ -175,14 +178,16 @@ export async function getEventsList(Page) {
 }
 
 
-export async function RequestBooking(Id) {
+export async function RequestBooking(Id, orderId) {
   let usertoken = await getData('UserToken');
   console.log(usertoken);
   const headers = {
     'Authorization': `Bearer ${usertoken}`,
     'Content-Type': "application/json",
   };
-  return axios.get(`https://plansaround-backend.vercel.app/api/mobile/homepage/events/${Id}/request-to-book-event`, { headers }).then(res => res.data)
+  const url = `https://plansaround-backend.vercel.app/api/mobile/homepage/events/${Id}/request-to-book-event${orderId ? `?orderId=${orderId}` : ""}`
+  console.log("url=======", url);
+  return axios.get(url, { headers }).then(res => res.data)
 }
 
 export async function getDeviceToken() {
@@ -222,13 +227,45 @@ export async function userSignOut() {
 
 
 export async function sendMessageApi(eventId, message) {
-  let usertoken =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzAyNTE5MzYzNjZmMjFhMGU5OTljNCIsInBob25lTnVtYmVyIjoiNzY1NDMyMTg5MCIsImVtYWlsIjoicGFydGljaXBhbnRAeW9wbWFpbC5jb20iLCJpYXQiOjE3MTg2MjU1NjEsImV4cCI6MTcyMTIxNzU2MX0.P2TOKJ82Im28c2uUO0rmGWVzqC4_zgFRcBI-jgiIrcM"//await getData('UserToken');
+  let usertoken = await getData('UserToken');
   const headers = {
     'Authorization': `Bearer ${usertoken}`,
     'Content-Type': "application/json",
   };
-  console.log("{message}===", {message});
-  return axios.post(`https://plansaround-backend.vercel.app/api/mobile/message/${eventId}`, {message}, { headers }).then(res => res.data)
+  console.log("{message}===", { message });
+  return axios.post(`https://plansaround-backend.vercel.app/api/mobile/message/${eventId}`, { message }, { headers }).then(res => res.data)
+}
+
+
+export async function createStripeUserId() {
+  let usertoken = await getData('UserToken');
+  const headers = {
+    'Authorization': `Bearer ${usertoken}`,
+  };
+  return axios.post(`https://plansaround-backend.vercel.app/api/mobile/stripe/generate-user-stripe-id`, {}, { headers }).then(res => res.data)
+}
+
+export async function getEphemeralKey() {
+  let usertoken = await getData('UserToken');
+  const headers = {
+    'Authorization': `Bearer ${usertoken}`,
+    'Content-Type': "application/json",
+  };
+  return axios.post(`https://plansaround-backend.vercel.app/api/mobile/stripe/create-setup-intent`, {}, { headers }).then(res => res.data)
+}
+
+export async function createPaymentIntent(amount) {
+  let usertoken = await getData('UserToken');
+  const headers = {
+    'Authorization': `Bearer ${usertoken}`,
+    'Content-Type': "application/json",
+  };
+  const data = {
+    "amount": `${amount * 100}`,
+    "currency": "gbp",
+    "gateway": "card"
+  }
+  return axios.post(`https://plansaround-backend.vercel.app/api/mobile/stripe/payment-intents`, data, { headers }).then(res => res.data)
 }
 
 // export async function BasicInformation(formdata){

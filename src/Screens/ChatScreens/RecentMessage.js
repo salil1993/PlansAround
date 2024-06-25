@@ -1,23 +1,18 @@
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import React from 'react';
 import moment from 'moment';
 import { DUMMY_USER_URL } from '../../API/Api';
 import colors from '../../styles/colors';
 import { moderateScale } from '../../styles/responsiveSize';
 
-const RecentMessage = ({item, ...props}) => {
-  let date = item?.createdAt;
-  const userData= {id: "w1i"}
+const RecentMessage = ({ item, userData, ...props }) => {
+  const chatData = item?.chat
+  let date = chatData?.createdAt;
 
-  let data = null;
-  if (item?.senderId == userData?.id) {
-    data = item?.to;
-  } else {
-    data = item?.from;
-  }
+  let data = chatData?.sender;;
+
 
   console.log("ITE<====", item);
-  console.log("data<====", data);
 
   return (
     <View>
@@ -34,37 +29,36 @@ const RecentMessage = ({item, ...props}) => {
           }}>
           <TouchableOpacity
             onPress={props.onPress}
-            style={{width: '82%', paddingHorizontal: 10}}>
-            <View style={{flexDirection: 'row'}}>
+            style={{ width: '82%', paddingHorizontal: 10 }}>
+            <View style={{ flexDirection: 'row' }}>
               <Text numberOfLines={2} style={styles.userName}>
-                {data?.name}
+                {item?.eventDetail?.name}
               </Text>
-             
+
             </View>
 
-            <Text numberOfLines={1} 
-            style={[styles.userName, styles.font400]}>
-              {userData?.id == item?.senderId ? (
-                <Text
-                  style={{
-                    fontWeight: '400',
-                    color: colors.otpPlaseHolder,
-                  }}>
-                  You:{' '}
-                </Text>
-              ) : ""}
-              <Text>{item?.content}</Text>
+            <Text numberOfLines={1}
+              style={[styles.userName, styles.font400]}>
+              <Text
+                style={{
+                  fontWeight: '400',
+                  color: colors.otpPlaseHolder,
+                }}>
+                {data?.fullName}:{' '}
+              </Text>
+
+              <Text>{chatData?.message}</Text>
             </Text>
           </TouchableOpacity>
-          <View style={{flex: 1, alignItems: 'center', marginBottom: 10}}>
+          <View style={{ flex: 1, alignItems: 'center', marginBottom: 10 }}>
             <Text
               numberOfLines={2}
               style={[
                 styles.optionTxt['false'],
-                {fontSize: 12, textAlign: 'center'},
+                { fontSize: 12, textAlign: 'center' },
               ]}>
               {moment(date).format('DD MM YYYY') ==
-              moment(new Date()).format('DD MM YYYY')
+                moment(new Date()).format('DD MM YYYY')
                 ? moment(date).format('HH:mm')
                 : moment(date).format('DD MMM')}
             </Text>
@@ -76,9 +70,9 @@ const RecentMessage = ({item, ...props}) => {
 };
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      padding: moderateScale(12),
-      backgroundColor: '#fff'
+    flex: 1,
+    padding: moderateScale(12),
+    backgroundColor: '#fff'
   },
   contactBox: {
     flexDirection: 'row',
@@ -87,65 +81,65 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   helpIcon: {
-      flex: 0.1,
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
+    flex: 0.1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 
-    noChat: {
-      alignSelf: 'center',
-      marginTop: 30,
-    },
-    button: {
-      width: 80,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.red,
-      height: 65,
-      marginTop: 10,
-    },
-    buttonText: {
-      fontWeight: 'bold',
-      opacity: 0.87,
-    },
-  
-    button3Text: {
-      color: colors.white,
-    },
-    qaContainer: {
-      // flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-    },
-    userName: {
-      fontSize: 14,
+  noChat: {
+    alignSelf: 'center',
+    marginTop: 30,
+  },
+  button: {
+    width: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.red,
+    height: 65,
+    marginTop: 10,
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    opacity: 0.87,
+  },
+
+  button3Text: {
+    color: colors.white,
+  },
+  qaContainer: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  userName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.black,
+    marginTop: 4,
+    // textTransform: 'capitalize'
+  },
+  newSessionBox1: {
+    height: 45,
+    width: 45,
+    borderRadius: 35,
+  },
+  optionTxt: {
+    true: {
       fontWeight: '700',
       color: colors.black,
-      marginTop: 4,
-      // textTransform: 'capitalize'
+      fontSize: 17,
     },
-    newSessionBox1: {
-      height: 45,
-      width: 45,
-      borderRadius: 35,
+    false: {
+      fontWeight: '700',
+      color: colors.darkgrey,
+      fontSize: 17,
     },
-    optionTxt: {
-      true: {
-        fontWeight: '700',
-        color: colors.black,
-        fontSize: 17,
-      },
-      false: {
-        fontWeight: '700',
-        color: colors.darkgrey,
-        fontSize: 17,
-      },
-    },
-    font400: {
-      fontWeight: '400',
-    }
-  
+  },
+  font400: {
+    fontWeight: '400',
+  }
+
 })
 
-export {RecentMessage};
+export { RecentMessage };

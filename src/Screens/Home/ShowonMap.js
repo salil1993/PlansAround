@@ -10,10 +10,13 @@ import Geolocation from '@react-native-community/geolocation';
 
 // create a component
 const ShowonMap = ({ route, navigation }) => {
-    const EData = route.params.Elocation;
+    let EData = route.params.Elocation;
+    EData = { longitude: EData.coordinates[0], latitude: EData.coordinates[1] }
     const UData = route.params.Ulocation;
     const type = route.params.type;
     const [CurrentLocation, setCurrentLocation] = useState('');
+    console.log('EData', EData)
+    console.log('UData', UData)
     useEffect(() => {
         requestLocationPermission()
     }, [])
@@ -70,14 +73,14 @@ const ShowonMap = ({ route, navigation }) => {
         <WrapperContainer>
             <HeaderBack mainText='Event location' style={{ backgroundColor: '#fff', paddingHorizontal: moderateScale(10) }} />
             <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
-           { type == 'EventHosting'?<View style={styles.container}>
+            {route.params.type == 'EventAttended' ? <View style={styles.container}>
 
                 {EData && UData ?
                     <MapView
                         style={styles.map}
                         initialRegion={{
-                            latitude: EData.latitude != null ?EData.latitude:37.78825,
-                            longitude: EData.longitude != null ?EData.longitude:-122.4324,
+                            latitude: EData.latitude != null ? EData.latitude : 37.78825,
+                            longitude: EData.longitude != null ? EData.longitude : -122.4324,
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
 
@@ -100,7 +103,7 @@ const ShowonMap = ({ route, navigation }) => {
                             fillColor="rgba(255,0,0,0.2)"
                             zIndex={2}
                         /> */}
-                        <Marker pinColor = {"purple"}  coordinate={UData} title="Your Location" />
+                        <Marker pinColor={"purple"} coordinate={UData} title="Your Location" />
                         <Marker coordinate={EData} title="Event Location" />
                         <MapViewDirections
                             origin={UData}
@@ -120,37 +123,38 @@ const ShowonMap = ({ route, navigation }) => {
                     :
                     <Text style={styles.eventtxt}>No Location exists</Text>
                 }
-            </View>: <View style={styles.container}>
+            </View> :
+                <View style={styles.container}>
 
-{EData && UData ?
-    <MapView
-        style={styles.map}
-        initialRegion={{
-            latitude: EData.latitude?EData.latitude: CurrentLocation.latitude,
-            longitude: EData.longitude?EData.longitude:CurrentLocation.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+                    {EData && UData ?
+                        <MapView
+                            style={styles.map}
+                            initialRegion={{
+                                latitude: EData.latitude ? EData.latitude : CurrentLocation.latitude,
+                                longitude: EData.longitude ? EData.longitude : CurrentLocation.longitude,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
 
-        }}
-        loadingEnabled={true}
-        loadingIndicatorColor='#005BD4'
-    // moveOnMarkerPress={true}
-    // showsUserLocation={true}
-    // showsMyLocationButton={true}
-    >
-        <Circle
-            // key={event.id}
-            center={{
-                latitude: EData.latitude,
-                longitude: EData.longitude,
-            }}
-            radius={500} // Adjust radius as needed (in meters)
-            strokeWidth={2}
-            strokeColor="rgba(255,0,0,0.5)"
-            fillColor="rgba(255,0,0,0.2)"
-            zIndex={2}
-        />
-        {/* <Marker pinColor = {"purple"}  coordinate={UData} title="Your Location" />
+                            }}
+                            loadingEnabled={true}
+                            loadingIndicatorColor='#005BD4'
+                        // moveOnMarkerPress={true}
+                        // showsUserLocation={true}
+                        // showsMyLocationButton={true}
+                        >
+                            <Circle
+                                // key={event.id}
+                                center={{
+                                    latitude: EData.latitude,
+                                    longitude: EData.longitude,
+                                }}
+                                radius={500} // Adjust radius as needed (in meters)
+                                strokeWidth={2}
+                                strokeColor="rgba(255,0,0,0.5)"
+                                fillColor="rgba(255,0,0,0.2)"
+                                zIndex={2}
+                            />
+                            {/* <Marker pinColor = {"purple"}  coordinate={UData} title="Your Location" />
         <Marker coordinate={EData} title="Event Location" />
         <MapViewDirections
             origin={UData}
@@ -161,16 +165,16 @@ const ShowonMap = ({ route, navigation }) => {
         /> */}
 
 
-        {/* <Polyline
+                            {/* <Polyline
             coordinates={[UData, EData]}
             strokeWidth={4}
             strokeColor="blue"
         /> */}
-    </MapView>
-    :
-    <Text style={styles.eventtxt}>No Location exists</Text>
-}
-</View>}
+                        </MapView>
+                        :
+                        <Text style={styles.eventtxt}>No Location exists</Text>
+                    }
+                </View>}
 
         </WrapperContainer>
     );

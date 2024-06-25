@@ -14,17 +14,20 @@ import IconsComment from 'react-native-vector-icons/Fontisto'
 import ButtonComp from './ButtonComp';
 import TextInputC from './TextInputC';
 import navigationStrings from '../Navigation/navigationStrings';
-import { RequestBooking } from '../API/Api';
+import { RequestBooking, createPaymentIntent, getEphemeralKey } from '../API/Api';
 import Snackbar from 'react-native-snackbar';
 import { getData } from '../utils/helperFunctions';
 import axios from 'axios';
 import Share from 'react-native-share';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Loader from './Loader';
+import {
+    initPaymentSheet,
+    presentPaymentSheet,
+    confirmPaymentSheetPayment,
+} from '@stripe/stripe-react-native';
 // create a component
-const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) => {
-
-    console.log("item------", JSON.stringify(item));
+const HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User }) => {
     const dispatch = useDispatch();
     const scrollViewRef = useRef();
     const navigation = useNavigation();
@@ -54,11 +57,11 @@ const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User 
 
 
 
-    const HandleParticpate = (eventId) => {
+    const HandleParticpate = (eventId, paymentId) => {
         setLoading(true)
         console.log('kyc verified')
         console.log(eventId, 'eventId')
-        RequestBooking(eventId)
+        RequestBooking(eventId, paymentId)
             .then((res) => {
                 console.log(res, 'eventBooking')
                 setLoading(false)
@@ -331,6 +334,62 @@ const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User 
     }
 
 
+    const openPaymentSheet = () => {
+        console.log("RES===");
+
+        setLoading(true)
+        getEphemeralKey()
+            .then(res => {
+                console.log("RES===", res);
+                createPaymentIntent(item.amount)
+                    .then(async mainRes => {
+                        console.log("RES11===", mainRes);
+                        setLoading(false)
+                        try {
+
+
+
+                            const paymentInit = await initPaymentSheet({
+                                customerId: res?.customer,
+                                customerEphemeralKeySecret: res?.ephemeralKey,
+                                paymentIntentClientSecret:
+                                    mainRes?.paymentIntent?.client_secret,
+                                merchantDisplayName: User?.fullName,
+                                returnURL: 'stripe-example://stripe-redirect',
+                                customFlow: true,
+                            });
+                            console.log('paymentInit====', paymentInit);
+
+                            const { error, paymentOption } = await presentPaymentSheet();
+                            console.log('error====', error);
+
+                            const { error: err } = await confirmPaymentSheetPayment();
+                            console.log('confirmPayment====', err);
+                            if (err) {
+                                alert('Payment is decline.');
+                            }
+
+                            console.log("PAYMENT===", mainRes?.paymentIntent.id);
+                            HandleParticpate(item._id, mainRes?.paymentIntent.id)
+
+                            // handleSelect(Plan._id, mainRes?.paymentIntent.id)
+                        } catch (error) {
+                            console.log("PAYMENTerror===", error);
+
+                        }
+                    })
+                    .catch(err => {
+                        console.log("err111===", err);
+
+                        setLoading(false)
+                    })
+                setLoading(false)
+            })
+            .catch(err => {
+                setLoading(false)
+            })
+    }
+
 
 
     return (
@@ -384,7 +443,7 @@ const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User 
                     item.amount > 0 &&
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                         <Text style={styles.eventtxt}>Amount</Text>
-                        <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.amount ? item.amount : 'NA'} $</Text>
+                        <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item.amount ? item.amount : 'NA'}€</Text>
                     </View>
                 }
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
@@ -393,7 +452,7 @@ const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User 
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>No. of Participant Approved</Text>
-                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>2</Text>
+                    <Text style={[styles.eventtxt, { fontWeight: '800' }]}>{item?.bookingsApproved}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(5) }}>
                     <Text style={styles.eventtxt}>Date & Time</Text>
@@ -458,7 +517,7 @@ const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User 
                                 setLoadingP(true)
                                 setTimeout(() => {
                                     HanldeCheckParticipate();
-                                }, 1000);
+                                }, 300);
                             }
                             } />
                     </View>
@@ -724,7 +783,13 @@ const    HomeEvent = ({ item, Distance, date, UserLocation, handleRefresh, User 
                                 <ButtonComp text='Cancel' onPress={() => setaskPermission(false)} style={{ height: moderateScale(45), borderColor: '#005BD4', borderWidth: 1 }} textStyle={{ color: '#005BD4' }} />
                             </View>
                             <View style={{ flex: 3, marginLeft: moderateScale(5) }}>
-                                <ButtonComp isLoading={Loading} onPress={() => HandleParticpate(item._id)} text='Continue' style={{ height: moderateScale(45), backgroundColor: '#005BD4' }} />
+                                <ButtonComp isLoading={Loading} onPress={() => {
+                                    if (item?.eventType?.toUpperCase() == "PAID") {
+                                        openPaymentSheet()
+                                    } else {
+                                        HandleParticpate(item._id)
+                                    }
+                                }} text='Continue' style={{ height: moderateScale(45), backgroundColor: '#005BD4' }} />
                             </View>
                         </View>
                     </View>

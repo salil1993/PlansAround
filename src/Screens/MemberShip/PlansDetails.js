@@ -13,10 +13,20 @@ import Snackbar from 'react-native-snackbar';
 import navigationStrings from '../../Navigation/navigationStrings';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/Slices/UserSlice';
+import {
+    PaymentIntents,
+    initPaymentSheet,
+    initStripe,
+    presentPaymentSheet,
+    confirmPaymentSheetPayment,
+} from '@stripe/stripe-react-native';
+import { STRIPE_KEY, STRIPE_KEY_TEST, createPaymentIntent, getEphemeralKey } from '../../API/Api';
 // create a component
 const PlansDetails = ({ navigation, route }) => {
     const Dispatch = useDispatch();
     const Id = route.params.id;
+    const user = useSelector((state) => state.persistedReducer.authSlice.userData);
+
     // console.log(Id, 'Id');
 
     const [Plan, setPlan] = useState('');
@@ -34,6 +44,31 @@ const PlansDetails = ({ navigation, route }) => {
 
     useEffect(() => {
         getPlan();
+
+        // async function initialize() {
+        //     await initStripe({
+        //         publishableKey: STRIPE_KEY,
+        //         urlScheme: 'myapp',
+        //     });
+        // }
+        // initialize()
+        //     .then(async res => {
+        //         console.log('ds===', res);
+        //     })
+        //     .catch(error => {
+        //         console.log('error===', error);
+        //     });
+
+
+        // initStripe({
+        //     publishableKey: STRIPE_KEY_TEST,
+        //     urlScheme: 'myapp',
+        // }).then(res => {
+        //     console.log('ds===', res);
+        // })
+        //     .catch(err => {
+        //         console.log('error===', error);
+        //     })
     }, [])
     const getPlan = async () => {
         setLoadEvent(true)
@@ -58,23 +93,75 @@ const PlansDetails = ({ navigation, route }) => {
             })
     }
 
-    const handleSelect = async (id) => {
-        console.log(id, 'planId')
+    const openPaymentSheet = () => {
+        console.log("RES===");
+
+        setLoading(true)
+        getEphemeralKey()
+            .then(res => {
+                console.log("RES===", res);
+                createPaymentIntent(Plan.amount)
+                    .then(async mainRes => {
+                        console.log("RES11===", mainRes);
+                        setLoading(false)
+                        try {
+
+
+
+                            const paymentInit = await initPaymentSheet({
+                                customerId: res?.customer,
+                                customerEphemeralKeySecret: res?.ephemeralKey,
+                                paymentIntentClientSecret:
+                                    mainRes?.paymentIntent?.client_secret,
+                                merchantDisplayName: user?.fullName,
+                                returnURL: 'stripe-example://stripe-redirect',
+                                customFlow: true,
+                            });
+                            console.log('paymentInit====', paymentInit);
+
+                            const { error, paymentOption } = await presentPaymentSheet();
+                            console.log('error====', error);
+
+                            const { error: err } = await confirmPaymentSheetPayment();
+                            console.log('confirmPayment====', err);
+                            if (err) {
+                                alert('Payment is decline.');
+                            }
+                            handleSelect(Plan._id, mainRes?.paymentIntent.id)
+                            // console.log("PAYMENT===", mainRes?.paymentIntent.id);
+                        } catch (error) {
+                            console.log("PAYMENTerror===", error);
+
+                        }
+                    })
+                    .catch(err => {
+                        console.log("err111===", err);
+
+                        setLoading(false)
+                    })
+                setLoading(false)
+            })
+            .catch(err => {
+                setLoading(false)
+            })
+    }
+
+    const handleSelect = async (planId, paymentId) => {
+        console.log('planId', planId)
         setLoading(true)
         let usertoken = await getData('UserToken');
-        console.log(usertoken, 'token')
-        const randomId = generateRandomId(41);
-        console.log(randomId, 'randomId')
         const headers = {
             'Authorization': `Bearer ${usertoken}`,
             'Content-Type': "application/json",
         };
-        axios.post(`https://plansaround-backend.vercel.app/api/mobile/packages/${id}/purchase`, { "purchaseId": { randomId } }, { headers },)
-            .then((res) => {
-                console.log(res, 'planPurchase')
-                const data = res.data.user
+        axios.post(`https://plansaround-backend.vercel.app/api/mobile/packages/${planId}/purchase`, { "purchaseId": paymentId }, { headers },)
+            .then(async (res) => {
+
+                const response = await axios.get(`https://plansaround-backend.vercel.app/api/mobile/profile`, { headers });
+                const responseData = response.data?.user;
+                console.log("response===", responseData);
                 setLoading(false)
-                Dispatch(saveUserData(data))
+                Dispatch(saveUserData(responseData))
 
                 Snackbar.show({
                     text: `${'Plan Purchased Successfully!'}`,
@@ -111,10 +198,13 @@ const PlansDetails = ({ navigation, route }) => {
                                     <Image source={{ uri: Plan.image }} style={{ height: moderateScaleVertical(150), width: moderateScale(150), borderRadius: moderateScale(75), alignSelf: 'center', marginVertical: moderateScaleVertical(10) }} />
                                     <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{Plan.shortDescription}</Text>
                                     <Text style={[styles.phoneHeading, { fontSize: textScale(14), fontWeight: '400', marginVertical: moderateScaleVertical(10) }]}>{Plan.longDescription}</Text>
-                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Amount: {Plan.amount}$</Text>
+                                    <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Amount: {Plan.amount}€</Text>
                                     <Text style={[styles.phoneHeading, { fontSize: textScale(18), marginBottom: moderateScaleVertical(10) }]}>Validity: {Plan.noOfDays}</Text>
                                 </View>
-                                <ButtonComp text='Pay Now' isLoading={Loading} onPress={() => handleSelect(Plan._id)} style={{ backgroundColor: '#005BD4', }} />
+                                <ButtonComp text='Pay Now' isLoading={Loading} onPress={() => {
+                                    openPaymentSheet()
+                                    // handleSelect(Plan._id)
+                                }} style={{ backgroundColor: '#005BD4', }} />
                             </View>
                             :
                             <Text style={[styles.phoneHeading, { fontSize: textScale(18), textAlign: 'center' }]}>{'No Details'}</Text>

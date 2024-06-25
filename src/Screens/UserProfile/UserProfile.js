@@ -60,7 +60,7 @@ const UserProfile = ({ navigation }) => {
     const [selectImageModal, setselectImageModal] = useState(false);
     const [profilePic, setprofilePic] = useState(null)
     const [imgSelected, setimgSelected] = useState(null)
-    const [attendence,setAttendence] = useState([])
+    const [attendence, setAttendence] = useState([])
     const [reviewDetail, setReviewDetail] = useState([])
     const [user, setUser] = useState({})
     const UserKYCstatus = user?.kyc?.isVerified;
@@ -197,7 +197,7 @@ const UserProfile = ({ navigation }) => {
             const userData = responseData?.user;
             setUser(userData)
             const attendance = responseData?.user?.eventAttendance;
-            setAttendence(attendance)  
+            setAttendence(attendance)
             const reviewList = responseData?.user?.userReviews;
             setReviewDetail(reviewList)
             setIsLoading(false);
@@ -291,7 +291,7 @@ const UserProfile = ({ navigation }) => {
 
 
     const LoaderList = () => (
-        <View style={{ flex:1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="small" color="#005BD4" />
             <Text style={[styles.eventtxt, { color: '#005BD4' }]}>Loading</Text>
         </View>
@@ -488,10 +488,14 @@ const UserProfile = ({ navigation }) => {
                             </View>
                         </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: moderateScaleVertical(5), marginLeft: moderateScale(3) }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate(navigationStrings.ALLPLANS)
+                            }}
+                            style={{ flexDirection: 'row', alignItems: 'center', marginTop: moderateScaleVertical(5), marginLeft: moderateScale(3) }}>
                             <Text style={{ textAlign: 'center', color: '#333', fontFamily: 'Roboto', fontSize: scale(15), fontWeight: '700' }}>{user.fullName ? user.fullName : 'NA'}</Text>
                             <Iconpaid name='verified' size={18} color='#005BD4' style={{ marginLeft: moderateScale(3) }} />
-                        </View>
+                        </TouchableOpacity>
 
                         <View style={{ padding: moderateScaleVertical(15), backgroundColor: '#fff', borderRadius: moderateScale(8), marginVertical: moderateScaleVertical(15) }}>
                             {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', }}>
@@ -559,7 +563,7 @@ const UserProfile = ({ navigation }) => {
                     </View> */}
 
                         <View>
-                            <Reputation attendence={attendence} reviewDetail={reviewDetail}/>
+                            <Reputation attendence={attendence} reviewDetail={reviewDetail} />
                         </View>
                         {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: moderateScale(5), marginVertical: moderateScaleVertical(10) }}>
                         <Image source={imagePath.filter} tintColor={'#333'} resizeMode='contain' style={{ height: moderateScale(20), width: moderateScale(20) }} />

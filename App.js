@@ -11,6 +11,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import messaging from '@react-native-firebase/messaging'
 import { DisplayNotification } from './src/utils/helperFunctions';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import {
   GoogleSignin,
   statusCodes,

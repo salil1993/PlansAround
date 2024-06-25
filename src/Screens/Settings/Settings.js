@@ -26,11 +26,13 @@ const Settings = ({ navigation }) => {
             <HeaderBack style={{ marginLeft: moderateScale(10) }} mainText='Settings' maintxtstyle={{ fontSize: textScale(18) }} />
             <View style={{ borderWidth: 0.5, borderColor: '#fffafa', marginTop: moderateScaleVertical(10) }} />
             <View style={styles.container}>
-                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(20) }}>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate(navigationStrings.ACCOUNT_INFO)
+                    }}
+                    style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: moderateScaleVertical(20) }}>
                     <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate(navigationStrings.ACCOUNT_INFO)
-                        }}
+
                         style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Iconsetting name='account-circle' size={20} color='#4F4F4F' />
                         <Text style={styles.settingsText}>Account information</Text>
