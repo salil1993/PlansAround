@@ -12,7 +12,7 @@ import ChatItem from './ChatItem'
 import { useSelector } from 'react-redux'
 
 
-const MessageScreen = () => {
+const MessageScreen = ({route}) => {
   const User = useSelector((state) => state.persistedReducer.authSlice.userData);
   const { paginationLoader, 
     roomMessageList, 
@@ -48,11 +48,12 @@ const MessageScreen = () => {
     );
   };
 
+  console.log("paginationLoader=",paginationLoader);
   return (
     <WrapperContainer>
     <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
-        <HeaderBack mainText='User Name' isLeftImage={true} />
+        <HeaderBack mainText={route?.params?.item?.eventDetail?.name} isLeftImage={true} />
         <View style={styles.border} />
         <View style={{flex: 1}}>
           {paginationLoader && (
@@ -69,7 +70,7 @@ const MessageScreen = () => {
             showsVerticalScrollIndicator={false}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.1}
-            ListFooterComponent={hasMore ? <LoaderList /> : null}
+            ListFooterComponent={isLoading ? <LoaderList /> : null}
             // onContentSizeChange={contentSizeChange}
             // ListEmptyComponent= {emptyList}
           />

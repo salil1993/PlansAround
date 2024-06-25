@@ -14,7 +14,8 @@ import { useSelector } from 'react-redux';
 import navigationStrings from '../../Navigation/navigationStrings';
 import Snackbar from 'react-native-snackbar';
 import Modal from 'react-native-modal'
-import { RequestBooking } from '../../API/Api';
+import { RequestBooking, createPaymentIntent, getEphemeralKey } from '../../API/Api';
+import { confirmPaymentSheetPayment, initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 // create a component
 const HomeEventDetails = ({ navigation, route }) => {
     const CurrentUserLocation = useSelector((state) => state.persistedReducer.authSlice.userCurrentLocation);
@@ -99,11 +100,11 @@ const HomeEventDetails = ({ navigation, route }) => {
         }
     }
 
-    const HandleParticpate = (eventId) => {
+    const HandleParticpate = (eventId, orderId) => {
       //  setLoading(true)
         console.log('kyc verified')
         console.log(eventId, 'eventId')
-        RequestBooking(eventId)
+        RequestBooking(eventId, orderId)
             .then((res) => {
                 console.log(res, 'eventBooking')
                 setLoading(false)
@@ -141,6 +142,63 @@ const HomeEventDetails = ({ navigation, route }) => {
                 }, 2000);
             })
     }
+
+
+    const openPaymentSheet = () => {
+
+        setLoading(true)
+        getEphemeralKey()
+            .then(res => {
+                console.log("RES===", res);
+                createPaymentIntent(Event.amount)
+                    .then(async mainRes => {
+                        console.log("RES11===", mainRes);
+                        setLoading(false)
+                        try {
+
+
+
+                            const paymentInit = await initPaymentSheet({
+                                customerId: res?.customer,
+                                customerEphemeralKeySecret: res?.ephemeralKey,
+                                paymentIntentClientSecret:
+                                    mainRes?.paymentIntent?.client_secret,
+                                merchantDisplayName: User?.fullName,
+                                returnURL: 'stripe-example://stripe-redirect',
+                                customFlow: true,
+                            });
+                            console.log('paymentInit====', paymentInit);
+
+                            const { error, paymentOption } = await presentPaymentSheet();
+                            console.log('error====', error);
+
+                            const { error: err } = await confirmPaymentSheetPayment();
+                            console.log('confirmPayment====', err);
+                            if (err) {
+                                alert('Payment is decline.');
+                            }
+
+                            console.log("PAYMENT===", mainRes?.paymentIntent.id);
+                            HandleParticpate(EventId, mainRes?.paymentIntent.id)
+
+                            // handleSelect(Plan._id, mainRes?.paymentIntent.id)
+                        } catch (error) {
+                            console.log("PAYMENTerror===", error);
+
+                        }
+                    })
+                    .catch(err => {
+                        console.log("err111===", err);
+
+                        setLoading(false)
+                    })
+                setLoading(false)
+            })
+            .catch(err => {
+                setLoading(false)
+            })
+    }
+
 
     return (
         <WrapperContainer>
@@ -484,7 +542,12 @@ const HomeEventDetails = ({ navigation, route }) => {
                                         <ButtonComp text='Cancel' onPress={() => setaskPermission(false)} style={{ height: moderateScale(45), borderColor: '#005BD4', borderWidth: 1 }} textStyle={{ color: '#005BD4' }} />
                                     </View>
                                     <View style={{ flex: 3, marginLeft: moderateScale(5) }}>
-                                        <ButtonComp isLoading={Loading} onPress={() => HandleParticpate(EventId)} text='Continue' style={{ height: moderateScale(45), backgroundColor: '#005BD4' }} />
+                                        <ButtonComp isLoading={Loading} onPress={() =>{
+                                              if (Event?.eventType?.toUpperCase() == "PAID") {
+                                                openPaymentSheet()
+                                            } else {
+                                                HandleParticpate(EventId)
+                                            }}} text='Continue' style={{ height: moderateScale(45), backgroundColor: '#005BD4' }} />
                                     </View>
                                 </View>
                             </View>

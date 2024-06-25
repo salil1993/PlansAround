@@ -4,9 +4,12 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { sendMessageApi } from "../../API/Api";
 import { LogBox } from "react-native";
+import { useRoute } from "@react-navigation/native";
 
 const useMessage = () => {
   const User = useSelector((state) => state.persistedReducer.authSlice.userData);
+  const route = useRoute()
+
   const [paginationLoader, setPageLoader] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [roomMessageList, setRoomMessageList] = useState([])
@@ -19,6 +22,8 @@ const useMessage = () => {
     getChats(1)
   }, []);
 
+  console.log("route=www=",);
+
   const getChats = async (pageNumber) => {
     if (isLoading) {
       return;
@@ -27,10 +32,10 @@ const useMessage = () => {
     let usertoken = await getData('UserToken');
     console.log(usertoken, 'token')
     const headers = {
-      'Authorization': `Bearer ${'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzAyNTE5MzYzNjZmMjFhMGU5OTljNCIsInBob25lTnVtYmVyIjoiNzY1NDMyMTg5MCIsImVtYWlsIjoicGFydGljaXBhbnRAeW9wbWFpbC5jb20iLCJpYXQiOjE3MTg2MjU1NjEsImV4cCI6MTcyMTIxNzU2MX0.P2TOKJ82Im28c2uUO0rmGWVzqC4_zgFRcBI-jgiIrcM'}`,
+      'Authorization': `Bearer ${usertoken}`,
       // 'Content-Type': "application/json",
     };
-    let EndPoint = `https://plansaround-backend.vercel.app/api/mobile/message/665df61915a633e11adaf987?page=${pageNumber}&limit=10`
+    let EndPoint = `https://plansaround-backend.vercel.app/api/mobile/message/${route?.params?.item?.eventDetail?._id}?page=${pageNumber}&limit=10`
     console.log('EndPoint', EndPoint)
     axios.get(EndPoint, { headers })
       .then((res) => {
@@ -64,7 +69,7 @@ const useMessage = () => {
   const onSend = () => {
     const message = msg
     setMsg("")
-    sendMessageApi("665df61915a633e11adaf987", message)
+    sendMessageApi(route?.params?.item?.eventDetail?._id, message)
       .then(res => {
         const data = {
           ...res?.data,

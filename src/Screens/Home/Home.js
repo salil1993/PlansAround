@@ -38,6 +38,9 @@ const Home = () => {
     const { latitude, longitude } = CurrentUserLocation;
     const searchRef = useRef(null)
     const [address, setAddress] = useState(null);
+    const [participantFrom, setParticipantFrom] = useState(0)
+    const [participantTo, setParticipantTo] = useState(0)
+    const [orderBy, setOrderBy] = useState('')
     const [CurrentLocation, setCurrentLocation] = useState(CurrentUserLocation)
     const [value, setvalue] = useState('');
     const [selected, setselected] = useState('All');
@@ -61,7 +64,7 @@ const Home = () => {
     useEffect(() => {
         initStripeFun()
         requestLocationPermission()
-        getEventList(1);
+        getEventList(1, '');
         if (User) {
             console.log('User=====', User)
             User?.location?.coordinates?.length > 0 && reverseGeocode(User?.location?.coordinates[0], User?.location?.coordinates[1]);
@@ -264,7 +267,7 @@ const Home = () => {
 
 
 
-    const getEventList = async (pageNumber) => {
+    const getEventList = async (pageNumber, type) => {
         if (isLoading) {
             return;
         }
@@ -277,7 +280,12 @@ const Home = () => {
                 'Content-Type': "application/json",
             };
 
-            const url = `https://plansaround-backend.vercel.app/api/mobile/homepage/events?page=${pageNumber}&search=${categoryName}&eventType=${selected.toUpperCase()}`
+            let url = '';
+            if(type == 'Search'){
+               url = `https://plansaround-backend.vercel.app/api/mobile/homepage/events?page=${pageNumber}&search=${categoryName}&eventType=${selected.toUpperCase()}&search=${categoryName}&participantMin=${participantFrom}&participantMax=${participantTo}&distance=${Range}`
+            }else{
+              url = `https://plansaround-backend.vercel.app/api/mobile/homepage/events?page=${pageNumber}&search=${categoryName}&eventType=${selected.toUpperCase()}`
+            }
             console.log("url====", url);
             const response = await axios.get(url, { headers });
             const responseData = response.data;
@@ -306,7 +314,7 @@ const Home = () => {
     // Define your function for handling load more
     const handleLoadMore = () => {
         if (!isLoading && hasMore) {
-            getEventList(page + 1);
+            getEventList(page + 1, '');
         }
     };
 
@@ -314,7 +322,7 @@ const Home = () => {
     const handleRefresh = () => {
         setRefreshing(true);
         setPage(1);
-        getEventList(1);
+        getEventList(1, '');
     };
 
 
@@ -430,6 +438,7 @@ const Home = () => {
                     swipeDirection={'down'}
                     onSwipeComplete={() => setFilterOpen(false)}
                     hasBackdrop={true}
+                    propagateSwipe={true}
                     coverScreen={true}
                     backdropColor="#000"
                     backdropOpacity={0.8}
@@ -450,13 +459,13 @@ const Home = () => {
                             <Text style={[styles.charlie, { marginLeft: moderateScale(20) }]}>Narrow your Search</Text>
                         </View>
                         <ScrollView showsVerticalScrollIndicator={false}>
-                            <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(5) }} />
+                            {/* <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(5) }} />
                             <View style={{ padding: moderateScale(12) }}>
                                 <Text style={[styles.address, { fontSize: moderateScale(15) }]}>Who you want to search</Text>
-                            </View>
+                            </View> */}
                             <View style={{ backgroundColor: '#fff', borderRadius: moderateScale(10), margin: moderateScale(10), elevation: 2, padding: moderateScale(15) }}>
                                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
-                                    <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}> (Enter event name...) :</Text>
+                                    {/* <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}> (Enter event name...) :</Text> */}
                                     <TextInputC
                                         // ref={searchRef}
                                         // autoFocus={true}
@@ -511,37 +520,50 @@ const Home = () => {
                                         }
                                     </View>
                                 </View>
-                                {/* <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} /> */}
-                                {/* <View style={{ marginBottom: moderateScaleVertical(10) }}>
+                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
+                                <View style={{ marginBottom: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Distance Range :</Text>
                                     <Text style={[styles.alleventtxt, { textAlign: 'center' }]}>{Range}</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Text style={[styles.address, { fontSize: textScale(16), }]}>0</Text>
                                         <Slider
                                             style={{ flex: 1, }}
-
                                             minimumValue={0}
-                                            maximumValue={20}
+                                            maximumValue={50}
                                             minimumTrackTintColor={'#005BD4'}
                                             maximumTrackTintColor={'#BDBDBD'}
                                             thumbTintColor={'#005BD4'}
                                             step={1}
                                             onValueChange={(value) => setRange(value)}
                                         />
-                                        <Text style={[styles.address, { fontSize: textScale(16) }]}>20</Text>
+                                        <Text style={[styles.address, { fontSize: textScale(16) }]}>50</Text>
                                     </View>
-                                </View> */}
-                                {/* <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
+                                </View>
+                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Number of Participants :</Text>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <View style={{ width: '45%' }}>
                                             <Text style={[styles.address, { marginBottom: moderateScale(3), fontSize: textScale(15) }]}>From</Text>
-                                            <TextInputC placeholder={'Enter'} />
+                                            <TextInputC 
+                                            placeholder={'Enter'}
+                                             value={participantFrom}
+                                            editable={true}
+                                          onChangeText={(text) => {
+                                            setParticipantFrom(text)
+                                        }} 
+                                        />
                                         </View>
                                         <View style={{ width: '45%' }}>
                                             <Text style={[styles.address, { marginBottom: moderateScale(3), fontSize: textScale(15) }]}>To</Text>
-                                            <TextInputC placeholder={'Enter'} />
+                                            <TextInputC 
+                                            placeholder={'Enter'} 
+                                            value={participantTo}
+                                            editable={true}
+                                          onChangeText={(text) => {
+                                            setParticipantTo(text)
+                                        }} 
+                                            />
                                         </View>
                                     </View>
 
@@ -549,14 +571,26 @@ const Home = () => {
                                 <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Order by (insert date, event date, distance, missing participants) :</Text>
-                                    <TextInputC placeholder={'Enter'} />
+                                    <TextInputC 
+                                    placeholder={'Enter'}  
+                                    value={orderBy}
+                                            editable={true}
+                                          onChangeText={(text) => {
+                                            setOrderBy(text)
+                                        }}  />
                                 </View>
-                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
+                                {/* <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
                                 <View style={{ marginVertical: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Time of day (morning, afternoon, evening, night) :</Text>
-                                    <TextInputC placeholder={'Enter'} />
-                                </View>
-                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} /> */}
+                                    <TextInputC 
+                                    placeholder={'Enter'} 
+                                    value={participantTo}
+                                    editable={true}
+                                    onChangeText={(text) => {
+                                      setParticipantTo(text)
+                                    }}  />
+                                </View> */}
+                                <View style={{ borderWidth: 0.5, borderColor: '#eee', marginVertical: moderateScaleVertical(8) }} />
 
                                 {/* <View style={{ marginBottom: moderateScaleVertical(10) }}>
                                     <Text style={[styles.alleventtxt, { marginBottom: moderateScale(5) }]}>Age Range :</Text>
@@ -578,7 +612,7 @@ const Home = () => {
                                 </View> */}
                                 <ButtonComp
                                     onPress={() => {
-                                        getEventList(1)
+                                        getEventList(1, 'Search')
                                         setFilterOpen(false)
                                     }}
                                     text='Submit' style={{ backgroundColor: '#005BD4' }} textStyle={{ textAlign: 'center' }} />

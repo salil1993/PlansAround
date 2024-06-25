@@ -11,6 +11,7 @@ import navigationStrings from '../../Navigation/navigationStrings'
 import { getData } from '../../utils/helperFunctions'
 import axios from 'axios'
 import Loader from '../../Components/Loader'
+import { useFocusEffect } from '@react-navigation/native'
 
 const ChatDialog = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -19,10 +20,13 @@ const ChatDialog = ({ navigation }) => {
   const [recentList, setRecentList] = useState([]);
   const user = useSelector((state) => state.persistedReducer.authSlice.userData);
 
-  useEffect(() => {
-    getChatMessage()
+ 
 
-  }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      getChatMessage()
+    }, [])
+  );
 
 
   const getChatMessage = async () => {

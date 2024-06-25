@@ -185,9 +185,9 @@ export async function RequestBooking(Id, orderId) {
     'Authorization': `Bearer ${usertoken}`,
     'Content-Type': "application/json",
   };
-  const url = `https://plansaround-backend.vercel.app/api/mobile/homepage/events/${Id}/request-to-book-event${orderId ? `?orderId=${orderId}` : ""}`
+  const url = `https://plansaround-backend.vercel.app/api/mobile/homepage/events/${Id}/request-to-book-event`
   console.log("url=======", url);
-  return axios.get(url, { headers }).then(res => res.data)
+  return axios.post(url,orderId ? {orderId} : {}, { headers }).then(res => res.data)
 }
 
 export async function getDeviceToken() {
